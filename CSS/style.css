@@ -54,9 +54,9 @@ padding-right: 4%;
 }
 
 .todo-list{
-    height:90%;
+    height:100%;
     width:100%;
-   
+ 
    display: flex;
    flex-direction: column;
   
@@ -96,10 +96,10 @@ padding-right: 4%;
 
 
 .task-name{
-    width:70%;
+    width:35%;
     margin:0%;
  padding-left:1% ;
- padding-right: 1%;
+
 line-height: 2.5;
     font-family: sans-serif;
     height:100%;
@@ -108,15 +108,21 @@ line-height: 2.5;
    
 }
 .btn-group{
-    width:30%;
+    width:65%;
     display: flex;
-    
+    font-size:12px;
+}
+.todo-title{
+  text-align: center;
+  font-family: sans-serif;
+  color:#504f4f;
 }
 .task-btn{
-    padding:0%;
+
   border:none;
     height:100%;
     width:50%;
+ 
     cursor: pointer;
 }
 .completed{
@@ -141,10 +147,7 @@ line-height: 2.5;
 .completed:hover{
   background-color: #33a374;;
 }
-.check-icon{
-    width:5%;
-    height:5%;
-}
+
 
 @media screen and (min-width:426px){           /* above mobile screen size */
   .todo-input{
@@ -157,16 +160,32 @@ line-height: 2.5;
     padding-left: 0.5%;
   }
   .todo-card{
-    width:55%;
+    width:65%;
+
   }
   .todo-list{
   align-items: center;
+
+
   }
+  .task-name{
+    width:60%;
+  }
+  .btn-group{
+    width:40%;
+    
+  }
+ 
+
 }
 @media screen and (min-width:426px) and (max-width:768px) {  /* tablet screen size */
     .todo-input{
         width:60%;
-        margin:auto
+        margin:auto;
+      
       }
+     .todo-card{
+        width:98%;
+     }
 }
 
