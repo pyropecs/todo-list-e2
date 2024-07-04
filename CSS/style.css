@@ -32,6 +32,7 @@ background-position: top;
   display: flex;
   justify-content: center;
 }
+
 .title {
   width:100%;
 text-align: center;
@@ -208,7 +209,7 @@ cursor:pointer;
 }
 .status-container{
   width: 100%;
-  background:red;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -241,7 +242,7 @@ cursor:pointer;
     width: 83%;
   }
   .btn-group {
-    width: 10%;
+    width: 7%;
   }
   .wrap {
     justify-content: center;
@@ -274,5 +275,8 @@ cursor:pointer;
   }
   .todo-card {
     width: 98%;
+  }
+  .todo-status{
+    width:100%;
   }
 }
