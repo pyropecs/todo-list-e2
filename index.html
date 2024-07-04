@@ -8,43 +8,59 @@
   </head>
   <body>
     <div class="wrap">
-      <div class="todo-container">
-        <form id="submit-form" class="todo-input">
-          <input
-            type="text"
-            name="input"
-            id="text-input"
-            class="todo-textfield"
-            placeholder="Enter Task "
-          />
-          <button type="submit" class="btn">Submit</button>
-        </form>
+      <main class="main">
+        <div class="todo-container">
+          <div class="todo-title">
+            <h1 class="title">To Do List</h1>
+          </div>
 
-        <div class="todo-status">
-          <select name="status" id="status-id" class="todo-select">
-            <option value="all">All</option>
-            <option value="completed">Completed</option>
-            <option value="assigned">Assigned</option>
-          </select>
-        </div>
-       
+          <form id="submit-form" class="todo-input">
+            <input
+              type="text"
+              name="input"
+              id="text-input"
+              class="todo-textfield"
+              placeholder="Enter Task"
+              autocomplete="off"
+            />
+            <button type="submit" class="btn">Submit</button>
+          </form>
+          <div class="status-container">
+            <div class="todo-status">
+              <select name="status" id="status-id" class="todo-select">
+                <option value="all">All</option>
+                <option value="completed">Completed</option>
+                <option value="assigned">Assigned</option>
+              </select>
+            </div>
+          </div>
+
           <div class="todo-list">
-            <h2 class="todo-title">Todo</h2>
+            <!-- <h2 class="todo-title">Todo</h2> -->
             <div class="todo-card">
-              <p class="task-name">
-                asdaasdaadaddasdsaassadsaasdasd
-                d sadadadsadsadsaadsad
-              </p>
+              <div class="checkbox-container">
+                <input type="checkbox" class="completed" />
+              </div>
+              <div class="task-name-container">
+                <p class="task-name">
+                  asdaasdaadaddasdsaassadsaasdasd d sadadadsadsadsaadsad
+                </p>
+              </div>
+
               <div class="btn-group">
-                <button class="task-btn edit">Edit</button>
-                <button class="task-btn completed">Completed</button>
-                <button class="task-btn delete">Delete</button>
+                <div class="edit">
+                  <img src="./Images/edit.png" alt="edit" />
+                </div>
+
+                <div class="delete">
+                  <img src="Images//trash.png" alt="delete" />
+                </div>
               </div>
             </div>
           </div>
-       
-      </div>
+        </div>
+      </main>
     </div>
- 
+    <script src="./index.js"></script>
   </body>
 </html>
