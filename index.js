@@ -1,74 +1,105 @@
-const tasks = [];
-const task = {
-    id:1,
-    task_name:"sample",
-    status:"completed ",
-    created_at:Date.now(),
-    updated_at:0
+const form = document.querySelector("#submit-form");
+const input = document.querySelector("#text-input");
+const todoList = document.querySelector("#task-list");
+
+form.addEventListener("submit", submitForm);
+todoList.addEventListener("click", operations);
+
+function submitForm(event) {
+  event.preventDefault();
+  const taskName = input.value;
+  createTask(taskName);
+  input.value = "";
+}
+function createTask(taskName) {
+  const taskCard = createTaskCard(taskName);
+  todoList.append(taskCard);
 }
 
-const form = document.querySelector("#submit-form")
-
-form.addEventListener("submit",(e)=>{
-    const input = document.querySelector("#text-input")
-    e.preventDefault()
-    let inputValue = e.target.input.value
-   const todoCardNode =  createToDo(inputValue)
-    
-   tasks.push(todoCardNode)
-  input.value =""
-renderTasks()
-}) 
-
-
-// })
-// <div class="todo-card">
-// <p class="task-name">
-//   asdaasdaadaddasdsaassadsaasdasd
-//   d sadadadsadsadsaadsad
-// </p>
-// <div class="btn-group">
-//   <button class="task-btn edit">Edit</button>
-//   <button class="task-btn completed">Completed</button>
-//   <button class="task-btn delete">Delete</button>
-// </div>
-// </div>
-function renderTasks(){
-   
-    const todoList = document.querySelector('.todo-list')
-    tasks.forEach((taskNode)=>{
-      
-        todoList.append(taskNode)
-    })
+function createTaskCard(taskName) {
+  const taskCard = document.createElement("div");
+  taskCard.classList.add("todo-card");
+  const checkBoxContainer = createCheckbox();
+  const taskNameContainer = createTaskName(taskName);
+  const btnGroup = createToDoButtons();
+  taskCard.append(checkBoxContainer, taskNameContainer, btnGroup);
+  return taskCard;
 }
-function createToDo(inputValue){
-
-const todoCard = document.createElement('div')
-todoCard.classList.add('todo-card')
-const p = document.createElement('p');
-p.classList.add('task-name')
-p.innerText = inputValue;
-todoCard.append(p)
-const btnGroup = document.createElement('div');
-btnGroup.classList.add("btn-group")
-const editButton = document.createElement('button');
-editButton.classList.add("task-btn",'edit')
-editButton.innerText = "Edit"
-const completeButton = document.createElement('button');
-completeButton.classList.add("task-btn",'completed')
-completeButton.innerText = "Completed"
-const deleteButton = document.createElement('button')
-deleteButton.classList.add('task-btn','delete');
-deleteButton.setAttribute("id","delete")
-deleteButton.addEventListener('click',deleteTasks)
-deleteButton.innerText = "Delete"
-btnGroup.append(editButton,completeButton,deleteButton)
-todoCard.append(btnGroup)
-return todoCard
+function createToDoButtons() {
+  const btnGroup = document.createElement("div");
+  btnGroup.classList.add("btn-group");
+  const editButton = createIconButton(
+    "edit",
+    "edit-btn-id",
+    "./Images/edit.png",
+    "edit icon"
+  );
+  const deleteButton = createIconButton(
+    "delete",
+    "delete-btn-id",
+    "./Images/trash.png",
+    "delete button"
+  );
+  btnGroup.append(editButton, deleteButton);
+  return btnGroup;
 }
 
-function deleteTasks(e){
-   const btnGroup = e.target.parentNode
-   const  taskCard  = btnGroup.parentNode
+function createIconButton(className, id, iconImageSource, alternateText) {
+  const divContainer = document.createElement("div");
+  divContainer.classList.add(className);
+  const img = document.createElement("img");
+  img.src = iconImageSource;
+  img.alt = alternateText;
+  img.setAttribute("id", id);
+  divContainer.append(img);
+  return divContainer;
+}
+function createTaskName(taskName) {
+  const taskNameContainer = document.createElement("div");
+  taskNameContainer.classList.add("task-name-container");
+  const taskNameInput = document.createElement("input");
+  taskNameInput.value = taskName;
 
+  taskNameInput.classList.add("task-name");
+  taskNameInput.setAttribute("id", "task-name-id");
+  taskNameContainer.append(taskNameInput);
+  return taskNameContainer;
+}
+
+function createCheckbox() {
+  const checkBoxContainer = document.createElement("div");
+  checkBoxContainer.classList.add("checkbox-container");
+
+  const checkInput = document.createElement("input");
+  checkInput.type = "checkbox";
+  checkInput.setAttribute("id", "completed-checkebox");
+  checkInput.classList.add("completed");
+  checkBoxContainer.append(checkInput);
+  return checkBoxContainer;
+}
+function operations(e) {
+  const target = e.target;
+  console.log(target.id);
+  if (target.id === "completed-checkebox") {
+    taskCompleted(e.target);
+  }
+
+  //   if(target.id === "task-name-id"){
+
+  //   }
+  if (target.id === "edit-btn-id") {
+  }
+
+  if (target.id === "delete-btn-id") {
+    const todoCard = target.parentNode.parentNode.parentNode;
+    todoCard.remove();
+  }
+}
+function editButton() {}
+
+function taskCompleted(target) {
+  const todoCard = target.parentNode.parentNode;
+  const taskName = todoCard.querySelector(".task-name");
+
+  taskName.classList.toggle("line-through");
 }
