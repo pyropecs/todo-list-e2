@@ -1,10 +1,10 @@
 const form = document.querySelector("#submit-form");
 const input = document.querySelector("#text-input");
 const todoList = document.querySelector("#task-list");
-
+const statusId = document.querySelector("#status-id")
 form.addEventListener("submit", submitForm);
 todoList.addEventListener("click", operations);
-
+statusId.addEventListener("change",filterTasks)
 function submitForm(event) {
   event.preventDefault();
   const taskName = input.value;
@@ -87,19 +87,32 @@ function operations(e) {
   //   if(target.id === "task-name-id"){
 
   //   }
-  if (target.id === "edit-btn-id") {
-  }
+//   if (target.id === "edit-btn-id") {
+//   }
 
   if (target.id === "delete-btn-id") {
     const todoCard = target.parentNode.parentNode.parentNode;
     todoCard.remove();
   }
 }
-function editButton() {}
+
 
 function taskCompleted(target) {
   const todoCard = target.parentNode.parentNode;
   const taskName = todoCard.querySelector(".task-name");
 
   taskName.classList.toggle("line-through");
+}
+
+
+function filterTasks(e){
+const list = todoList.children
+const listArray = Array.from(list)
+listArray.forEach(list=>{
+console.log(list)
+
+
+
+})
+
 }
