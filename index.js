@@ -42,6 +42,7 @@ function renderTasks(){
     })
 }
 function createToDo(inputValue){
+
 const todoCard = document.createElement('div')
 todoCard.classList.add('todo-card')
 const p = document.createElement('p');
