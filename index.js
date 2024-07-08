@@ -1,10 +1,11 @@
 const form = document.querySelector("#submit-form");
 const input = document.querySelector("#text-input");
 const todoList = document.querySelector("#task-list");
-const statusId = document.querySelector("#status-id")
+const statusId = document.querySelector("#status-id");
+const taskCards = [];
 form.addEventListener("submit", submitForm);
 todoList.addEventListener("click", operations);
-statusId.addEventListener("change",filterTasks)
+statusId.addEventListener("change", filterTodos);
 function submitForm(event) {
   event.preventDefault();
   const taskName = input.value;
@@ -13,9 +14,14 @@ function submitForm(event) {
 }
 function createTask(taskName) {
   const taskCard = createTaskCard(taskName);
-  todoList.append(taskCard);
-}
 
+  taskCards.push(taskCard);
+  todoList.append(taskCard);
+  renderTaskCards();
+}
+function renderTaskCards() {
+  return taskCards;
+}
 function createTaskCard(taskName) {
   const taskCard = document.createElement("div");
   taskCard.classList.add("todo-card");
@@ -72,7 +78,7 @@ function createCheckbox() {
 
   const checkInput = document.createElement("input");
   checkInput.type = "checkbox";
-  checkInput.setAttribute("id", "completed-checkebox");
+  checkInput.setAttribute("id", "completed-checkbox");
   checkInput.classList.add("completed");
   checkBoxContainer.append(checkInput);
   return checkBoxContainer;
@@ -80,22 +86,21 @@ function createCheckbox() {
 function operations(e) {
   const target = e.target;
   console.log(target.id);
-  if (target.id === "completed-checkebox") {
+  if (target.id === "completed-checkbox") {
     taskCompleted(e.target);
   }
 
-  //   if(target.id === "task-name-id"){
-
-  //   }
-//   if (target.id === "edit-btn-id") {
-//   }
+  if (target.id === "edit-btn-id") {
+    const todoCard = target.parentNode.parentNode.parentNode;
+  const taskName = todoCard.querySelector("#task-name-id")
+  taskName.focus()
+  }
 
   if (target.id === "delete-btn-id") {
     const todoCard = target.parentNode.parentNode.parentNode;
     todoCard.remove();
   }
 }
-
 
 function taskCompleted(target) {
   const todoCard = target.parentNode.parentNode;
@@ -104,15 +109,61 @@ function taskCompleted(target) {
   taskName.classList.toggle("line-through");
 }
 
+function filterTodos() {
+  const selectedValue = statusId.value;
 
-function filterTasks(e){
-const list = todoList.children
-const listArray = Array.from(list)
-listArray.forEach(list=>{
-console.log(list)
+  if (selectedValue === "completed") {
+    renderCompletedTodos();
+  }
+  if(selectedValue === "assigned"){
+    renderAssignedTodos();
+  }
+
+  if(selectedValue === "all"){
+    renderAllTodos()
+  }
+}
+function renderAllTodos(){
+  const completedCheckboxes = document.querySelectorAll("#completed-checkbox");
+
+  completedCheckboxes.forEach((checkbox) => {
+    const checkBoxContainer = checkbox.parentElement;
+    const todoCard = checkBoxContainer.parentElement;
+    todoCard.classList.add("flex");
+    todoCard.classList.remove("hide");
+    
+  });
+
+}
 
 
+function renderAssignedTodos(){
+  const completedCheckboxes = document.querySelectorAll("#completed-checkbox");
 
-})
+  completedCheckboxes.forEach((checkbox) => {
+    const checkBoxContainer = checkbox.parentElement;
+    const todoCard = checkBoxContainer.parentElement;
+    todoCard.classList.remove("hide");
+    todoCard.classList.add("flex");
+    if (checkbox.checked) {
+      todoCard.classList.remove("flex");
+      todoCard.classList.add("hide");
+    }
+  });
+}
 
+function renderCompletedTodos() {
+  const completedCheckboxes = document.querySelectorAll("#completed-checkbox");
+
+  completedCheckboxes.forEach((checkbox) => {
+    const checkBoxContainer = checkbox.parentElement;
+    const todoCard = checkBoxContainer.parentElement;
+    todoCard.classList.remove("flex");
+    todoCard.classList.add("hide");
+  
+    if (checkbox.checked) {
+      todoCard.classList.remove("hide");
+      todoCard.classList.add("flex");
+    }
+  });
 }
