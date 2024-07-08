@@ -4,38 +4,21 @@ const todoList = document.querySelector("#task-list");
 const statusId = document.querySelector("#status-id");
 const taskCards = [];
 const tasks = [];
+
 form.addEventListener("submit", submitForm);
 todoList.addEventListener("click", operations);
 statusId.addEventListener("change", filterTodos);
 document.addEventListener("DOMContentLoaded", renderTasks);
+let counter = getNextIndexFromLocalStorage();
 function submitForm(event) {
   event.preventDefault();
   const taskName = input.value;
   createTask(taskName);
   input.value = "";
 }
-function createTask(taskName) {
-  let taskId = 0;
-  const taskCard = createTaskCard(taskName, taskId);
-  const task = {
-    taskId,
-    taskName,
-    completed: false,
-  };
 
-  saveTodoToLocalStorage(task);
-  taskCards.push(taskCard);
-  todoList.append(taskCard);
-
-  taskId++;
-}
 function renderTasks() {
-  let todos;
-  if (localStorage.getItem("todos") === null) {
-    todos = [];
-  } else {
-    todos = JSON.parse(localStorage.getItem("todos"));
-  }
+  const todos = getTodoFromLocalStorage();
 
   todos.forEach((todo) => {
     const taskCard = createTaskCard(todo.taskName, todo.taskId, todo.completed);
@@ -43,6 +26,20 @@ function renderTasks() {
     todoList.append(taskCard);
   });
 }
+
+function createTask(taskName) {
+  const task = {
+    taskId: counter++,
+    taskName,
+    completed: false,
+  };
+
+  const taskCard = createTaskCard(task.taskName, task.taskId, task.completed);
+  saveTodoToLocalStorage(task);
+  taskCards.push(taskCard);
+  todoList.append(taskCard);
+}
+
 function createTaskCard(taskName, taskId, isCompleted) {
   const taskCard = document.createElement("div");
   taskCard.classList.add("todo-card");
@@ -111,6 +108,7 @@ function operations(e) {
   const target = e.target;
   const todoCard = target.parentNode.parentNode.parentNode;
   const taskName = todoCard.querySelector("#task-name-id");
+
   console.log(target);
   if (target.id === "completed-checkbox") {
     taskCompleted(e.target);
@@ -122,6 +120,10 @@ function operations(e) {
 
   if (target.id === "delete-btn-id") {
     const todoCard = target.parentNode.parentNode.parentNode;
+
+    const index = todoCard.getAttribute("index");
+
+    deleteTodofromLocalStorage(index);
     todoCard.remove();
   }
   if (target.id !== "edit-btn-id" && target.id !== "delete-btn-id") {
@@ -191,13 +193,18 @@ function renderCompletedTodos() {
     }
   });
 }
-function saveTodoToLocalStorage(task) {
+function getTodoFromLocalStorage() {
   let todos = [];
   if (localStorage.getItem("todos") == null) {
     todos = [];
   } else {
     todos = JSON.parse(localStorage.getItem("todos"));
   }
+  return todos;
+}
+
+function saveTodoToLocalStorage(task) {
+  const todos = getTodoFromLocalStorage();
   todos.push(task);
   localStorage.setItem("todos", JSON.stringify(todos));
 }
@@ -208,6 +215,41 @@ function updateTodotoLocalStorage(task) {
   const updatedTodos = updateTask(todos, task);
   localStorage.setItem("todos", JSON.stringify(updatedTodos));
 }
+
+function deleteTodofromLocalStorage(index) {
+  const todos = getTodoFromLocalStorage();
+
+  const isTaskExist = checkTaskExist(todos, Number(index));
+  console.log(isTaskExist);
+  if (isTaskExist) {
+    const todosWithnoGivenTask = todos.filter(
+      (todo) => Number(index) !== todo.taskId
+    );
+
+    const newTodos = todosWithnoGivenTask.map((todo) => {
+      if (todo.taskId > Number(index)) {
+        return {
+          ...todo,
+          taskId: todo.taskId - 1,
+        };
+      }
+      return todo;
+    });
+
+    localStorage.removeItem("todos");
+    localStorage.setItem("todos", JSON.stringify(newTodos));
+  }
+}
+
+function checkTaskExist(todos, index) {
+  const number = todos.findIndex((todo) => index === todo.taskId);
+  if (number > 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function updateTask(todos, task) {
   const newTodos = todos.map((todo) => {
     if (todo.taskId === task.taskId) {
@@ -217,4 +259,13 @@ function updateTask(todos, task) {
     return todo;
   });
   return newTodos;
+}
+
+function getNextIndexFromLocalStorage() {
+  const todos = getTodoFromLocalStorage();
+  if (todos.length === 0) {
+    return 0;
+  } else {
+    return todos.length;
+  }
 }

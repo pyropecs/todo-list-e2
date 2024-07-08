@@ -135,6 +135,17 @@ gap:2%;
   border: 1px solid #caced1;
 }
 
+.no-task-found{
+  font-family: sans-serif;
+  font-size:16px;
+  height:10%;
+ 
+width:30%;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
 .task-name-container {
   width: 72%;
 
@@ -245,7 +256,8 @@ height:45%;
     width: 83%;
   }
   .btn-group {
-    width: 7%;
+    width: 8%;
+    
   }
   .wrap {
     justify-content: center;
