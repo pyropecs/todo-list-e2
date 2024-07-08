@@ -12,8 +12,22 @@ document.addEventListener("DOMContentLoaded", renderTasks);
 let counter = getNextIndexFromLocalStorage();
 function submitForm(event) {
   event.preventDefault();
+
   const taskName = input.value;
-  createTask(taskName);
+  const isEdit = input.getAttribute("edit");
+  console.log(isEdit);
+  const editIndex = input.getAttribute("edit-index");
+  if (isEdit) {
+    const editTask = {
+      taskId: editIndex,
+      taskName,
+      completed: false,
+    };
+    updateTodotoLocalStorage(editTask);
+  } else {
+    createTask(taskName);
+  }
+
   input.value = "";
 }
 
@@ -23,6 +37,7 @@ function renderTasks() {
   todos.forEach((todo) => {
     const taskCard = createTaskCard(todo.taskName, todo.taskId, todo.completed);
     taskCards.push(taskCard);
+
     todoList.append(taskCard);
   });
 }
@@ -106,16 +121,18 @@ function createCheckbox(isCompleted) {
 }
 function operations(e) {
   const target = e.target;
-  const todoCard = target.parentNode.parentNode.parentNode;
-  const taskName = todoCard.querySelector("#task-name-id");
 
-  console.log(target);
   if (target.id === "completed-checkbox") {
     taskCompleted(e.target);
   }
   if (target.id === "edit-btn-id") {
-    taskName.readOnly = false;
-    taskName.focus();
+    const todoCard = target.parentNode.parentNode.parentNode;
+    const taskName = todoCard.querySelector("#task-name-id");
+    const editIndex = todoCard.getAttribute("index");
+    input.value = taskName.value;
+    input.setAttribute("edit", true);
+    input.setAttribute("edit-index", editIndex);
+    input.focus();
   }
 
   if (target.id === "delete-btn-id") {
@@ -125,9 +142,6 @@ function operations(e) {
 
     deleteTodofromLocalStorage(index);
     todoCard.remove();
-  }
-  if (target.id !== "edit-btn-id" && target.id !== "delete-btn-id") {
-    taskName.readOnly = true;
   }
 }
 
@@ -213,6 +227,7 @@ function updateTodotoLocalStorage(task) {
   const todos = JSON.parse(localStorage.getItem("todos"));
 
   const updatedTodos = updateTask(todos, task);
+  renderTasks();
   localStorage.setItem("todos", JSON.stringify(updatedTodos));
 }
 
@@ -243,7 +258,8 @@ function deleteTodofromLocalStorage(index) {
 
 function checkTaskExist(todos, index) {
   const number = todos.findIndex((todo) => index === todo.taskId);
-  if (number > 0) {
+
+  if (number >= 0) {
     return true;
   } else {
     return false;
@@ -252,12 +268,13 @@ function checkTaskExist(todos, index) {
 
 function updateTask(todos, task) {
   const newTodos = todos.map((todo) => {
-    if (todo.taskId === task.taskId) {
+    if (todo.taskId === Number(task.taskId)) {
       todo.taskName = task.taskName;
       todo.completed = task.completed;
     }
     return todo;
   });
+
   return newTodos;
 }
 
