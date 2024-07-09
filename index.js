@@ -1,9 +1,11 @@
+import { validateText } from "./validation.js";
+
 const form = document.querySelector("#submit-form");
 const input = document.querySelector("#text-input");
 const todoList = document.querySelector("#task-list");
 const statusId = document.querySelector("#status-id");
+const inputError = document.querySelector("#input-error");
 const taskCards = [];
-const tasks = [];
 
 form.addEventListener("submit", submitForm);
 todoList.addEventListener("click", operations);
@@ -14,28 +16,36 @@ function submitForm(event) {
   event.preventDefault();
 
   const taskName = input.value;
-  const isEdit = input.getAttribute("edit");
-  console.log(isEdit);
-  const editIndex = input.getAttribute("edit-index");
-  if (isEdit) {
-    const editTask = {
-      taskId: editIndex,
-      taskName,
-      completed: false,
-    };
-    updateTodotoLocalStorage(editTask);
-    renderTasks();
-  } else {
-    createTask(taskName);
-  }
+  const isValidinput = validateText(taskName);
+ 
+  if (isValidinput === true) {
+    inputError.classList.add("hide")
+    const isEdit = input.getAttribute("edit");
+  
+    const editIndex = input.getAttribute("edit-index");
+    if (isEdit) {
+      const editTask = {
+        taskId: editIndex,
+        taskName,
+        completed: false,
+      };
+      updateTodotoLocalStorage(editTask);
+      renderTasks();
+    } else {
+      createTask(taskName);
+    }
 
-  input.value = "";
+    input.value = "";
+  } else {
+    inputError.classList.remove("hide")
+  inputError.innerText = isValidinput
+  }
 }
 
 function renderTasks() {
   todoList.innerHTML = "";
   const todos = getTodoFromLocalStorage();
-  console.log(todos);
+  
   todos.forEach((todo) => {
     const taskCard = createTaskCard(todo.taskName, todo.taskId, todo.completed);
     taskCards.push(taskCard);
@@ -61,7 +71,7 @@ function createTaskCard(taskName, taskId, isCompleted) {
   taskCard.classList.add("todo-card");
   taskCard.setAttribute("index", taskId);
   const checkBoxContainer = createCheckbox(isCompleted);
-  const taskNameContainer = createTaskName(taskName,isCompleted);
+  const taskNameContainer = createTaskName(taskName, isCompleted);
   const btnGroup = createToDoButtons();
   taskCard.append(checkBoxContainer, taskNameContainer, btnGroup);
   return taskCard;
@@ -95,14 +105,14 @@ function createIconButton(className, id, iconImageSource, alternateText) {
   divContainer.append(img);
   return divContainer;
 }
-function createTaskName(taskName,isCompleted) {
+function createTaskName(taskName, isCompleted) {
   const taskNameContainer = document.createElement("div");
   taskNameContainer.classList.add("task-name-container");
   const taskNameInput = document.createElement("input");
   taskNameInput.value = taskName;
   taskNameInput.readOnly = true;
   taskNameInput.classList.add("task-name");
-  if(isCompleted){
+  if (isCompleted) {
     taskNameInput.classList.add("line-through");
   }
   taskNameInput.setAttribute("id", "task-name-id");
@@ -159,11 +169,11 @@ function isTaskCompleted(target, isCompleted) {
   const taskName = todoCard.querySelector(".task-name");
   input.setAttribute("completed", isCompleted);
   taskName.classList.toggle("line-through");
-  const taskNameValue = taskName.value
+  const taskNameValue = taskName.value;
   const taskId = todoCard.getAttribute("index");
   const editTask = {
     taskId,
-    taskName:taskNameValue,
+    taskName: taskNameValue,
     completed: isCompleted,
   };
   updateTodotoLocalStorage(editTask);
@@ -252,7 +262,7 @@ function deleteTodofromLocalStorage(index) {
   const todos = getTodoFromLocalStorage();
 
   const isTaskExist = checkTaskExist(todos, Number(index));
-  console.log(isTaskExist);
+
   if (isTaskExist) {
     const todosWithnoGivenTask = todos.filter(
       (todo) => Number(index) !== todo.taskId
