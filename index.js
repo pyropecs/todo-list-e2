@@ -63,6 +63,7 @@ function submitEditForm(trimmedInput, editIndex) {
 function renderTasks() {
   //get the tasks from localstorage and create the taskcards and append into todolist container
   todoList.innerHTML = "";
+
   const todos = getTodoFromLocalStorage();
   if (todos.length === 0) {
     noTaskFound();
@@ -77,9 +78,22 @@ function renderTasks() {
       taskCards.push(taskCard);
 
       todoList.append(taskCard);
+      checkAllCompleted()
     });
   }
 }
+
+function checkAllCompleted(){
+
+  const todos = getTodoFromLocalStorage()
+  const completedTodos = todos.filter((todo)=>!todo.completed)
+  if(completedTodos.length === 0){
+    completeAllCheckbox.checked = true;
+  }else{
+    completeAllCheckbox.checked = false
+  }
+}
+
 
 function noTaskFound() {
   //to append the paragraph tag content having "no tasks found" 
@@ -199,6 +213,7 @@ function operations(e) {
   if (target.id === "completed-checkbox") {
 //to handle the clicking complete button behvaiour if its already completed then uncheck on the todo card     
     const isChecked = target.checked;
+    
     if (isChecked) {
       isTaskCompleted(target, true);
     } else {
@@ -250,6 +265,7 @@ function isTaskCompleted(target, isCompleted) {
     completed: isCompleted,
   };
   updateTodotoLocalStorage(editTask);
+  checkAllCompleted()
 }
 
 function filterTodos() {

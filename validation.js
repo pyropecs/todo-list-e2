@@ -1,10 +1,11 @@
 export function validateText(input) {
+//to pass the all validation steps then only it will return true or it will give error message
+
   if (validateNoEmptyString(input) !== true)
     return validateNoEmptyString(input);
   if (validateOnlyAlphaNumeric(input) !== true)
     return validateOnlyAlphaNumeric(input);
-  if (validateFirstLetterThereisNoSpecialCharacters(input))
-    return validateFirstLetterThereisNoSpecialCharacters(input);
+
   if (validateNotMorThan150Characters(input) !== true)
     return validateNotMorThan150Characters(input);
 
@@ -14,6 +15,7 @@ export function validateText(input) {
 }
 
 function validateNoEmptyString(text) {
+  //to check that there is no empty value in the input
   const textLength = text.length;
 
   if (textLength === 0) {
@@ -24,6 +26,7 @@ function validateNoEmptyString(text) {
 }
 
 function validateNotMorThan150Characters(text) {
+  // to check that more than 150 characters is not allowed
   const textLength = text.length;
   if (textLength <= 150) {
     return true;
@@ -31,17 +34,10 @@ function validateNotMorThan150Characters(text) {
     return "Not more than 150 characters";
   }
 }
-function validateFirstLetterThereisNoSpecialCharacters(text) {
-  const re = /^[a-zA-Z][a-zA-Z0-9 \-,]+$/;
-  if (text.match(re)) {
-    return "first character only alphabets";
-  } else {
-    return true;
-  }
-}
 
 function validateOnlyAlphaNumeric(text) {
-  const alphaNumeric = /^[a-zA-Z0-9\s,'-]+$/;
+//to check that only alphanumeric and special characters , ' - . is allowed
+  const alphaNumeric = /^[a-zA-Z0-9\s,'-.]+$/;
 
   if (text.match(alphaNumeric)) {
     return true;
