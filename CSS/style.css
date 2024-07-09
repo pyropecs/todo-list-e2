@@ -11,7 +11,7 @@ body {
   background: url("../Images/flyer.png");
   background-size: cover;
   background-repeat: no-repeat;
-  background-position:bottom;
+  background-position: bottom;
 }
 .wrap {
   width: 100%;
@@ -47,9 +47,6 @@ body {
   font-family: sans-serif;
 }
 
-
-
-
 .todo-container {
   width: 95%;
   height: 50%;
@@ -57,19 +54,18 @@ body {
   padding-top: 4%;
   padding-bottom: 4%;
 }
-.todo-input-container{
-  width:100%;
-  height:10%;
+.todo-input-container {
+  width: 100%;
+  height: 10%;
 }
 .todo-input {
   width: 100%;
   height: 100%;
- 
+
   display: flex;
   border: 2px solid #eeeeee;
 
   border-radius: 30px;
-
 }
 
 .todo-textfield[type="text"] {
@@ -101,12 +97,11 @@ body {
 }
 
 .todo-list {
-  height: 90%;
+  height: 100%;
   width: 100%;
-
   display: flex;
   flex-direction: column;
-gap:2%;
+ 
   overflow: auto;
 }
 
@@ -115,9 +110,9 @@ gap:2%;
   height: 10%;
   background: white;
   display: flex;
-box-sizing: border-box;
-  margin-top: 0.5%;
-  margin-bottom: 0.5%;
+  box-sizing: border-box;
+  margin-top: 1.5%;
+  margin-bottom: 1.5%;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 .todo-status {
@@ -138,30 +133,30 @@ box-sizing: border-box;
 
   border: 1px solid #caced1;
 }
-.todo-all{
+.todo-all {
   display: flex;
-  width:15%;
+  width: 15%;
   padding-inline: 1%;
   justify-content: space-between;
 }
-.error{
-  color:#F44336;
+.error {
+  color: #f44336;
   font-family: sans-serif;
   font-size: 12px;
 }
-.error-border{
-  border:1px solid red;
+.error-border {
+  border: 1px solid red;
 }
 
-.no-task-found{
+.no-task-found {
   font-family: sans-serif;
-  font-size:16px;
-  height:10%;
- 
-width:30%;
-display: flex;
-align-items: center;
-justify-content: center;
+  font-size: 16px;
+  height: 10%;
+
+  width: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .task-name-container {
@@ -173,19 +168,19 @@ justify-content: center;
   display: flex;
   align-items: center;
 }
-.delete-all-container{
-  height:100%;
+.delete-all-container {
+  height: 100%;
   display: flex;
   align-items: center;
 }
-.checkbox-all-container{
-  width:100%;
+.checkbox-all-container {
+  width: 100%;
 
   padding-top: 1%;
 }
 .task-name {
   width: 100%;
-height:100%;
+  height: 100%;
   margin: 0%;
   font-family: sans-serif;
   padding: 0%;
@@ -193,11 +188,18 @@ height:100%;
   overflow: hidden;
   font-size: 16px;
   white-space: nowrap;
-  border:none;
-  outline:none
+  border: none;
+  outline: none;
+}
+.todo-list-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .btn-group {
-  width: 25%;
+  width: 15%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -221,12 +223,11 @@ height:100%;
 .line-through {
   text-decoration: line-through;
   color: #7d7c78;
-
 }
-.flex{
+.flex {
   display: flex;
 }
-.hide{
+.hide {
   display: none;
 }
 
@@ -260,13 +261,12 @@ height:100%;
 
 @media screen and (min-width: 426px) {
   /* above mobile screen size */
-  .todo-input-container{
-    width:65%;
+  .todo-input-container {
+    width: 65%;
     margin: auto;
   }
   .todo-input {
     width: 100%;
-    
   }
   .todo-textfield[type="text"] {
     padding-left: 4%;
@@ -274,25 +274,27 @@ height:100%;
   }
   .todo-select {
     width: 20%;
-    height:80%;
+    height: 80%;
     padding-left: 1.5%;
   }
 
   .todo-card {
-    width: 65%;
-    padding-top:0.5%;
-    padding-bottom:0.5%;
+    width: 100%;
+    padding-top: 1.5%;
+    padding-bottom: 1.5%;
   }
   .todo-list {
     align-items: center;
+    width: 64%;
+    margin-top: 1.5%;
   }
 
   .task-name-container {
     width: 83%;
+    padding: 0%;
   }
   .btn-group {
-    width: 9%;
-    
+    width: 12%;
   }
   .wrap {
     justify-content: center;
@@ -314,40 +316,56 @@ height:100%;
   }
   .status-container {
     height: 15%;
-   
+
     margin: auto;
     width: 64%;
- 
-}
-.todo-all{
-  padding: 0%;
-  width:9%;
-}
+  }
+  .todo-all {
   
+    width: 12%;
+  }
 }
 @media screen and (min-width: 426px) and (max-width: 768px) {
   /* tablet screen size */
-  .todo-input-container{
-    width:100%;
+  .todo-input-container {
+    width: 100%;
   }
   .todo-input {
     width: 100%;
   }
   .todo-card {
     width: 98%;
+  
+  }
+  .task-name-container{
+    padding-left: 2%;
   }
   .todo-status {
     width: 100%;
-    padding:0% 2%;
+    padding: 0% 2%;
   }
-  .btn-group{
-    width:10%;
+  .btn-group {
+    width: 10%;
   }
-  .status-container{
-    margin:0%;
+  .status-container {
+    margin: 0%;
+    width: 100%;
+  }
+  .todo-all {
+    width: 10%;
+    padding:0% ;
+  }
+  .todo-list{
     width:100%;
   }
+}
+
+@media screen and (min-width: 1025px)  {
+  /* very large screen */
   .todo-all{
-    width:10%;
+    width:7%;
+  }
+  .btn-group{
+    width:7%;
   }
 }

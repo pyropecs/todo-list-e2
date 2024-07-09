@@ -84,6 +84,7 @@ function renderTasks() {
 }
 
 function checkAllCompleted(){
+//to check that if all todos are completed assign complete all box checked
 
   const todos = getTodoFromLocalStorage()
   const completedTodos = todos.filter((todo)=>!todo.completed)
