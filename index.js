@@ -24,6 +24,7 @@ function submitForm(event) {
       completed: false,
     };
     updateTodotoLocalStorage(editTask);
+    renderTasks();
   } else {
     createTask(taskName);
   }
@@ -32,8 +33,9 @@ function submitForm(event) {
 }
 
 function renderTasks() {
+  todoList.innerHTML = "";
   const todos = getTodoFromLocalStorage();
-
+  console.log(todos);
   todos.forEach((todo) => {
     const taskCard = createTaskCard(todo.taskName, todo.taskId, todo.completed);
     taskCards.push(taskCard);
@@ -48,7 +50,6 @@ function createTask(taskName) {
     taskName,
     completed: false,
   };
-
   const taskCard = createTaskCard(task.taskName, task.taskId, task.completed);
   saveTodoToLocalStorage(task);
   taskCards.push(taskCard);
@@ -60,7 +61,7 @@ function createTaskCard(taskName, taskId, isCompleted) {
   taskCard.classList.add("todo-card");
   taskCard.setAttribute("index", taskId);
   const checkBoxContainer = createCheckbox(isCompleted);
-  const taskNameContainer = createTaskName(taskName);
+  const taskNameContainer = createTaskName(taskName,isCompleted);
   const btnGroup = createToDoButtons();
   taskCard.append(checkBoxContainer, taskNameContainer, btnGroup);
   return taskCard;
@@ -94,13 +95,16 @@ function createIconButton(className, id, iconImageSource, alternateText) {
   divContainer.append(img);
   return divContainer;
 }
-function createTaskName(taskName) {
+function createTaskName(taskName,isCompleted) {
   const taskNameContainer = document.createElement("div");
   taskNameContainer.classList.add("task-name-container");
   const taskNameInput = document.createElement("input");
   taskNameInput.value = taskName;
   taskNameInput.readOnly = true;
   taskNameInput.classList.add("task-name");
+  if(isCompleted){
+    taskNameInput.classList.add("line-through");
+  }
   taskNameInput.setAttribute("id", "task-name-id");
   taskNameContainer.append(taskNameInput);
   return taskNameContainer;
@@ -123,7 +127,12 @@ function operations(e) {
   const target = e.target;
 
   if (target.id === "completed-checkbox") {
-    taskCompleted(e.target);
+    const isChecked = target.checked;
+    if (isChecked) {
+      isTaskCompleted(target, true);
+    } else {
+      isTaskCompleted(target, false);
+    }
   }
   if (target.id === "edit-btn-id") {
     const todoCard = target.parentNode.parentNode.parentNode;
@@ -145,11 +154,19 @@ function operations(e) {
   }
 }
 
-function taskCompleted(target) {
+function isTaskCompleted(target, isCompleted) {
   const todoCard = target.parentNode.parentNode;
   const taskName = todoCard.querySelector(".task-name");
-
+  input.setAttribute("completed", isCompleted);
   taskName.classList.toggle("line-through");
+  const taskNameValue = taskName.value
+  const taskId = todoCard.getAttribute("index");
+  const editTask = {
+    taskId,
+    taskName:taskNameValue,
+    completed: isCompleted,
+  };
+  updateTodotoLocalStorage(editTask);
 }
 
 function filterTodos() {
@@ -227,7 +244,7 @@ function updateTodotoLocalStorage(task) {
   const todos = JSON.parse(localStorage.getItem("todos"));
 
   const updatedTodos = updateTask(todos, task);
-  renderTasks();
+  localStorage.removeItem("todos");
   localStorage.setItem("todos", JSON.stringify(updatedTodos));
 }
 
