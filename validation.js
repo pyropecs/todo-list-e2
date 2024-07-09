@@ -3,11 +3,11 @@ export function validateText(input) {
     return validateNoEmptyString(input);
   if (validateOnlyAlphaNumeric(input) !== true)
     return validateOnlyAlphaNumeric(input);
-  if (validateThereisOnlyOneSpaceAllowedBetweenWords(input) !== true)
-    return validateThereisOnlyOneSpaceAllowedBetweenWords(input);
+  if (validateFirstLetterThereisNoSpecialCharacters(input))
+    return validateFirstLetterThereisNoSpecialCharacters(input);
   if (validateNotMorThan150Characters(input) !== true)
     return validateNotMorThan150Characters(input);
- 
+
   if (validateMinimum10Characters(input) !== true)
     return validateMinimum10Characters(input);
   return true;
@@ -22,21 +22,21 @@ function validateNoEmptyString(text) {
     return true;
   }
 }
-function validateThereisOnlyOneSpaceAllowedBetweenWords(text) {
-  const re = /^([a-zA-Z0-9]+\s)*[a-zA-Z0-9]+$/;
-  const isValidText = text.match(re);
-  if (isValidText) {
-    return true;
-  } else {
-    return "There is only one space is allowed";
-  }
-}
+
 function validateNotMorThan150Characters(text) {
   const textLength = text.length;
   if (textLength <= 150) {
     return true;
   } else {
     return "Not more than 150 characters";
+  }
+}
+function validateFirstLetterThereisNoSpecialCharacters(text) {
+  const re = /^[a-zA-Z][a-zA-Z0-9 \-,]+$/;
+  if (text.match(re)) {
+    return "first character only alphabets";
+  } else {
+    return true;
   }
 }
 
