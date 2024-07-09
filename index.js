@@ -49,7 +49,7 @@ function getValidInputValue() {
 }
 
 function submitEditForm(trimmedInput, editIndex) {
-  //to submit the form based on edit fuctionality for the todo
+  //to submit the form based on edit fuctionality for the todo and set the edit flag false when its completed
   const editTask = {
     taskId: editIndex,
     taskName: trimmedInput,
@@ -57,6 +57,7 @@ function submitEditForm(trimmedInput, editIndex) {
   };
   updateTodotoLocalStorage(editTask);
   renderTasks();
+  input.setAttribute("edit",false)
 }
 
 function renderTasks() {
@@ -102,11 +103,20 @@ function createTask(taskName) {
     taskId: counter++,
     taskName,
     completed: false,
+    created_at:getCurrentTime(),
+    updated_at:getDefaultTime()
   };
 
   saveTodoToLocalStorage(task);
   removeNoTaskFound();
   renderTasks();
+}
+
+function getCurrentTime(){
+  return new Date()
+}
+function getDefaultTime(){
+  return new Date(0)
 }
 
 function createTaskCard(taskName, taskId, isCompleted) {
@@ -371,6 +381,7 @@ function updateTask(todos, task) {
     if (todo.taskId === Number(task.taskId)) {
       todo.taskName = task.taskName;
       todo.completed = task.completed;
+      todo.updated_at = getCurrentTime()
     }
     return todo;
   });
