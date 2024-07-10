@@ -14,10 +14,13 @@ todoList.addEventListener("click", operations);
 statusId.addEventListener("change", filterTodos);
 completeAllCheckbox.addEventListener("change", completeAll);
 deleteButton.addEventListener("click", deleteAll);
+input.addEventListener("input",removeError)
+input.addEventListener("focus",removeError)
 
 function submitForm(event) {
   //to submit the valid input task based on edit the task or creating the task it will be obtained from input form attribute
   event.preventDefault();
+  removeError();
   const inputValue = getValidInputValue();
 
   statusId.selectedIndex = 0; // to make select tag default all status
@@ -82,6 +85,11 @@ function renderTasks() {
     });
   }
 }
+
+function removeError(){
+  //to remove already error in the input box
+  inputError.innerText = ""
+  }
 
 function checkAllCompleted() {
   //to check that if all todos are completed assign complete all box checked
@@ -153,19 +161,28 @@ function createToDoButtons() {
     "edit",
     "edit-btn-id",
     "./Images/edit.png",
-    "edit icon"
+    "edit icon",
+    "edit task"
   );
   const deleteButton = createIconButton(
     "delete",
     "delete-btn-id",
     "./Images/trash.png",
-    "delete button"
+    "delete button",
+    "delete task"
   );
-  btnGroup.append(editButton, deleteButton);
+  const completeButton = createIconButton(
+    "complete",
+    "complete-btn-id",
+    "./Images/check.png",
+    "complete icon",
+    "complete task"
+  )
+  btnGroup.append(completeButton,editButton ,deleteButton);
   return btnGroup;
 }
 
-function createIconButton(className, id, iconImageSource, alternateText) {
+function createIconButton(className, id, iconImageSource, alternateText,title) {
   //to create a button which contains icon image and append the image into button container
   const divContainer = document.createElement("div");
   divContainer.classList.add(className);
@@ -173,6 +190,7 @@ function createIconButton(className, id, iconImageSource, alternateText) {
   img.src = iconImageSource;
   img.alt = alternateText;
   img.setAttribute("id", id);
+  img.title = title
   divContainer.append(img);
   return divContainer;
 }
