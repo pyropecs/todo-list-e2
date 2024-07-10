@@ -42,7 +42,7 @@ function validateNotMorThan150Characters(text) {
 
 function validateOnlyAlphaNumericAndAllowedSpecialCharacters(text) {
   //to check that only alphanumeric and special characters , ' - . is allowed
-  const alphaNumeric = /^[a-zA-Z0-9\s,'-.]+$/; //regular expression for matching alphabets and  numbers and allowed special characters
+  const alphaNumeric = /^[a-zA-Z0-9\s,@'-.]+$/; //regular expression for matching alphabets and  numbers and allowed special characters
 
   if (text.match(alphaNumeric)) {
     return true;
@@ -53,7 +53,7 @@ function validateOnlyAlphaNumericAndAllowedSpecialCharacters(text) {
 function validateMinimumCharacters(text) {
   //to check that input has more than 10 characters
   const textLength = text.length;
-  if (textLength > 10) {
+  if (textLength > 3) {
     return true;
-  } else return "Must be more than 10 characters";
+  } else return "Must be more than 3 characters";
 }
