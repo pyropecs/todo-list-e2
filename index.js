@@ -366,14 +366,11 @@ function deleteTodofromLocalStorage(index) {
       (todo) => Number(index) !== todo.taskId
     );
 
-    const newTodos = todosWithnoGivenTask.map((todo) => {
-      if (todo.taskId >= Number(index)) {
-        return {
-          ...todo,
-          taskId: todo.taskId - 1,
-        };
-      }
-      return todo;
+    const newTodos = todosWithnoGivenTask.map((todo,index) => {
+    return {
+      ...todo,
+      taskId:index + 1
+    }
     });
   
     localStorage.removeItem("todos");
