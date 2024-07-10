@@ -14,13 +14,15 @@ todoList.addEventListener("click", operations);
 statusId.addEventListener("change", filterTodos);
 completeAllCheckbox.addEventListener("change", completeAll);
 deleteButton.addEventListener("click", deleteAll);
-let counter = getNextIndexFromLocalStorage();
+
 function submitForm(event) {
   //to submit the valid input task based on edit the task or creating the task it will be obtained from input form attribute
   event.preventDefault();
   const inputValue = getValidInputValue();
-  statusId.selectedIndex = 0;
+
+  statusId.selectedIndex = 0; // to make select tag default all status
   if (inputValue) {
+    
     const isEdit = input.getAttribute("edit");
     const editIndex = input.getAttribute("edit-index");
     if (isEdit === "true") {
@@ -111,8 +113,9 @@ function removeNoTaskFound() {
 
 function createTask(taskName) {
   //to create the task with given task name and save it to the local storage and if paragraph exists it will remove and render the all tasks elements
+  const newTaskNumber = getNextIndexFromLocalStorage()
   const task = {
-    taskId: counter++,
+    taskId: newTaskNumber,
     taskName,
     completed: false,
     created_at: getCurrentTime(),
