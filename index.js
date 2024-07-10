@@ -20,6 +20,7 @@ function submitForm(event) {
 //to submit the valid input task based on edit the task or creating the task it will be obtained from input form attribute
   event.preventDefault();
   const inputValue = getValidInputValue();
+  statusId.selectedIndex = 0;
   if (inputValue) {
     const isEdit = input.getAttribute("edit");
     const editIndex = input.getAttribute("edit-index");
