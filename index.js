@@ -7,7 +7,7 @@ const statusId = document.querySelector("#status-id");
 const inputError = document.querySelector("#input-error");
 const completeAllCheckbox = document.querySelector("#complete-all");
 const deleteButton = document.querySelector("#delete-all");
-const taskCards = [];
+
 
 document.addEventListener("DOMContentLoaded", renderTasks);
 form.addEventListener("submit", submitForm);
@@ -75,7 +75,7 @@ function renderTasks() {
         todo.taskId,
         todo.completed
       );
-      taskCards.push(taskCard);
+
 
       todoList.append(taskCard);
       checkAllCompleted()
