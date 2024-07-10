@@ -8,7 +8,6 @@ const inputError = document.querySelector("#input-error");
 const completeAllCheckbox = document.querySelector("#complete-all");
 const deleteButton = document.querySelector("#delete-all");
 
-
 document.addEventListener("DOMContentLoaded", renderTasks);
 form.addEventListener("submit", submitForm);
 todoList.addEventListener("click", operations);
@@ -17,7 +16,7 @@ completeAllCheckbox.addEventListener("change", completeAll);
 deleteButton.addEventListener("click", deleteAll);
 let counter = getNextIndexFromLocalStorage();
 function submitForm(event) {
-//to submit the valid input task based on edit the task or creating the task it will be obtained from input form attribute
+  //to submit the valid input task based on edit the task or creating the task it will be obtained from input form attribute
   event.preventDefault();
   const inputValue = getValidInputValue();
   statusId.selectedIndex = 0;
@@ -31,11 +30,10 @@ function submitForm(event) {
     }
     input.value = "";
   }
-
 }
 
 function getValidInputValue() {
-//get the input and trim the white spaces and validate the input and return the valid input
+  //get the input and trim the white spaces and validate the input and return the valid input
   const taskName = input.value;
   const trimmedInput = taskName.trim();
   const isValidinput = validateText(trimmedInput);
@@ -58,7 +56,7 @@ function submitEditForm(trimmedInput, editIndex) {
   };
   updateTodotoLocalStorage(editTask);
   renderTasks();
-  input.setAttribute("edit",false)
+  input.setAttribute("edit", false);
 }
 
 function renderTasks() {
@@ -77,28 +75,26 @@ function renderTasks() {
         todo.completed
       );
 
-
       todoList.append(taskCard);
-      checkAllCompleted()
+      checkAllCompleted();
     });
   }
 }
 
-function checkAllCompleted(){
-//to check that if all todos are completed assign complete all box checked
+function checkAllCompleted() {
+  //to check that if all todos are completed assign complete all box checked
 
-  const todos = getTodoFromLocalStorage()
-  const completedTodos = todos.filter((todo)=>!todo.completed)
-  if(completedTodos.length === 0){
+  const todos = getTodoFromLocalStorage();
+  const completedTodos = todos.filter((todo) => !todo.completed);
+  if (completedTodos.length === 0) {
     completeAllCheckbox.checked = true;
-  }else{
-    completeAllCheckbox.checked = false
+  } else {
+    completeAllCheckbox.checked = false;
   }
 }
 
-
 function noTaskFound() {
-  //to append the paragraph tag content having "no tasks found" 
+  //to append the paragraph tag content having "no tasks found"
   const p = document.createElement("p");
   p.classList.add("no-task-found");
   p.setAttribute("id", "no-tasks-id");
@@ -119,8 +115,8 @@ function createTask(taskName) {
     taskId: counter++,
     taskName,
     completed: false,
-    created_at:getCurrentTime(),
-    updated_at:getDefaultTime()
+    created_at: getCurrentTime(),
+    updated_at: getDefaultTime(),
   };
 
   saveTodoToLocalStorage(task);
@@ -128,11 +124,11 @@ function createTask(taskName) {
   renderTasks();
 }
 
-function getCurrentTime(){
-  return new Date()
+function getCurrentTime() {
+  return new Date();
 }
-function getDefaultTime(){
-  return new Date(0)
+function getDefaultTime() {
+  return new Date(0);
 }
 
 function createTaskCard(taskName, taskId, isCompleted) {
@@ -208,14 +204,14 @@ function createCheckbox(isCompleted) {
   return checkBoxContainer;
 }
 function operations(e) {
-//to handle the buttons that clicked in the todo card 
+  //to handle the buttons that clicked in the todo card
 
   const target = e.target;
 
   if (target.id === "completed-checkbox") {
-//to handle the clicking complete button behvaiour if its already completed then uncheck on the todo card     
+    //to handle the clicking complete button behvaiour if its already completed then uncheck on the todo card
     const isChecked = target.checked;
-    
+
     if (isChecked) {
       isTaskCompleted(target, true);
     } else {
@@ -223,17 +219,17 @@ function operations(e) {
     }
   }
   if (target.id === "edit-btn-id") {
-//to handle the clicking edit button behaviour     
-    editTask(target)
+    //to handle the clicking edit button behaviour
+    editTask(target);
   }
 
   if (target.id === "delete-btn-id") {
-    //to handle the delete button behaviour     
-    deleteTask(target)
+    //to handle the delete button behaviour
+    deleteTask(target);
   }
 }
-function editTask(target){
-  //to traverse the parent element todo card from edit button and queryselect the form input and get the value of the form input and setting attributes for editing and which todo card is editing by setting todo card index 
+function editTask(target) {
+  //to traverse the parent element todo card from edit button and queryselect the form input and get the value of the form input and setting attributes for editing and which todo card is editing by setting todo card index
   const todoCard = target.parentNode.parentNode.parentNode;
   const taskName = todoCard.querySelector("#task-name-id");
   const editIndex = todoCard.getAttribute("index");
@@ -242,7 +238,7 @@ function editTask(target){
   input.setAttribute("edit-index", editIndex);
   input.focus();
 }
-function deleteTask(target){
+function deleteTask(target) {
   // to traverse the parent element todo card from the delete button and get the index attribute from todo card and delete it from the local storage and render the all tasks
   const todoCard = target.parentNode.parentNode.parentNode;
 
@@ -251,7 +247,6 @@ function deleteTask(target){
   deleteTodofromLocalStorage(index);
   renderTasks();
 }
-
 
 function isTaskCompleted(target, isCompleted) {
   // traverse the parent element from the checkbox completed and query select the task name element set the respective attributes if its completed or not and edit and update in the local storage
@@ -267,13 +262,13 @@ function isTaskCompleted(target, isCompleted) {
     completed: isCompleted,
   };
   updateTodotoLocalStorage(editTask);
-  checkAllCompleted()
+  checkAllCompleted();
 }
 
 function filterTodos() {
-  //to handle the select functionality with 3 states "completed" ,"assigned","all" 
+  //to handle the select functionality with 3 states "completed" ,"assigned","all"
   const selectedValue = statusId.value;
-
+  removeNoTaskFound();
   if (selectedValue === "completed") {
     renderCompletedTodos();
   }
@@ -298,9 +293,9 @@ function renderAllTodos() {
 }
 
 function renderAssignedTodos() {
-   //to render only the assigned tasks and not completed when select state is "assigned"
+  //to render only the assigned tasks and not completed when select state is "assigned" and to check the assigned tasks whether it is empty or not
   const completedCheckboxes = document.querySelectorAll("#completed-checkbox");
-
+  let assignedTasks = 0;
   completedCheckboxes.forEach((checkbox) => {
     const checkBoxContainer = checkbox.parentElement;
     const todoCard = checkBoxContainer.parentElement;
@@ -309,14 +304,19 @@ function renderAssignedTodos() {
     if (checkbox.checked) {
       todoCard.classList.remove("flex");
       todoCard.classList.add("hide");
+    } else {
+      assignedTasks += 1;
     }
   });
+  if (assignedTasks === 0) {
+    noTaskFound();
+  }
 }
 
 function renderCompletedTodos() {
-  //to render only the completed tasks when select state is "completed"
+  //to render only the completed tasks when select state is "completed" and to check the completed tasks whether it is empty or not
   const completedCheckboxes = document.querySelectorAll("#completed-checkbox");
-
+  let completedTasks = 0;
   completedCheckboxes.forEach((checkbox) => {
     const checkBoxContainer = checkbox.parentElement;
     const todoCard = checkBoxContainer.parentElement;
@@ -326,8 +326,13 @@ function renderCompletedTodos() {
     if (checkbox.checked) {
       todoCard.classList.remove("hide");
       todoCard.classList.add("flex");
+      completedTasks += 1;
     }
   });
+
+  if (completedTasks === 0) {
+    noTaskFound();
+  }
 }
 function getTodoFromLocalStorage() {
   //to get the todos from local stoarge with the key "todos" if there no todo in the local storage then it will be empty array
@@ -348,7 +353,7 @@ function saveTodoToLocalStorage(task) {
 }
 
 function updateTodotoLocalStorage(task) {
-  //to update the existing todo in the local storage 
+  //to update the existing todo in the local storage
   const todos = JSON.parse(localStorage.getItem("todos"));
 
   const updatedTodos = updateTask(todos, task);
@@ -357,30 +362,30 @@ function updateTodotoLocalStorage(task) {
 }
 
 function deleteTodofromLocalStorage(index) {
-  // to delete the todo if its exist on the local storage 
+  // to delete the todo if its exist on the local storage
   const todos = getTodoFromLocalStorage();
 
   const isTaskExist = checkTaskExist(todos, Number(index));
- 
+
   if (isTaskExist) {
     const todosWithnoGivenTask = todos.filter(
       (todo) => Number(index) !== todo.taskId
     );
 
-    const newTodos = todosWithnoGivenTask.map((todo,index) => {
-    return {
-      ...todo,
-      taskId:index + 1
-    }
+    const newTodos = todosWithnoGivenTask.map((todo, index) => {
+      return {
+        ...todo,
+        taskId: index + 1,
+      };
     });
-  
+
     localStorage.removeItem("todos");
     localStorage.setItem("todos", JSON.stringify(newTodos));
   }
 }
 
 function checkTaskExist(todos, index) {
-  //to check whether the todo is exist or not 
+  //to check whether the todo is exist or not
   const number = todos.findIndex((todo) => index === todo.taskId);
 
   if (number >= 0) {
@@ -391,12 +396,12 @@ function checkTaskExist(todos, index) {
 }
 
 function updateTask(todos, task) {
-//to update the existing task from todos which is obtained from local storage and return updated todos
+  //to update the existing task from todos which is obtained from local storage and return updated todos
   const newTodos = todos.map((todo) => {
     if (todo.taskId === Number(task.taskId)) {
       todo.taskName = task.taskName;
       todo.completed = task.completed;
-      todo.updated_at = getCurrentTime()
+      todo.updated_at = getCurrentTime();
     }
     return todo;
   });
