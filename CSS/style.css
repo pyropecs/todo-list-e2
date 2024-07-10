@@ -17,13 +17,7 @@ body {
   width: 100%;
   height: 100%;
 }
-.header {
-  width: 100%;
-  height: 10%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0% 1%;
-}
+
 .todo-title {
   width: 100%;
 
@@ -43,9 +37,7 @@ body {
   justify-content: center;
   align-items: center;
 }
-.logo {
-  font-family: sans-serif;
-}
+
 
 .todo-container {
   width: 95%;

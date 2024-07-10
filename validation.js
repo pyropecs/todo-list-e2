@@ -1,6 +1,5 @@
 export function validateText(input) {
   //to pass the all validation steps then only it will return true or it will give error message
-
   if (validateNoEmptyString(input) !== true)
     return validateNoEmptyString(input);
   if (validateOnlyAlphaNumericAndAllowedSpecialCharacters(input) !== true)
@@ -9,7 +8,6 @@ export function validateText(input) {
     return validateThereisNoSpecialCharactersOnFirstLetter(input);
   if (validateNotMorThan150Characters(input) !== true)
     return validateNotMorThan150Characters(input);
-
   if (validateMinimumCharacters(input) !== true)
     return validateMinimumCharacters(input);
   return true;

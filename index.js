@@ -360,7 +360,7 @@ function deleteTodofromLocalStorage(index) {
   const todos = getTodoFromLocalStorage();
 
   const isTaskExist = checkTaskExist(todos, Number(index));
-  console.log(isTaskExist, index);
+ 
   if (isTaskExist) {
     const todosWithnoGivenTask = todos.filter(
       (todo) => Number(index) !== todo.taskId
