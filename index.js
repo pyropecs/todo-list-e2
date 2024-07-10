@@ -23,7 +23,7 @@ function submitForm(event) {
   if (inputValue) {
     const isEdit = input.getAttribute("edit");
     const editIndex = input.getAttribute("edit-index");
-    if (isEdit) {
+    if (isEdit === "true") {
       submitEditForm(inputValue, editIndex);
     } else {
       createTask(inputValue);
