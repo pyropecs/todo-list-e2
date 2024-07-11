@@ -192,6 +192,7 @@ function createToDoButtons() {
   return btnGroup;
 }
 
+
 function createIconButton(
   className,
   id,
