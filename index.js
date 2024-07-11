@@ -5,14 +5,14 @@ const input = document.querySelector("#text-input");
 const todoList = document.querySelector("#task-list");
 const statusId = document.querySelector("#status-id");
 const inputError = document.querySelector("#input-error");
-// const completeAllCheckbox = document.querySelector("#complete-all");
+
 const deleteButton = document.querySelector("#delete-all");
 let selectedTasks = [];
 document.addEventListener("DOMContentLoaded", renderTasks);
 form.addEventListener("submit", submitForm);
 todoList.addEventListener("click", operations);
 statusId.addEventListener("change", filterTodos);
-// completeAllCheckbox.addEventListener("change", completeAll);
+
 deleteButton.addEventListener("click", deleteAll);
 
 input.addEventListener("input", removeError);
@@ -64,7 +64,7 @@ function submitEditForm(trimmedInput, editIndex) {
 }
 
 function renderTasks() {
-  //get the tasks from localstorage and create the taskcards and append into todolist container
+  //get the tasks from localstorage and create the taskcards and append into todolist container according to the selected value
   todoList.innerHTML = "";
   const selectedValue = statusId.value;
   const todos = getTodoFromLocalStorage();
@@ -165,7 +165,7 @@ function createTaskCard(taskName, taskId, isCompleted) {
   return taskCard;
 }
 function createToDoButtons() {
-  //to create the button group which consists of edit button and delete button for each individual task card
+  //to create the button group which consists of edit button and delete button and complete button for each individual task card
   const btnGroup = document.createElement("div");
   btnGroup.classList.add("btn-group");
   const editButton = createIconButton(
@@ -492,7 +492,7 @@ function getNextIndexFromLocalStorage() {
 
 
 function deleteAll() {
-  //to delete the every tasks from local storage by clicking delete all button and then the tasks to check
+  //to delete the selected task from the local storage 
 
   removeInputValue()
   selectedTasks.forEach((selectedTask) => {
@@ -504,6 +504,7 @@ function deleteAll() {
 }
 
 function removeInputValue(){
+//to remove the unwanted string present in the input
 input.value = ""
 input.setAttribute("edit",false)
 
