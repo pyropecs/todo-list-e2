@@ -14,7 +14,7 @@ todoList.addEventListener("click", operations);
 statusId.addEventListener("change", filterTodos);
 // completeAllCheckbox.addEventListener("change", completeAll);
 deleteButton.addEventListener("click", deleteAll);
-console.log(deleteButton.innerHTML);
+
 input.addEventListener("input", removeError);
 input.addEventListener("focus", removeError);
 
@@ -70,7 +70,7 @@ function renderTasks() {
   const todos = getTodoFromLocalStorage();
  
   if (todos.length === 0) {
-    console.log(todos.length,"workingdds")
+
     noTaskFound();
   } else {
     removeNoTaskFound();
@@ -88,6 +88,7 @@ function renderTasks() {
   }
 
   filterTodos(selectedValue);
+  noneSelected();
 }
 
 function removeError() {
@@ -127,7 +128,7 @@ function removeNoTaskFound() {
 function createTask(taskName) {
   //to create the task with given task name and save it to the local storage and if paragraph exists it will remove and render the all tasks elements
   const newTaskNumber = getNextIndexFromLocalStorage();
-  console.log(newTaskNumber);
+
   const task = {
     taskId: newTaskNumber,
     taskName,
@@ -184,7 +185,7 @@ function createToDoButtons() {
   const completeButton = createIconButton(
     "complete",
     "complete-btn-id",
-    "./Images/check.png",
+    "./Images/checked.png",
     "complete icon",
     "complete task"
   );
@@ -244,6 +245,14 @@ function createCheckbox() {
   checkBoxContainer.append(checkInput);
   return checkBoxContainer;
 }
+function noneSelected(){
+if(selectedTasks.length === 0){
+  deleteButton.disabled = true;
+}else{
+  deleteButton.disabled = false
+}
+}
+
 function operations(e) {
   //to handle the buttons that clicked in the todo card
 
@@ -251,11 +260,20 @@ function operations(e) {
 
   if (target.id === "select-checkbox") {
     //to handle the clicking complete button behvaiour if its already completed then uncheck on the todo card
-
+    
     const todoCard = target.parentNode.parentNode;
     const selectedIndex = todoCard.getAttribute("index");
-    selectedTasks.push(selectedIndex);
-    console.log(selectedTasks)
+    const checkBox = todoCard.querySelector("#select-checkbox")
+    const isChecked = checkBox.checked;
+
+    if(isChecked){
+      selectedTasks.push(selectedIndex);
+    }else{
+      selectedTasks = selectedTasks.filter((selectedTask)=>selectedTask !==selectedIndex)
+    }
+    
+    noneSelected()
+    
   }
   if (target.id === "edit-btn-id") {
     //to handle the clicking edit button behaviour
@@ -285,7 +303,11 @@ function deleteTask(target) {
   const todoCard = target.parentNode.parentNode.parentNode;
 
   const index = todoCard.getAttribute("index");
-
+const isEdit = input.getAttribute("edit")
+if(isEdit === "true"){
+  input.value = ""
+  input.setAttribute("edit",false)
+}
   deleteTodofromLocalStorage(index);
   renderTasks();
 }
@@ -363,14 +385,14 @@ function renderCompletedTodos(todoCards) {
     todoCard.classList.remove("flex");
     todoCard.classList.add("hide");
     const isCompleted = todoCard.getAttribute("completed");
-    console.log(isCompleted);
+
     if (isCompleted === "true") {
       todoCard.classList.remove("hide");
       todoCard.classList.add("flex");
       completedTask += 1;
     }
   });
-console.log(completedTask)
+
   if (completedTask === 0) {
     noTaskFound();
   }
@@ -466,11 +488,15 @@ function getNextIndexFromLocalStorage() {
   }
 }
 
+
+
+
 function deleteAll() {
   //to delete the every tasks from local storage by clicking delete all button and then the tasks to check
-removeInputValue()
+
+  removeInputValue()
   selectedTasks.forEach((selectedTask) => {
-    console.log("deelte all index",selectedTask)
+    
     deleteTodofromLocalStorage(selectedTask);
   });
   selectedTasks = [];

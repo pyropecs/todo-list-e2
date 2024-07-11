@@ -98,8 +98,12 @@ body {
   font-family: sans-serif;
   font-size: 16px;
 }
+
+.delete-all-btn:disabled{
+  background-color: #94aaf3;
+}
 .btn:hover {
-  background-color: #2972e0;
+  background-color: #4566d1;
   transition: all ease-in 100ms;
 }
 
