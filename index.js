@@ -291,9 +291,9 @@ function operations(e) {
   if (target.id === "delete-btn-id") {
     //to handle the delete button behaviour
    
-    if (confirm("do you want to delete the mentioned task")) {
+    if (confirm("Do you want to delete the mentioned task")) {
       deleteTask(target);
-      confirmAction = false;
+    
     }
   }
   if (target.id === "complete-btn-id") {
@@ -314,13 +314,13 @@ function editTask(target) {
 }
 function cancelEditTask(e) {
 
-  if (confirm("do you want to cancel the edit")) {
+  if (confirm("Do you want to cancel the edit")) {
     input.value = "";
     input.setAttribute("edit", false);
     input.removeAttribute("edit-index");
     cancelBtn.classList.remove("block");
     cancelBtn.classList.add("hide");
-    confirmAction = false;
+ 
   }
 
   // e.stopPropagation()
@@ -517,12 +517,12 @@ function getNextIndexFromLocalStorage() {
 function deleteAll() {
   //to delete the selected task from the local storage
   
-  if (confirm("do you want to delete selected tasks ?")) {
+  if (confirm("Do you want to delete selected tasks ?")) {
     removeInputValue();
     deleteSelectedFromLocalStorage(selectedTasks);
     selectedTasks = [];
     renderTasks();
-    confirmAction = false;
+    
   }
 }
 
