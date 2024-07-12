@@ -1,18 +1,17 @@
-
-
 const form = document.querySelector("#submit-form");
 const input = document.querySelector("#text-input");
 const todoList = document.querySelector("#task-list");
 const statusId = document.querySelector("#status-id");
 const inputError = document.querySelector("#input-error");
-
+const saveBtn = document.querySelector("#save-btn-id");
 const deleteButton = document.querySelector("#delete-all");
+const cancelBtn = document.querySelector("#cancel-btn");
 let selectedTasks = [];
 document.addEventListener("DOMContentLoaded", renderTasks);
 form.addEventListener("submit", submitForm);
 todoList.addEventListener("click", operations);
 statusId.addEventListener("change", filterTodos);
-
+cancelBtn.addEventListener("click",cancelEditTask)
 deleteButton.addEventListener("click", deleteAll);
 
 input.addEventListener("input", removeError);
@@ -22,12 +21,14 @@ function submitForm(event) {
   //to submit the valid input task based on edit the task or creating the task it will be obtained from input form attribute
   event.preventDefault();
   removeError();
+
   const inputValue = getValidInputValue();
 
   if (inputValue) {
     const isEdit = input.getAttribute("edit");
-    const editIndex = input.getAttribute("edit-index");
+
     if (isEdit === "true") {
+      const editIndex = input.getAttribute("edit-index");
       submitEditForm(inputValue, editIndex);
     } else {
       createTask(inputValue);
@@ -41,6 +42,7 @@ function getValidInputValue() {
   const taskName = input.value;
   const trimmedInput = taskName.trim();
   const isValidinput = validateText(trimmedInput);
+
   if (isValidinput === true) {
     inputError.classList.add("hide");
     return trimmedInput;
@@ -61,6 +63,9 @@ function submitEditForm(trimmedInput, editIndex) {
   updateTodotoLocalStorage(editTask);
   renderTasks();
   input.setAttribute("edit", false);
+  saveBtn.innerText = "Add";
+  cancelBtn.classList.remove("block");
+  cancelBtn.classList.add("hide")
 }
 
 function renderTasks() {
@@ -68,9 +73,8 @@ function renderTasks() {
   todoList.innerHTML = "";
   const selectedValue = statusId.value;
   const todos = getTodoFromLocalStorage();
- 
-  if (todos.length === 0) {
 
+  if (todos.length === 0) {
     noTaskFound();
   } else {
     removeNoTaskFound();
@@ -114,7 +118,7 @@ function noTaskFound() {
   p.classList.add("no-task-found");
   p.setAttribute("id", "no-tasks-id");
   p.innerText = "No Task Found";
-  
+
   todoList.append(p);
 }
 function removeNoTaskFound() {
@@ -193,7 +197,6 @@ function createToDoButtons() {
   return btnGroup;
 }
 
-
 function createIconButton(
   className,
   id,
@@ -223,10 +226,10 @@ function createTaskName(taskName, isCompleted) {
   taskNameInput.readOnly = true;
   taskNameInput.classList.add("task-name");
   taskNameInput.setAttribute("id", "task-name-id");
-  if(isCompleted){
+  if (isCompleted) {
     taskNameInput.classList.add("opacity");
   }
-  
+
   taskNameContainer.append(taskNameInput);
   return taskNameContainer;
 }
@@ -245,12 +248,12 @@ function createCheckbox() {
   checkBoxContainer.append(checkInput);
   return checkBoxContainer;
 }
-function noneSelected(){
-if(selectedTasks.length === 0){
-  deleteButton.disabled = true;
-}else{
-  deleteButton.disabled = false
-}
+function noneSelected() {
+  if (selectedTasks.length === 0) {
+    deleteButton.disabled = true;
+  } else {
+    deleteButton.disabled = false;
+  }
 }
 
 function operations(e) {
@@ -260,23 +263,25 @@ function operations(e) {
 
   if (target.id === "select-checkbox") {
     //to handle the clicking complete button behvaiour if its already completed then uncheck on the todo card
-    
+
     const todoCard = target.parentNode.parentNode;
     const selectedIndex = todoCard.getAttribute("index");
-    const checkBox = todoCard.querySelector("#select-checkbox")
+    const checkBox = todoCard.querySelector("#select-checkbox");
     const isChecked = checkBox.checked;
 
-    if(isChecked){
+    if (isChecked) {
       selectedTasks.push(selectedIndex);
-    }else{
-      selectedTasks = selectedTasks.filter((selectedTask)=>selectedTask !==selectedIndex)
+    } else {
+      selectedTasks = selectedTasks.filter(
+        (selectedTask) => selectedTask !== selectedIndex
+      );
     }
-    
-    noneSelected()
-    
+
+    noneSelected();
   }
   if (target.id === "edit-btn-id") {
     //to handle the clicking edit button behaviour
+    saveBtn.innerText = "Save";
     editTask(target);
   }
 
@@ -297,17 +302,29 @@ function editTask(target) {
   input.setAttribute("edit", true);
   input.setAttribute("edit-index", editIndex);
   input.focus();
+  cancelBtn.classList.remove("hide");
+  cancelBtn.classList.add("block")
+}
+function cancelEditTask(e){
+ 
+  input.value = ""
+  input.setAttribute("edit",false);
+  input.removeAttribute("edit-index")
+  cancelBtn.classList.remove("block");
+  cancelBtn.classList.add("hide")
+  // e.stopPropagation()
+
 }
 function deleteTask(target) {
   // to traverse the parent element todo card from the delete button and get the index attribute from todo card and delete it from the local storage and render the all tasks
   const todoCard = target.parentNode.parentNode.parentNode;
 
   const index = todoCard.getAttribute("index");
-const isEdit = input.getAttribute("edit")
-if(isEdit === "true"){
-  input.value = ""
-  input.setAttribute("edit",false)
-}
+  const isEdit = input.getAttribute("edit");
+  if (isEdit === "true") {
+    input.value = "";
+    input.setAttribute("edit", false);
+  }
   deleteTodofromLocalStorage(index);
   renderTasks();
 }
@@ -334,9 +351,8 @@ function filterTodos() {
   //to handle the select functionality with 3 states "completed" ,"assigned","all"
   const selectedValue = statusId.value;
   const todoCards = document.querySelectorAll(".todo-card");
-removeNoTaskFound();
- 
-  
+  removeNoTaskFound();
+
   if (selectedValue === "completed") {
     renderCompletedTodos(todoCards);
   }
@@ -488,28 +504,35 @@ function getNextIndexFromLocalStorage() {
   }
 }
 
-
-
-
 function deleteAll() {
-  //to delete the selected task from the local storage 
+  //to delete the selected task from the local storage
 
-  removeInputValue()
-  selectedTasks.forEach((selectedTask) => {
-    
-    deleteTodofromLocalStorage(selectedTask);
-  });
+  removeInputValue();
+  deleteSelectedFromLocalStorage(selectedTasks);
   selectedTasks = [];
   renderTasks();
 }
 
-function removeInputValue(){
-//to remove the unwanted string present in the input
-input.value = ""
-input.setAttribute("edit",false)
-
+function removeInputValue() {
+  //to remove the unwanted string present in the input
+  input.value = "";
+  input.setAttribute("edit", false);
 }
 
+function deleteSelectedFromLocalStorage(selectedTasks) {
+  const todos = getTodoFromLocalStorage();
+
+  const filteredTodos = todos.filter(
+    (todo) => selectedTasks.indexOf(String(todo.taskId)) === -1
+  );
+  const newTodos = filteredTodos.map((todo, index) => {
+    return {
+      ...todo,
+      taskId: index,
+    };
+  });
+  localStorage.setItem("todos", JSON.stringify(newTodos));
+}
 
 function validateText(input) {
   //to pass the all validation steps then only it will return true or it will give error message
