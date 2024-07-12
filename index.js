@@ -78,6 +78,7 @@ function renderTasks() {
   const todos = getTodoFromLocalStorage();
 
   if (todos.length === 0) {
+  
     noTaskFound();
   } else {
     removeNoTaskFound();
@@ -120,7 +121,7 @@ function noTaskFound() {
   const p = document.createElement("p");
   p.classList.add("no-task-found");
   p.setAttribute("id", "no-tasks-id");
-  p.innerText = "No Task Found";
+  p.innerText = "You didnt have any tasks";
 
   todoList.append(p);
 }
@@ -192,7 +193,7 @@ function createToDoButtons() {
   const completeButton = createIconButton(
     "complete",
     "complete-btn-id",
-    "./Images/checked.png",
+    "./Images/checkFill.png",
     "complete icon",
     "complete task"
   );
@@ -284,7 +285,7 @@ function operations(e) {
   }
   if (target.id === "edit-btn-id") {
     //to handle the clicking edit button behaviour
-    saveBtn.innerText = "Save";
+    
     editTask(target);
   }
 
@@ -303,14 +304,21 @@ function operations(e) {
 function editTask(target) {
   //to traverse the parent element todo card from edit button and queryselect the form input and get the value of the form input and setting attributes for editing and which todo card is editing by setting todo card index
   const todoCard = target.parentNode.parentNode.parentNode;
-  const taskName = todoCard.querySelector("#task-name-id");
-  const editIndex = todoCard.getAttribute("index");
-  input.value = taskName.value;
-  input.setAttribute("edit", true);
-  input.setAttribute("edit-index", editIndex);
-  input.focus();
-  cancelBtn.classList.remove("hide");
-  cancelBtn.classList.add("block");
+  const completed = todoCard.getAttribute("completed")
+  
+  if(completed === null){
+    saveBtn.innerText = "Save";
+    const taskName = todoCard.querySelector("#task-name-id");
+    const editIndex = todoCard.getAttribute("index");
+    input.value = taskName.value;
+    input.setAttribute("edit", true);
+    input.setAttribute("edit-index", editIndex);
+    input.focus();
+    cancelBtn.classList.remove("hide");
+    cancelBtn.classList.add("block");
+  
+  }
+
 }
 function cancelEditTask(e) {
 
@@ -342,8 +350,10 @@ function deleteTask(target) {
 function isTaskCompleted(target) {
   // traverse the parent element from the checkbox completed and query select the task name element set the respective attributes if its completed or not and edit and update in the local storage
   const todoCard = target.parentNode.parentNode.parentNode;
+  
   const taskId = todoCard.getAttribute("index");
   const taskName = todoCard.querySelector("#task-name-id");
+
   const currentTodo = getTodoFromLocalStorageUsingIndex(taskId);
   const isCompleted = currentTodo.completed;
   const newTodo = {
@@ -361,7 +371,13 @@ function filterTodos() {
   //to handle the select functionality with 3 states "completed" ,"assigned","all"
   const selectedValue = statusId.value;
   const todoCards = document.querySelectorAll(".todo-card");
-  removeNoTaskFound();
+  const p = document.querySelector("#no-tasks-id");
+  if(todoCards.length !== 0 ){
+    removeNoTaskFound();
+  }
+  if(p && selectedValue !=="all"){
+    removeNoTaskFound()
+  }
 
   if (selectedValue === "completed") {
     renderCompletedTodos(todoCards);

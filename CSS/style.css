@@ -184,7 +184,7 @@ display: none;
   font-family: sans-serif;
   font-size: 16px;
   height: 10%;
-
+white-space: nowrap;
   width: 30%;
   display: flex;
   align-items: center;
