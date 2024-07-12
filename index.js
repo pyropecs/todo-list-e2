@@ -6,12 +6,15 @@ const inputError = document.querySelector("#input-error");
 const saveBtn = document.querySelector("#save-btn-id");
 const deleteButton = document.querySelector("#delete-all");
 const cancelBtn = document.querySelector("#cancel-btn");
+
 let selectedTasks = [];
+
 document.addEventListener("DOMContentLoaded", renderTasks);
 form.addEventListener("submit", submitForm);
 todoList.addEventListener("click", operations);
 statusId.addEventListener("change", filterTodos);
 cancelBtn.addEventListener("click", cancelEditTask);
+
 deleteButton.addEventListener("click", deleteAll);
 
 input.addEventListener("input", removeError);
@@ -73,7 +76,6 @@ function renderTasks() {
   todoList.innerHTML = "";
   const selectedValue = statusId.value;
   const todos = getTodoFromLocalStorage();
-
 
   if (todos.length === 0) {
     noTaskFound();
@@ -288,7 +290,11 @@ function operations(e) {
 
   if (target.id === "delete-btn-id") {
     //to handle the delete button behaviour
-    deleteTask(target);
+   
+    if (confirm("do you want to delete the mentioned task")) {
+      deleteTask(target);
+      confirmAction = false;
+    }
   }
   if (target.id === "complete-btn-id") {
     isTaskCompleted(target);
@@ -307,11 +313,16 @@ function editTask(target) {
   cancelBtn.classList.add("block");
 }
 function cancelEditTask(e) {
-  input.value = "";
-  input.setAttribute("edit", false);
-  input.removeAttribute("edit-index");
-  cancelBtn.classList.remove("block");
-  cancelBtn.classList.add("hide");
+
+  if (confirm("do you want to cancel the edit")) {
+    input.value = "";
+    input.setAttribute("edit", false);
+    input.removeAttribute("edit-index");
+    cancelBtn.classList.remove("block");
+    cancelBtn.classList.add("hide");
+    confirmAction = false;
+  }
+
   // e.stopPropagation()
 }
 function deleteTask(target) {
@@ -351,8 +362,7 @@ function filterTodos() {
   const selectedValue = statusId.value;
   const todoCards = document.querySelectorAll(".todo-card");
   removeNoTaskFound();
-  
- 
+
   if (selectedValue === "completed") {
     renderCompletedTodos(todoCards);
   }
@@ -506,11 +516,14 @@ function getNextIndexFromLocalStorage() {
 
 function deleteAll() {
   //to delete the selected task from the local storage
-
-  removeInputValue();
-  deleteSelectedFromLocalStorage(selectedTasks);
-  selectedTasks = [];
-  renderTasks();
+  
+  if (confirm("do you want to delete selected tasks ?")) {
+    removeInputValue();
+    deleteSelectedFromLocalStorage(selectedTasks);
+    selectedTasks = [];
+    renderTasks();
+    confirmAction = false;
+  }
 }
 
 function removeInputValue() {
@@ -593,3 +606,4 @@ function validateMinimumCharacters(text) {
     return true;
   } else return "Must be more than 3 characters";
 }
+
