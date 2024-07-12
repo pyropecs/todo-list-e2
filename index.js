@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", renderTasks);
 form.addEventListener("submit", submitForm);
 todoList.addEventListener("click", operations);
 statusId.addEventListener("change", filterTodos);
-cancelBtn.addEventListener("click",cancelEditTask)
+cancelBtn.addEventListener("click", cancelEditTask);
 deleteButton.addEventListener("click", deleteAll);
 
 input.addEventListener("input", removeError);
@@ -65,7 +65,7 @@ function submitEditForm(trimmedInput, editIndex) {
   input.setAttribute("edit", false);
   saveBtn.innerText = "Add";
   cancelBtn.classList.remove("block");
-  cancelBtn.classList.add("hide")
+  cancelBtn.classList.add("hide");
 }
 
 function renderTasks() {
@@ -73,6 +73,7 @@ function renderTasks() {
   todoList.innerHTML = "";
   const selectedValue = statusId.value;
   const todos = getTodoFromLocalStorage();
+
 
   if (todos.length === 0) {
     noTaskFound();
@@ -303,17 +304,15 @@ function editTask(target) {
   input.setAttribute("edit-index", editIndex);
   input.focus();
   cancelBtn.classList.remove("hide");
-  cancelBtn.classList.add("block")
+  cancelBtn.classList.add("block");
 }
-function cancelEditTask(e){
- 
-  input.value = ""
-  input.setAttribute("edit",false);
-  input.removeAttribute("edit-index")
+function cancelEditTask(e) {
+  input.value = "";
+  input.setAttribute("edit", false);
+  input.removeAttribute("edit-index");
   cancelBtn.classList.remove("block");
-  cancelBtn.classList.add("hide")
+  cancelBtn.classList.add("hide");
   // e.stopPropagation()
-
 }
 function deleteTask(target) {
   // to traverse the parent element todo card from the delete button and get the index attribute from todo card and delete it from the local storage and render the all tasks
@@ -352,7 +351,8 @@ function filterTodos() {
   const selectedValue = statusId.value;
   const todoCards = document.querySelectorAll(".todo-card");
   removeNoTaskFound();
-
+  
+ 
   if (selectedValue === "completed") {
     renderCompletedTodos(todoCards);
   }
