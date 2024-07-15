@@ -34,7 +34,7 @@ body {
 }
 .main {
   width: 100%;
-  height: 90%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,15 +43,14 @@ body {
 
 .todo-container {
   width: 95%;
-  height: 50%;
+  height: 70%;
 
-  padding-top: 4%;
-  padding-bottom: 4%;
+
   
 }
 .todo-input-container {
   width: 100%;
-  height: 10%;
+  height: 7%;
 }
 .todo-input {
   width: 100%;
@@ -153,6 +152,7 @@ display: none;
 
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
 }
 .todo-select {
   color: black;
@@ -167,7 +167,8 @@ display: none;
 .todo-all {
   display: flex;
   width: 30%;
-  
+  height:40%;
+  padding-top:3% ;
   justify-content: space-between;
 }
 .error {
@@ -229,7 +230,7 @@ cursor: pointer;
 }
 .todo-list-container {
   width: 100%;
-  height: 100%;
+  height: 72%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -300,11 +301,101 @@ cursor: pointer;
 
 .status-container {
   width: 100%;
-  height: 20%;
+  height: 15%;
   display: flex;
-  justify-content: center;
-  align-items: end;
+
 }
+
+
+/* radio buttons */
+
+.btn-container {
+  --btn-container-bg: #f9edd2;
+  --btn-container-border: #edca78;
+}
+.active,
+input[type="radio"]:checked + label {
+  --active-btn-bg: #fffdfa;
+  --active-btn-box-shadow: rgba(237, 202, 120, 0.6);
+  --active-btn-text: #b48218;
+}
+.inactive,
+label {
+  --inactive-btn-text: #b48218;
+}
+
+.btn-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+padding: 1%;
+  background-color:#4E73ED;
+ 
+  width: 98%;
+  font-family: sans-serif;
+height:35%;
+  border-radius: 10px;
+  
+}
+
+/*To be used with links on individual pages*/
+
+.active, .inactive {
+  width: 45.5%;
+  height: 60%;
+  padding: 10px 20px;
+  border: 0px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.active {
+  background-color: #fff;
+  box-shadow: 0 0 10px 1px var(--active-btn-box-shadow);
+  font-weight: bold;
+  color: #4E73ED;
+}
+
+.inactive {
+  background-color: transparent;
+  color: #fff;
+  text-decoration: none;
+}
+
+/*To be used as radio buttons*/
+
+input[type="radio"] {
+  visibility: hidden;
+  height: 0;
+  width: 0;
+  margin: 0;
+}
+
+label {
+  width: 45.5%;
+  height: 60%;
+  padding: 1% 2%;
+  border: 0px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+input[type="radio"]:checked + label {
+  background-color: var(--active-btn-bg);
+  box-shadow: 0 0 10px 1px var(--active-btn-box-shadow);
+  font-weight: bold;
+  color: #4E73ED;
+}
+
 
 @media screen and (min-width: 426px) {
   /* above mobile screen size */
@@ -351,9 +442,9 @@ cursor: pointer;
   }
   .todo-status {
     width: 100%;
-    height: 68%;
+    height: 100%;
     padding: 0%;
-    align-items: center;
+    align-items: end;
   }
   .btn {
     font-size: 18px;
@@ -362,10 +453,10 @@ cursor: pointer;
     width: 3%;
   }
   .status-container {
-    height: 15%;
-
     margin: auto;
     width: 64%;
+    margin-top: 2%;
+    margin-bottom:2%;
   }
   .todo-all{
     width:25%;

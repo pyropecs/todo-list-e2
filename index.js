@@ -6,19 +6,31 @@ const inputError = document.querySelector("#input-error");
 const saveBtn = document.querySelector("#save-btn-id");
 const deleteButton = document.querySelector("#delete-all");
 const cancelBtn = document.querySelector("#cancel-btn");
-
+ const radio_btns = document.querySelectorAll(`input[type='radio'][name='radio_choices']`);
 let selectedTasks = [];
-
+let selectedValue = "all"
 document.addEventListener("DOMContentLoaded", renderTasks);
 form.addEventListener("submit", submitForm);
 todoList.addEventListener("click", operations);
-statusId.addEventListener("change", filterTodos);
+// statusId.addEventListener("change", filterTodos);
 cancelBtn.addEventListener("click", cancelEditTask);
 
 deleteButton.addEventListener("click", deleteAll);
 
 input.addEventListener("input", removeError);
 input.addEventListener("focus", removeError);
+
+
+
+
+for (let target of radio_btns) {
+	target.addEventListener(`change`, () => {
+    selectedValue = target.value
+    renderTasks()
+	});
+}
+
+
 
 function submitForm(event) {
   //to submit the valid input task based on edit the task or creating the task it will be obtained from input form attribute
@@ -74,7 +86,7 @@ function submitEditForm(trimmedInput, editIndex) {
 function renderTasks() {
   //get the tasks from localstorage and create the taskcards and append into todolist container according to the selected value
   todoList.innerHTML = "";
-  const selectedValue = statusId.value;
+  
   const todos = getTodoFromLocalStorage();
 
   if (todos.length === 0) {
@@ -91,7 +103,7 @@ function renderTasks() {
 
       todoList.append(taskCard);
 
-      checkAllCompleted();
+     
     });
   }
 
@@ -104,17 +116,7 @@ function removeError() {
   inputError.innerText = "";
 }
 
-function checkAllCompleted() {
-  //to check that if all todos are completed assign complete all box checked
 
-  const todos = getTodoFromLocalStorage();
-  const completedTodos = todos.filter((todo) => !todo.completed);
-  if (completedTodos.length === 0) {
-    // completeAllCheckbox.checked = true;
-  } else {
-    // completeAllCheckbox.checked = false;
-  }
-}
 
 function noTaskFound() {
   //to append the paragraph tag content having "no tasks found"
@@ -168,11 +170,11 @@ function createTaskCard(taskName, taskId, isCompleted) {
 
   const checkBoxContainer = createCheckbox();
   const taskNameContainer = createTaskName(taskName, isCompleted);
-  const btnGroup = createToDoButtons();
+  const btnGroup = createToDoButtons(isCompleted);
   taskCard.append(checkBoxContainer, taskNameContainer, btnGroup);
   return taskCard;
 }
-function createToDoButtons() {
+function createToDoButtons(isCompleted) {
   //to create the button group which consists of edit button and delete button and complete button for each individual task card
   const btnGroup = document.createElement("div");
   btnGroup.classList.add("btn-group");
@@ -190,14 +192,24 @@ function createToDoButtons() {
     "delete button",
     "delete task"
   );
-  const completeButton = createIconButton(
-    "complete",
-    "complete-btn-id",
-    "./Images/checkFill.png",
-    "complete icon",
-    "complete task"
-  );
-  btnGroup.append(completeButton, editButton, deleteButton);
+  if(isCompleted){
+    const completedButton = createIconButton(
+      "complete",
+      "complete-btn-id",
+      "./Images/checked.png",
+      "complete icon",
+      "complete task"
+    );
+    btnGroup.append(completedButton, editButton, deleteButton);
+  }else{
+    const completeBtn = createIconButton( "complete",
+      "complete-btn-id",
+      "./Images/checkFill.png",
+      "complete icon",
+      "complete task")
+      btnGroup.append(completeBtn, editButton, deleteButton);
+  }
+
   return btnGroup;
 }
 
@@ -353,23 +365,36 @@ function isTaskCompleted(target) {
   
   const taskId = todoCard.getAttribute("index");
   const taskName = todoCard.querySelector("#task-name-id");
+const completeBtn = todoCard.querySelector("#complete-btn-id")
 
   const currentTodo = getTodoFromLocalStorageUsingIndex(taskId);
   const isCompleted = currentTodo.completed;
+
   const newTodo = {
     ...currentTodo,
     completed: !isCompleted,
   };
-  if (isCompleted) {
+const newCompleted = !isCompleted
+console.log(newCompleted,"new")
+  if (newCompleted) {
+      
     taskName.classList.add("opacity");
-  } else taskName.classList.remove("opacity");
+   
+ 
+  
+  } else{
+   
+
+    taskName.classList.remove("opacity")
+
+  };
   updateTodotoLocalStorage(newTodo);
   renderTasks();
 }
 
 function filterTodos() {
   //to handle the select functionality with 3 states "completed" ,"assigned","all"
-  const selectedValue = statusId.value;
+ 
   const todoCards = document.querySelectorAll(".todo-card");
   const p = document.querySelector("#no-tasks-id");
   if(todoCards.length !== 0 ){
