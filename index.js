@@ -365,7 +365,6 @@ function isTaskCompleted(target) {
   
   const taskId = todoCard.getAttribute("index");
   const taskName = todoCard.querySelector("#task-name-id");
-const completeBtn = todoCard.querySelector("#complete-btn-id")
 
   const currentTodo = getTodoFromLocalStorageUsingIndex(taskId);
   const isCompleted = currentTodo.completed;
