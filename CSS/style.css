@@ -480,4 +480,7 @@ input[type="radio"]:checked + label {
   .btn-group{
     width:12%;
   }
+  .error{
+    font-size: 14px;
+  }
 }

@@ -371,6 +371,10 @@ function deleteTask(target) {
   if (isEdit === "true") {
     input.value = "";
     input.setAttribute("edit", false);
+    saveBtn.innerText ="Add"
+    input.removeAttribute("edit-index")
+    cancelBtn.classList.remove("block");
+    cancelBtn.classList.add("hide");
   }
   deleteTodofromLocalStorage(index);
   renderTasks();
@@ -575,10 +579,15 @@ function deleteAll() {
   //to delete the selected task from the local storage
   
   if (confirm("Do you want to delete selected tasks ?")) {
-    removeInputValue();
-    deleteSelectedFromLocalStorage(selectedTasks);
-    selectedTasks = [];
-    renderTasks();
+    if(checkInputExist()){
+      cancelBtn.classList.remove("block");
+      cancelBtn.classList.add("hide");
+      saveBtn.innerText = "Add"
+          deleteSelectedFromLocalStorage(selectedTasks);
+      selectedTasks = [];
+      renderTasks();
+    }
+
     
   }
 }
