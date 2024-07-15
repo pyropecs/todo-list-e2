@@ -25,7 +25,7 @@
                 autocomplete="off"
               />
               <button class="cancel" type="button" id="cancel-btn"><img src="./Images/cancel.png" alt="cancel editing task" /></button>
-              <button type="submit" class="btn" id="save-btn-id">Add</button>
+              <button type="submit" class="btn" id="save-btn-id" title="Add the task">Add</button>
             </form>
             <span class="error" id="input-error"></span>
           </div>
@@ -34,14 +34,14 @@
             <div class="todo-status">
               <form class="btn-container" id="radio-buttons">
                 <input type="radio" id="all" name="radio_choices" value="all" checked="checked">
-                <label for="all">All</label>
+                <label for="all" title="All the tasks">All</label>
                 <input type="radio" id="assigned" name="radio_choices" value="assigned">
-                <label for="assigned">Assigned</label>
+                <label for="assigned" title="Assigned tasks">Assigned</label>
                 <input type="radio" id="completed" name="radio_choices" value="completed">
-                <label for="completed">Completed</label>
+                <label for="completed" title="Completed tasks">Completed</label>
               </form>
               <div class="todo-all">
-                <button class="delete-all-btn" id="delete-all" >Delete All</button>
+                <button class="delete-all-btn" id="delete-all" title="Delete the selected tasks" >Delete</button>
                 
               </div>
 

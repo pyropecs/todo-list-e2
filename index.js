@@ -14,7 +14,7 @@ form.addEventListener("submit", submitForm);
 todoList.addEventListener("click", operations);
 // statusId.addEventListener("change", filterTodos);
 cancelBtn.addEventListener("click", cancelEditTask);
-
+cancelBtn.title = "Cancel the edit"
 deleteButton.addEventListener("click", deleteAll);
 
 input.addEventListener("input", removeError);
@@ -79,6 +79,7 @@ function submitEditForm(trimmedInput, editIndex) {
   renderTasks();
   input.setAttribute("edit", false);
   saveBtn.innerText = "Add";
+
   cancelBtn.classList.remove("block");
   cancelBtn.classList.add("hide");
 }
@@ -111,9 +112,11 @@ function renderTasks() {
   noneSelected();
 }
 
-function removeError() {
+function removeError(e) {
   //to remove already error in the input box
+
   inputError.innerText = "";
+
 }
 
 
@@ -183,22 +186,22 @@ function createToDoButtons(isCompleted) {
     "edit-btn-id",
     "./Images/edit.png",
     "edit icon",
-    "edit task"
+    "Edit task"
   );
   const deleteButton = createIconButton(
     "delete",
     "delete-btn-id",
     "./Images/trash.png",
     "delete button",
-    "delete task"
+    "Delete task"
   );
   if(isCompleted){
     const completedButton = createIconButton(
       "complete",
       "complete-btn-id",
       "./Images/checked.png",
-      "complete icon",
-      "complete task"
+      "completed icon",
+      "Undo the completed task"
     );
     btnGroup.append(completedButton, editButton, deleteButton);
   }else{
@@ -206,7 +209,7 @@ function createToDoButtons(isCompleted) {
       "complete-btn-id",
       "./Images/checkFill.png",
       "complete icon",
-      "complete task")
+      "Complete task")
       btnGroup.append(completeBtn, editButton, deleteButton);
   }
 
@@ -260,7 +263,7 @@ function createCheckbox() {
   checkInput.type = "checkbox";
   checkInput.setAttribute("id", "select-checkbox");
   checkInput.classList.add("completed");
-
+checkInput.title = "Select the task"
   checkBoxContainer.append(checkInput);
   return checkBoxContainer;
 }
@@ -298,7 +301,10 @@ function operations(e) {
   if (target.id === "edit-btn-id") {
     //to handle the clicking edit button behaviour
     
-    editTask(target);
+    if(checkInputExist()){
+      editTask(target);
+    }
+   
   }
 
   if (target.id === "delete-btn-id") {
@@ -313,6 +319,14 @@ function operations(e) {
     isTaskCompleted(target);
   }
 }
+
+function checkInputExist(){
+  const value = input.value
+  if(value.length > 0){
+   return confirm("The input value will be erased if you click the other button")
+  }
+  return true
+}
 function editTask(target) {
   //to traverse the parent element todo card from edit button and queryselect the form input and get the value of the form input and setting attributes for editing and which todo card is editing by setting todo card index
   const todoCard = target.parentNode.parentNode.parentNode;
@@ -320,6 +334,7 @@ function editTask(target) {
   
   if(completed === null){
     saveBtn.innerText = "Save";
+    saveBtn.title="Save the task"
     const taskName = todoCard.querySelector("#task-name-id");
     const editIndex = todoCard.getAttribute("index");
     input.value = taskName.value;
@@ -340,7 +355,8 @@ function cancelEditTask(e) {
     input.removeAttribute("edit-index");
     cancelBtn.classList.remove("block");
     cancelBtn.classList.add("hide");
- 
+    saveBtn.innerText ="Add"
+    saveBtn.title = "Add the task"
   }
 
   // e.stopPropagation()
@@ -374,7 +390,7 @@ function isTaskCompleted(target) {
     completed: !isCompleted,
   };
 const newCompleted = !isCompleted
-console.log(newCompleted,"new")
+
   if (newCompleted) {
       
     taskName.classList.add("opacity");
