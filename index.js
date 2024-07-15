@@ -22,7 +22,7 @@ input.addEventListener("focus", removeError);
 
 
 
-
+// to add event listeners to select radio buttons
 for (let target of radio_btns) {
 	target.addEventListener(`change`, () => {
     selectedValue = target.value
@@ -321,9 +321,10 @@ function operations(e) {
 }
 
 function checkInputExist(){
+  // to check that confirmation pop up will be shown when user clicks edit button when input field has some value
   const value = input.value
   if(value.length > 0){
-   return confirm("The input value will be erased if you click the other button")
+   return confirm("The input value will be erased if you click the edit button")
   }
   return true
 }
