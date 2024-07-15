@@ -149,7 +149,7 @@ function createTask(taskName) {
     created_at: getCurrentTime(),
     updated_at: getDefaultTime(),
   };
-
+selectedTasks =[]
   saveTodoToLocalStorage(task);
   removeNoTaskFound();
   renderTasks();
@@ -301,7 +301,7 @@ function operations(e) {
   if (target.id === "edit-btn-id") {
     //to handle the clicking edit button behaviour
     
-    if(checkInputExist()){
+    if(checkInputNotExist()){
       editTask(target);
     }
    
@@ -320,7 +320,7 @@ function operations(e) {
   }
 }
 
-function checkInputExist(){
+function checkInputNotExist(){
   // to check that confirmation pop up will be shown when user clicks edit button when input field has some value
   const value = input.value
   if(value.length > 0){
@@ -579,7 +579,7 @@ function deleteAll() {
   //to delete the selected task from the local storage
   
   if (confirm("Do you want to delete selected tasks ?")) {
-    if(checkInputExist()){
+    if(checkInputNotExist()){
       cancelBtn.classList.remove("block");
       cancelBtn.classList.add("hide");
       saveBtn.innerText = "Add"
