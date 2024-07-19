@@ -673,3 +673,6 @@ function validateMinimumCharacters(text) {
   } else return "Must be more than 3 characters";
 }
 
+module.exports = {
+  getCurrentTime
+}
