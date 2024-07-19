@@ -22,10 +22,11 @@
                 id="text-input"
                 class="todo-textfield"
                 placeholder="Enter Task"
+                data-testid="input-task"
                 autocomplete="off"
               />
               <button class="cancel" type="button" id="cancel-btn"><img src="./Images/cancel.png" alt="cancel editing task" /></button>
-              <button type="submit" class="btn" id="save-btn-id" title="Add the task">Add</button>
+              <button type="submit" class="btn" data-testid="button" id="save-btn-id" title="Add the task">Add</button>
             </form>
             <span class="error" id="input-error"></span>
           </div>
@@ -41,7 +42,7 @@
                 <label for="completed" title="Completed tasks">Completed</label>
               </form>
               <div class="todo-all">
-                <button class="delete-all-btn" id="delete-all" title="Delete the selected tasks" >Delete</button>
+                <button class="delete-all-btn" id="delete-all" title="Delete the selected tasks" disabled>Delete</button>
                 
               </div>
 

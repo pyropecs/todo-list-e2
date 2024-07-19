@@ -1,3 +1,8 @@
+function run(){
+
+
+
+
 const form = document.querySelector("#submit-form");
 const input = document.querySelector("#text-input");
 const todoList = document.querySelector("#task-list");
@@ -239,8 +244,8 @@ function createTaskName(taskName, isCompleted) {
   const taskNameContainer = document.createElement("div");
   taskNameContainer.classList.add("task-name-container");
 
-  const taskNameInput = document.createElement("input");
-  taskNameInput.value = taskName;
+  const taskNameInput = document.createElement("p");
+  taskNameInput.textContent = taskName;
 
   taskNameInput.readOnly = true;
   taskNameInput.classList.add("task-name");
@@ -673,6 +678,8 @@ function validateMinimumCharacters(text) {
   } else return "Must be more than 3 characters";
 }
 
-module.exports = {
-  getCurrentTime
+}
+
+module.exports={
+  run
 }
