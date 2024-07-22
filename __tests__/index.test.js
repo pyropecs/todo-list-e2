@@ -1,23 +1,28 @@
-
-const fs = require("fs")
+const fs = require("fs");
 const path = require("path");
-const { getByTestId,waitFor,screen,getByText } =require("@testing-library/dom");
-const {default: userEvent} = require("@testing-library/user-event")
-const app = require("@testing-library/jest-dom");
-const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf8');
-const {run} = require("../index.js")
-// const htmlFile = readFileSync(path.resolve(__dirname, "index.html"));
-// const jsDom = new JSDOM(htmlFile, {
-//   runScripts: "dangerously",
-// });
-// const document = jsDom.window.document;
-// global.document = document;
+const {
+  getByText,
+  waitFor,
 
+  getByLabelText,
+} = require("@testing-library/dom");
+
+const Chance = require("chance");
+const chance = new Chance();
+require("@testing-library/jest-dom");
+
+const { run } = require("../index.js");
+const { default: userEvent } = require("@testing-library/user-event");
+
+beforeEach(() => {
+  const html = fs.readFileSync(
+    path.resolve(__dirname, "../index.html"),
+    "utf8"
+  );
+  document.documentElement.innerHTML = html.toString();
+  run();
+});
 describe("to test that input and button html are present", () => {
-  beforeEach(() => {
-    document.documentElement.innerHTML = html.toString();
-    
-  });
   test("to check that input and button element wrapped in a form", () => {
     const formElement = document.querySelector("#submit-form");
     const formChilds = Array.from(formElement.children);
@@ -176,36 +181,204 @@ describe("to test that task status tabs elements are present", () => {
 //   expect(deleteBtnDisabled).toBeTruthy();
 // });
 
-describe("to test the input validation", () => {
-  beforeEach(()=>{
-    run()
-  })
-  test("input validation",async () => {
-    // const input = document.querySelector("#text-input");
-    const error = document.querySelector("#input-error")
+describe("to test the input validation ", () => {
+  test("input validation with valid inputs", () => {
+    const input = document.querySelector("#text-input");
+    const inputError = document.querySelector("#input-error");
     const submitButton = document.querySelector("#save-btn-id");
-    // input.value = "";
-    // // const inputEvent =
-    // submitButton.dispatchEvent(new jsDom.window.MouseEvent("click"))
-    // submitButton.click()
-    // expect(input.value).toBe("");
-  const input = getByTestId(document,"input-task")
-   
-    const user = userEvent.setup()
-   
-    await user.type(input, 'good');
-    expect(input).toHaveValue('good');
-
-   user.dblClick(submitButton)
-   await waitFor(()=>{
-    const container = document.querySelector('.todo-card')
-    
-    expect(getByText(container,"good")).toBeInTheDocument()
-    })
-
-
-
+    const form = document.querySelector("#submit-form");
+    const todoList = document.querySelector(".todo-list");
+    const validInput = chance.string({
+      length: 30,
+      symbols: false,
+      alpha: true,
+      numeric: true,
+    });
+    input.value = validInput;
+    expect(input).toHaveValue(validInput);
+    form.dispatchEvent(new Event("submit"));
+    expect(input).toHaveValue("");
+    expect(inputError.textContent).toBe("");
+    expect(getByText(todoList, validInput)).toBeInTheDocument();
+    const upperBoundaryLimit = chance.string({
+      length: 150,
+      symbols: false,
+      alpha: true,
+      numeric: true,
+    });
+    input.value = upperBoundaryLimit;
+    form.dispatchEvent(new Event("submit"));
+    expect(input).toHaveValue("");
+    expect(inputError.textContent).toBe("");
+    const lowerBoundaryLimit = chance.string({
+      length: 4,
+      symbols: false,
+      alpha: true,
+      numeric: true,
+    });
+    input.value = lowerBoundaryLimit;
+    form.dispatchEvent(new Event("submit"));
+    expect(input).toHaveValue("");
+    expect(inputError.textContent).toBe("");
   });
+
+  test("input validation with invalid inputs", () => {
+    const input = document.querySelector("#text-input");
+    const inputError = document.querySelector("#input-error");
+    const form = document.querySelector("#submit-form");
+
+    input.value = "";
+    expect(input).toHaveValue("");
+    form.dispatchEvent(new Event("submit"));
+    const inputRequired = inputError.textContent;
+    expect(inputRequired).toBe("Input is required");
+    const symbolText = chance.string({ pool: "$#$#$#$#$#" });
+    input.value = symbolText;
+    expect(input).toHaveValue(symbolText);
+    form.dispatchEvent(new Event("submit"));
+    expect(inputError.textContent).toBe(
+      "Only alphanumeric and allowed special characters , ' -"
+    );
+    const firstCharacterSymbol =
+      "," +
+      chance.string({ length: 10, alpha: true, symbols: false, numeric: true });
+    input.value = firstCharacterSymbol;
+    expect(input).toHaveValue(firstCharacterSymbol);
+    form.dispatchEvent(new Event("submit"));
+    expect(inputError.textContent).toBe("First letter should be alphanumeric");
+    const moreThanLimit = chance.string({
+      length: 151,
+      symbols: false,
+      alpha: true,
+      numeric: true,
+    });
+    input.value = moreThanLimit;
+    expect(input).toHaveValue(moreThanLimit);
+    form.dispatchEvent(new Event("submit"));
+    expect(inputError.textContent).toBe("Not more than 150 characters");
+    const lessThanLimit = chance.string({
+      length: 1,
+      symbols: false,
+      alpha: true,
+      numeric: true,
+    });
+    input.value = lessThanLimit;
+    expect(input).toHaveValue(lessThanLimit);
+    form.dispatchEvent(new Event("submit"));
+    expect(inputError.textContent).toBe("Must be more than 3 characters");
+  });
+});
+
+describe("to check that filter button giving the exact output ", () => {
+  test("to check that filter buttons are displayed", () => {
+    const radioButtonContainer = document.querySelector("#radio-buttons");
+    const radioButtons = document.querySelectorAll(
+      '#radio-buttons input[type="radio"]'
+    );
+    const radioButtonsLength = radioButtons.length;
+    expect(radioButtonsLength).toBe(3);
+
+    expect(getByText(radioButtonContainer, /All/)).toBeInTheDocument();
+    expect(getByText(radioButtonContainer, /Assigned/)).toBeInTheDocument();
+    expect(getByText(radioButtonContainer, /Completed/)).toBeInTheDocument();
+  });
+  test("to check that clicking any status giving the correct value as output", async () => {
+    const radioButtonContainer = document.querySelector("#radio-buttons");
+
+    const assignedButton = getByLabelText(radioButtonContainer, /Assigned/, {
+      selector: "input",
+    });
+    await userEvent.click(assignedButton);
+    await waitFor(() => {
+      expect(assignedButton.checked).toBe(true);
+    });
+
+    const allButton = getByLabelText(radioButtonContainer, /All/, {
+      selector: "input",
+    });
+    await userEvent.click(allButton);
+    await waitFor(() => {
+      expect(assignedButton.checked).toBe(false);
+    });
+  });
+
+  test("to check that list of tasks shown in the completed section", async () => {
+    const radioButtonContainer = document.querySelector("#radio-buttons");
+    const completedButton = getByLabelText(radioButtonContainer, /Completed/, {
+      selector: "input",
+    });
+    await userEvent.click(completedButton);
+    await waitFor(() => {
+      const todoList = document.querySelector("#task-list");
+      const todoCards = todoList.querySelectorAll(".todo-card");
+      let count = 0;
+      todoCards.forEach((todoCard) => {
+        const hide = todoCard.classList.contains("hide");
+        if (!hide) {
+          count++;
+        }
+      });
+      expect(count).toBe(0);
+    });
+  });
+  test("to check that list of tasks shown in the assigfned section", async () => {
+    const radioButtonContainer = document.querySelector("#radio-buttons");
+    const assignedButton = getByLabelText(radioButtonContainer, /Assigned/, {
+      selector: "input",
+    });
+    await userEvent.click(assignedButton);
+    await waitFor(() => {
+      const todoList = document.querySelector("#task-list");
+      const todoListChildren = todoList.childElementCount;
+
+      expect(todoListChildren).toBe(todoListChildren);
+    });
+  });
+});
+
+describe("to check that Add Functionality working properly ", () => {
+  const mockGetItem = jest.fn();
+  const mockSetItem = jest.fn();
+  const mockRemoveItem = jest.fn();
+  beforeEach(() => {
+    Object.defineProperty(window, "localStorage", {
+      value: {
+        getItem: (...args) => mockGetItem(...args),
+        setItem: (...args) => mockSetItem(...args),
+        removeItem: (...args) => mockRemoveItem(...args),
+      },
+    });
+  });
+
+  test("to check that with the valid input task is added to list ", async () => {
+    const input = document.querySelector("#text-input");
+    const saveBtn = document.querySelector("#save-btn-id");
+
+    await userEvent.type(input, "good one");
+    await userEvent.click(saveBtn);
+    expect(mockSetItem).toHaveBeenCalledTimes(1);
+    expect(mockSetItem).toHaveBeenCalledWith(
+      "todos",
+      JSON.stringify([
+        {
+          taskId: 0,
+          taskName: "good one",
+          completed: false,
+        },
+      ])
+    );
+  });
+
+
+test("to check that with invalid input task whether added to the list",async ()=>{
+  const input = document.querySelector("#text-input");
+  const saveBtn = document.querySelector("#save-btn-id");
+  const inputError = document.querySelector("#input-error");
+  await userEvent.type(input, "$#$#$#");
+  await userEvent.click(saveBtn);
+expect(inputError.textContent).toBe("Only alphanumeric and allowed special characters , ' -")
+  expect(mockSetItem).toHaveBeenCalledTimes(0);
+})
 
 
 });

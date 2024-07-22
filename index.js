@@ -1,4 +1,6 @@
 function run(){
+  
+
 
 
 
@@ -21,7 +23,7 @@ todoList.addEventListener("click", operations);
 cancelBtn.addEventListener("click", cancelEditTask);
 cancelBtn.title = "Cancel the edit"
 deleteButton.addEventListener("click", deleteAll);
-
+saveBtn.addEventListener("click",submitForm)
 input.addEventListener("input", removeError);
 input.addEventListener("focus", removeError);
 
@@ -51,7 +53,10 @@ function submitForm(event) {
       const editIndex = input.getAttribute("edit-index");
       submitEditForm(inputValue, editIndex);
     } else {
-      createTask(inputValue);
+    
+        createTask(inputValue);
+    
+    
     }
     input.value = "";
   }
@@ -68,7 +73,7 @@ function getValidInputValue() {
     return trimmedInput;
   } else {
     inputError.classList.remove("hide");
-    inputError.innerText = isValidinput;
+    inputError.textContent = isValidinput;
     return null;
   }
 }
@@ -83,7 +88,7 @@ function submitEditForm(trimmedInput, editIndex) {
   updateTodotoLocalStorage(editTask);
   renderTasks();
   input.setAttribute("edit", false);
-  saveBtn.innerText = "Add";
+  saveBtn.textContent = "Add";
 
   cancelBtn.classList.remove("block");
   cancelBtn.classList.add("hide");
@@ -120,7 +125,7 @@ function renderTasks() {
 function removeError(e) {
   //to remove already error in the input box
 
-  inputError.innerText = "";
+  inputError.textContent = "";
 
 }
 
@@ -131,7 +136,7 @@ function noTaskFound() {
   const p = document.createElement("p");
   p.classList.add("no-task-found");
   p.setAttribute("id", "no-tasks-id");
-  p.innerText = "You didnt have any tasks";
+  p.textContent = "You didnt have any tasks";
 
   todoList.append(p);
 }
@@ -151,8 +156,8 @@ function createTask(taskName) {
     taskId: newTaskNumber,
     taskName,
     completed: false,
-    created_at: getCurrentTime(),
-    updated_at: getDefaultTime(),
+    // created_at: getCurrentTime(),
+    // updated_at: getDefaultTime(),
   };
 selectedTasks =[]
   saveTodoToLocalStorage(task);
@@ -160,12 +165,7 @@ selectedTasks =[]
   renderTasks();
 }
 
-function getCurrentTime() {
-  return new Date();
-}
-function getDefaultTime() {
-  return new Date(0);
-}
+
 
 function createTaskCard(taskName, taskId, isCompleted) {
   //to create one task card which consists of checkbox and task name and group of buttons which contain delete ,edit button and return task card
@@ -339,7 +339,7 @@ function editTask(target) {
   const completed = todoCard.getAttribute("completed")
   
   if(completed === null){
-    saveBtn.innerText = "Save";
+    saveBtn.textContent = "Save";
     saveBtn.title="Save the task"
     const taskName = todoCard.querySelector("#task-name-id");
     const editIndex = todoCard.getAttribute("index");
@@ -361,7 +361,7 @@ function cancelEditTask(e) {
     input.removeAttribute("edit-index");
     cancelBtn.classList.remove("block");
     cancelBtn.classList.add("hide");
-    saveBtn.innerText ="Add"
+    saveBtn.textContent ="Add"
     saveBtn.title = "Add the task"
   }
 
@@ -376,7 +376,7 @@ function deleteTask(target) {
   if (isEdit === "true") {
     input.value = "";
     input.setAttribute("edit", false);
-    saveBtn.innerText ="Add"
+    saveBtn.textContent ="Add"
     input.removeAttribute("edit-index")
     cancelBtn.classList.remove("block");
     cancelBtn.classList.add("hide");
@@ -561,7 +561,7 @@ function updateTask(todos, task) {
     if (todo.taskId === Number(task.taskId)) {
       todo.taskName = task.taskName;
       todo.completed = task.completed;
-      todo.updated_at = getCurrentTime();
+      // todo.updated_at = getCurrentTime();
     }
     return todo;
   });
@@ -587,7 +587,7 @@ function deleteAll() {
     if(checkInputNotExist()){
       cancelBtn.classList.remove("block");
       cancelBtn.classList.add("hide");
-      saveBtn.innerText = "Add"
+      saveBtn.textContent = "Add"
           deleteSelectedFromLocalStorage(selectedTasks);
       selectedTasks = [];
       renderTasks();
@@ -678,8 +678,11 @@ function validateMinimumCharacters(text) {
   } else return "Must be more than 3 characters";
 }
 
+
+
+
 }
 
-module.exports={
+module.exports = {
   run
 }
