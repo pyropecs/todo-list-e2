@@ -349,6 +349,10 @@ describe("to check that Add Functionality working properly ", () => {
       },
     });
   });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+  
 
   test("to check that with the valid input task is added to list ", async () => {
     const input = document.querySelector("#text-input");
@@ -368,17 +372,18 @@ describe("to check that Add Functionality working properly ", () => {
       ])
     );
   });
+  test("to check that with invalid input task whether added to the list",async ()=>{
+    const input = document.querySelector("#text-input");
+    const saveBtn = document.querySelector("#save-btn-id");
+    const inputError = document.querySelector("#input-error");
+    await userEvent.type(input, "$#$#$#");
+    await userEvent.click(saveBtn);
+  expect(inputError.textContent).toBe("Only alphanumeric and allowed special characters , ' -")
+    expect(mockSetItem).not.toHaveBeenCalled();
+  });
 
 
-test("to check that with invalid input task whether added to the list",async ()=>{
-  const input = document.querySelector("#text-input");
-  const saveBtn = document.querySelector("#save-btn-id");
-  const inputError = document.querySelector("#input-error");
-  await userEvent.type(input, "$#$#$#");
-  await userEvent.click(saveBtn);
-expect(inputError.textContent).toBe("Only alphanumeric and allowed special characters , ' -")
-  expect(mockSetItem).toHaveBeenCalledTimes(0);
-})
+
 
 
 });

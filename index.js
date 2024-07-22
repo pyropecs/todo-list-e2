@@ -50,10 +50,11 @@ function submitForm(event) {
     const isEdit = input.getAttribute("edit");
 
     if (isEdit === "true") {
+      console.log(inputValue,"edit")
       const editIndex = input.getAttribute("edit-index");
       submitEditForm(inputValue, editIndex);
     } else {
-    
+   
         createTask(inputValue);
     
     
