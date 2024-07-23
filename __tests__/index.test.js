@@ -383,21 +383,28 @@ describe("to check that Add Functionality working properly ", () => {
     const input = document.querySelector("#text-input");
     const saveBtn = document.querySelector("#save-btn-id");
     const inputError = document.querySelector("#input-error");
+   
+
     await userEvent.type(input, "$#$#$#");
     await userEvent.click(saveBtn);
     expect(inputError.textContent).toBe(
       "Only alphanumeric and allowed special characters , ' -"
     );
-    expect(mockSetItem).not.toHaveBeenCalled();
+    expect(mockSetItem).not.toHaveBeenCalled()
   });
 });
 
-// describe("to check that delete functionality",()=>{
-// test("to check that delete delete button is clickable",()=>{
+describe("to check that delete functionality",()=>{
+test("to check that delete delete button is clickable",async ()=>{
+const input = document.querySelector("#text-input")
+const saveBtn = document.querySelector("#save-btn-id");
+const form = document.querySelector("#submit-form")
+input.value = "delete this"
+form.dispatchEvent(new Event("submit"))
+expect(prettyDOM(document)).toBe(null)
 
 
+})
 
-// })
 
-
-// })
+})

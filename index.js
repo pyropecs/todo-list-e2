@@ -681,7 +681,7 @@ function validateMinimumCharacters(text) {
 
 
 
-module.exports={
-  submitForm,submitEditForm,cancelEditTask,checkInputNotExist,checkTaskExist,createCheckbox,createIconButton,createTask,createTaskCard,createTaskCard,createTaskName,createToDoButtons,deleteAll,deleteSelectedFromLocalStorage,deleteTask,deleteTodofromLocalStorage,editTask,filterTodos,getNextIndexFromLocalStorage,getTodoFromLocalStorage,getTodoFromLocalStorageUsingIndex,getValidInputValue,isTaskCompleted,noneSelected,operations,removeError,removeInputValue,
+// module.exports={
+//   submitForm,submitEditForm,cancelEditTask,checkInputNotExist,checkTaskExist,createCheckbox,createIconButton,createTask,createTaskCard,createTaskCard,createTaskName,createToDoButtons,deleteAll,deleteSelectedFromLocalStorage,deleteTask,deleteTodofromLocalStorage,editTask,filterTodos,getNextIndexFromLocalStorage,getTodoFromLocalStorage,getTodoFromLocalStorageUsingIndex,getValidInputValue,isTaskCompleted,noneSelected,operations,removeError,removeInputValue,
 
-}
+// }
