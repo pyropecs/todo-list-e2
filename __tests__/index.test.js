@@ -3,25 +3,42 @@ const path = require("path");
 const {
   getByText,
   waitFor,
-
+  screen,
   getByLabelText,
+  prettyDOM,
 } = require("@testing-library/dom");
 
 const Chance = require("chance");
 const chance = new Chance();
 require("@testing-library/jest-dom");
 
-const { run } = require("../index.js");
+// const { run } = require("../index.js");
 const { default: userEvent } = require("@testing-library/user-event");
-
+const mockGetItem = jest.fn();
+const mockSetItem = jest.fn();
+const mockRemoveItem = jest.fn();
 beforeEach(() => {
   const html = fs.readFileSync(
     path.resolve(__dirname, "../index.html"),
     "utf8"
   );
   document.documentElement.innerHTML = html.toString();
-  run();
+  Object.defineProperty(window, "localStorage", {
+    value: {
+      getItem: (...args) => mockGetItem(...args),
+      setItem: (...args) => mockSetItem(...args),
+      removeItem: (...args) => mockRemoveItem(...args),
+    },
+  });
+  require("../index.js");
+  jest.resetModules();
+  
 });
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
 describe("to test that input and button html are present", () => {
   test("to check that input and button element wrapped in a form", () => {
     const formElement = document.querySelector("#submit-form");
@@ -196,10 +213,16 @@ describe("to test the input validation ", () => {
     });
     input.value = validInput;
     expect(input).toHaveValue(validInput);
-    form.dispatchEvent(new Event("submit"));
+    submitButton.dispatchEvent(new Event("click"));
     expect(input).toHaveValue("");
+    expect(mockSetItem).toHaveBeenCalled();
+
+    expect(mockSetItem).toHaveBeenCalledWith(
+      "todos",
+      JSON.stringify([{ taskId: 0, taskName: validInput, completed: false }])
+    );
     expect(inputError.textContent).toBe("");
-    expect(getByText(todoList, validInput)).toBeInTheDocument();
+
     const upperBoundaryLimit = chance.string({
       length: 150,
       symbols: false,
@@ -255,6 +278,7 @@ describe("to test the input validation ", () => {
     input.value = moreThanLimit;
     expect(input).toHaveValue(moreThanLimit);
     form.dispatchEvent(new Event("submit"));
+
     expect(inputError.textContent).toBe("Not more than 150 characters");
     const lessThanLimit = chance.string({
       length: 1,
@@ -337,23 +361,6 @@ describe("to check that filter button giving the exact output ", () => {
 });
 
 describe("to check that Add Functionality working properly ", () => {
-  const mockGetItem = jest.fn();
-  const mockSetItem = jest.fn();
-  const mockRemoveItem = jest.fn();
-  beforeEach(() => {
-    Object.defineProperty(window, "localStorage", {
-      value: {
-        getItem: (...args) => mockGetItem(...args),
-        setItem: (...args) => mockSetItem(...args),
-        removeItem: (...args) => mockRemoveItem(...args),
-      },
-    });
-  });
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-  
-
   test("to check that with the valid input task is added to list ", async () => {
     const input = document.querySelector("#text-input");
     const saveBtn = document.querySelector("#save-btn-id");
@@ -372,18 +379,25 @@ describe("to check that Add Functionality working properly ", () => {
       ])
     );
   });
-  test("to check that with invalid input task whether added to the list",async ()=>{
+  test("to check that with invalid input task whether added to the list", async () => {
     const input = document.querySelector("#text-input");
     const saveBtn = document.querySelector("#save-btn-id");
     const inputError = document.querySelector("#input-error");
     await userEvent.type(input, "$#$#$#");
     await userEvent.click(saveBtn);
-  expect(inputError.textContent).toBe("Only alphanumeric and allowed special characters , ' -")
+    expect(inputError.textContent).toBe(
+      "Only alphanumeric and allowed special characters , ' -"
+    );
     expect(mockSetItem).not.toHaveBeenCalled();
   });
-
-
-
-
-
 });
+
+// describe("to check that delete functionality",()=>{
+// test("to check that delete delete button is clickable",()=>{
+
+
+
+// })
+
+
+// })

@@ -229,6 +229,8 @@ cursor: pointer;
   white-space: nowrap;
   border: none;
   outline: none;
+  align-items: center;
+  display: flex;
   
 }
 .todo-list-container {
