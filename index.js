@@ -3,8 +3,6 @@
 
 
 
-
-
 const form = document.querySelector("#submit-form");
 const input = document.querySelector("#text-input");
 const todoList = document.querySelector("#task-list");
