@@ -274,7 +274,9 @@ function noneSelected() {
 }
 
 function selectTask(e) {
+  
   const todoCard = e.target.parentNode.parentNode;
+  
   const selectedIndex = todoCard.getAttribute("index");
   const checkBox = todoCard.querySelector("#select-checkbox");
   const isChecked = checkBox.checked;
@@ -350,7 +352,7 @@ function cancelEditTask(e) {
     todoList.classList.remove("no-click")
     deleteButton.classList.remove("no-click")
     saveBtn.textContent = "Add";
-
+inputError.textContent=""
     saveBtn.title = "Add the task";
   }
 
@@ -362,14 +364,7 @@ function deleteTask(target) {
 
   const index = todoCard.getAttribute("index");
   const isEdit = input.getAttribute("edit");
-  if (isEdit === "true") {
-    input.value = "";
-    input.setAttribute("edit", false);
-    saveBtn.textContent = "Add";
-    input.removeAttribute("edit-index");
-    cancelBtn.classList.remove("block");
-    cancelBtn.classList.add("hide");
-  }
+
   deleteTodofromLocalStorage(index);
   renderTasks();
 }

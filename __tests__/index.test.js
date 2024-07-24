@@ -646,7 +646,7 @@ describe("to check that edit functionality is working properly", () => {
     });
     input.value = validInput;
     fireEvent(saveBtn, new Event("click"));
-    todoCards = document.querySelectorAll(".todo-card");
+    const todoCards = document.querySelectorAll(".todo-card");
     expect(todoCards.length).toBe(1);
     let taskName = getByText(todoList, validInput);
     const editButton = document.querySelector("#edit-btn-id");
@@ -691,5 +691,103 @@ describe("to check that edit functionality is working properly", () => {
     await waitFor(() => {
       expect(document.querySelector("#input-error").textContent).toBe("");
     });
+  });
+});
+
+describe("to check the multiple delete items is working properly", () => {
+  function createTask(validInput) {
+    const input = document.querySelector("#text-input");
+
+    const saveBtn = document.querySelector("#save-btn-id");
+
+    input.value = validInput;
+    fireEvent(saveBtn, new Event("click"));
+  }
+  test(" select the multiple task and should be deleted by clicking delete button", () => {
+    const deleteButton = document.querySelector("#delete-all");
+    expect(deleteButton.disabled).toBe(true);
+    const numberOfTasks = 7;
+
+    const tasks = [];
+    for (let i = 0; i < numberOfTasks; i++) {
+      const validInput = chance.string({
+        symbols: false,
+        numeric: false,
+        alpha: true,
+        length: 30,
+      });
+      tasks.push(validInput);
+      createTask(validInput);
+    }
+    let todoCards = document.querySelectorAll(".todo-card");
+
+    expect(todoCards.length).toBe(numberOfTasks);
+    const selectedTasks = [tasks[1], tasks[2], tasks[4]];
+    todoCards.forEach((todoCard) => {
+      const taskName = todoCard.querySelector("#task-name-id");
+      const taskContent = taskName.textContent;
+      if (selectedTasks.includes(taskContent)) {
+        let selectCheckbox = todoCard.querySelector("#select-checkbox");
+        expect(selectCheckbox.checked).toBe(false);
+        fireEvent.click(selectCheckbox);
+        selectCheckbox = todoCard.querySelector("#select-checkbox");
+
+        expect(selectCheckbox.checked).toBe(true);
+      }
+    });
+    window.confirm = jest.fn().mockReturnValue(true);
+    expect(deleteButton.disabled).toBe(false);
+    fireEvent.click(deleteButton);
+    expect(window.confirm).toHaveBeenCalled();
+    todoCards = document.querySelectorAll(".todo-card");
+    const remainingTasks = numberOfTasks - selectedTasks.length;
+    expect(todoCards.length).toBe(remainingTasks);
+  });
+
+  test("to check that unselect the multiple task and should be deleted by clicking delete button", () => {
+    const deleteButton = document.querySelector("#delete-all");
+    expect(deleteButton.disabled).toBe(true);
+    const numberOfTasks = 7;
+
+    const tasks = [];
+    for (let i = 0; i < numberOfTasks; i++) {
+      const validInput = chance.string({
+        symbols: false,
+        numeric: false,
+        alpha: true,
+        length: 30,
+      });
+      tasks.push(validInput);
+      createTask(validInput);
+    }
+    let todoCards = document.querySelectorAll(".todo-card");
+    todoCards.forEach((todoCard) => {
+      let selectCheckbox = todoCard.querySelector("#select-checkbox");
+      expect(selectCheckbox.checked).toBe(false);
+      fireEvent.click(selectCheckbox);
+      selectCheckbox = todoCard.querySelector("#select-checkbox");
+      //selecting all the tasks
+
+      expect(selectCheckbox.checked).toBe(true);
+    });
+    const unselectTasks = [tasks[2], tasks[1], tasks[5]];
+    todoCards.forEach((todoCard) => {
+      const taskName = todoCard.querySelector("#task-name-id");
+      const taskContent = taskName.textContent;
+      if (unselectTasks.includes(taskContent)) {
+        let selectCheckbox = todoCard.querySelector("#select-checkbox");
+        expect(selectCheckbox.checked).toBe(true);
+        fireEvent.click(selectCheckbox);
+        selectCheckbox = todoCard.querySelector("#select-checkbox");
+        expect(selectCheckbox.checked).toBe(false);
+      }
+    });
+    window.confirm = jest.fn().mockReturnValue(true);
+    expect(deleteButton.disabled).toBe(false);
+    fireEvent.click(deleteButton);
+    expect(window.confirm).toHaveBeenCalled();
+    todoCards = document.querySelectorAll(".todo-card");
+
+    expect(todoCards.length).toBe(unselectTasks.length);
   });
 });
