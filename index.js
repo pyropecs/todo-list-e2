@@ -74,11 +74,13 @@ function submitEditForm(trimmedInput, editIndex) {
     taskName: trimmedInput,
     completed: false,
   };
+  
   updateTodotoLocalStorage(editTask);
   renderTasks();
   input.setAttribute("edit", false);
   saveBtn.textContent = "Add";
-
+  todoList.classList.remove("no-click")
+  deleteButton.classList.remove("no-click")
   cancelBtn.classList.remove("block");
   cancelBtn.classList.add("hide");
 }
@@ -318,7 +320,7 @@ function checkInputNotExist() {
 function editTask(target) {
   //to traverse the parent element todo card from edit button and queryselect the form input and get the value of the form input and setting attributes for editing and which todo card is editing by setting todo card index
   const todoCard = target.parentNode.parentNode.parentNode;
-  
+
   const completed = todoCard.getAttribute("completed");
   
   if (completed === null) {
@@ -331,18 +333,24 @@ function editTask(target) {
     input.setAttribute("edit", true);
     input.setAttribute("edit-index", editIndex);
     input.focus();
+    todoList.classList.add("no-click")
+    deleteButton.classList.add("no-click")
     cancelBtn.classList.remove("hide");
     cancelBtn.classList.add("block");
   }
 }
 function cancelEditTask(e) {
+
   if (confirm("Do you want to cancel the edit")) {
     input.value = "";
     input.setAttribute("edit", false);
     input.removeAttribute("edit-index");
     cancelBtn.classList.remove("block");
     cancelBtn.classList.add("hide");
+    todoList.classList.remove("no-click")
+    deleteButton.classList.remove("no-click")
     saveBtn.textContent = "Add";
+
     saveBtn.title = "Add the task";
   }
 
@@ -650,7 +658,4 @@ function validateMinimumCharacters(text) {
   } else return "Must be more than 3 characters";
 }
 
-// module.exports={
-//   submitForm,submitEditForm,cancelEditTask,checkInputNotExist,checkTaskExist,createCheckbox,createIconButton,createTask,createTaskCard,createTaskCard,createTaskName,createToDoButtons,deleteAll,deleteSelectedFromLocalStorage,deleteTask,deleteTodofromLocalStorage,editTask,filterTodos,getNextIndexFromLocalStorage,getTodoFromLocalStorage,getTodoFromLocalStorageUsingIndex,getValidInputValue,isTaskCompleted,noneSelected,operations,removeError,removeInputValue,
 
-// }

@@ -288,12 +288,17 @@ cursor: pointer;
 .delete {
   width: 16px;
   height: 16px;
+ 
   cursor: pointer;
 }
 .complete{
   width:16px;
   height:16px;
+  
   cursor: pointer;
+}
+.no-click{
+  pointer-events: none;
 }
 .complete > img{
   width:100%;
