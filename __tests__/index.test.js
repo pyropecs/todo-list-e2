@@ -3,10 +3,11 @@ const path = require("path");
 const {
   getByText,
   waitFor,
-  screen,
-  getByLabelText,
-  fireEvent,prettyDOM
   
+  getByLabelText,
+  fireEvent,
+
+
 } = require("@testing-library/dom");
 
 const Chance = require("chance");
@@ -15,9 +16,8 @@ require("@testing-library/jest-dom");
 
 
 const { default: userEvent } = require("@testing-library/user-event");
-const mockGetItem = jest.fn();
-const mockSetItem = jest.fn();
-const mockRemoveItem = jest.fn();
+
+
 beforeEach(() => {
   const html = fs.readFileSync(
     path.resolve(__dirname, "../index.html"),
@@ -27,9 +27,25 @@ beforeEach(() => {
 
   require("../index.js");
   jest.resetModules();
-  
+  const mockLocalStorage = (() => {
+    let store = {};
+    return {
+        getItem: (key) => store[key] || null,
+        setItem: (key, value) => (store[key] = value.toString()),
+        clear: () => (store = {}),
+        removeItem: (key) => delete store[key],
+    };
+})();
+Object.defineProperty(window, 'localStorage', {
+    value: mockLocalStorage,
+});
+localStorage.clear();
+
 });
 
+afterEach(()=>{
+  localStorage.clear();
+})
 
 describe("to test that input and button html are present", () => {
   test("to check that input and button element wrapped in a form", () => {
@@ -196,7 +212,7 @@ describe("to test the input validation ", () => {
     const inputError = document.querySelector("#input-error");
     const submitButton = document.querySelector("#save-btn-id");
     const form = document.querySelector("#submit-form");
-    const todoList = document.querySelector(".todo-list");
+   
     const validInput = chance.string({
       length: 30,
       symbols: false,
@@ -207,37 +223,52 @@ describe("to test the input validation ", () => {
     expect(input).toHaveValue(validInput);
    fireEvent(submitButton,new Event("click"))
     expect(input).toHaveValue("");
-    // expect(mockSetItem).toHaveBeenCalled();
- console.log(todoList)
-
-    expect(screen.getByText(validInput)).toBeInTheDocument()
-    // expect(mockSetItem).toHaveBeenCalledWith(
-    //   "todos",
-    //   JSON.stringify([{ taskId: 0, taskName: validInput, completed: false }])
-    // );
-    expect(inputError.textContent).toBe("");
-
-    const upperBoundaryLimit = chance.string({
-      length: 150,
-      symbols: false,
-      alpha: true,
-      numeric: true,
+    expect(inputError.textContent).toBe("");    
+    const tasks = JSON.parse(localStorage.getItem("todos"))
+    expect(tasks).toStrictEqual([{taskName:validInput,taskId:0,completed:false}])
     });
-    input.value = upperBoundaryLimit;
-    form.dispatchEvent(new Event("submit"));
-    expect(input).toHaveValue("");
-    expect(inputError.textContent).toBe("");
-    const lowerBoundaryLimit = chance.string({
-      length: 4,
-      symbols: false,
-      alpha: true,
-      numeric: true,
-    });
-    input.value = lowerBoundaryLimit;
-    form.dispatchEvent(new Event("submit"));
-    expect(input).toHaveValue("");
-    expect(inputError.textContent).toBe("");
+
+test("input validation with upper boundary value",()=>{
+  const input = document.querySelector("#text-input");
+  const form = document.querySelector("#submit-form");
+  const inputError = document.querySelector("#input-error");
+  const upperBoundaryLimit = chance.string({
+    length: 150,
+    symbols: false,
+    alpha: true,
+    numeric: true,
   });
+  input.value = upperBoundaryLimit;
+  fireEvent(form,new Event("submit"))
+  expect(input).toHaveValue("");
+  expect(inputError.textContent).toBe("");
+ 
+  const tasks = JSON.parse(localStorage.getItem("todos"))
+expect(tasks).toStrictEqual([{taskName:upperBoundaryLimit,taskId:0,completed:false}])
+
+
+})
+test("input validation with lower boundary value",()=>{
+
+  const input = document.querySelector("#text-input");
+  const form = document.querySelector("#submit-form");
+  const inputError = document.querySelector("#input-error");
+  const lowerBoundaryLimit = chance.string({
+    length: 4,
+    symbols: false,
+    alpha: true,
+    numeric: true,
+  });
+  input.value = lowerBoundaryLimit;
+  fireEvent(form,new Event("submit"))
+  expect(input).toHaveValue("");
+  expect(inputError.textContent).toBe("");
+
+  const tasks = JSON.parse(localStorage.getItem("todos"))
+  expect(tasks).toStrictEqual([{taskName:lowerBoundaryLimit,taskId:0,completed:false}])
+
+
+})
 
   test("input validation with invalid inputs", () => {
     const input = document.querySelector("#text-input");
@@ -360,10 +391,11 @@ describe("to check that Add Functionality working properly ", () => {
     const input = document.querySelector("#text-input");
     const saveBtn = document.querySelector("#save-btn-id");
 
-    await userEvent.type(input, "good one");
-    await userEvent.click(saveBtn);
-    // expect(mockSetItem).toHaveBeenCalledTimes(1);
-
+const inputValue = chance.string({symbols:false,numeric:true,alpha:true,length:30})
+input.value = inputValue
+fireEvent(saveBtn,new Event("click"))
+    const todoCards = document.querySelectorAll(".todo-card")
+    expect(todoCards.length).toBe(1);
   });
   test("to check that with invalid input task whether added to the list", async () => {
     const input = document.querySelector("#text-input");
@@ -371,26 +403,34 @@ describe("to check that Add Functionality working properly ", () => {
     const inputError = document.querySelector("#input-error");
    
 
-    await userEvent.type(input, "$#$#$#");
-    await userEvent.click(saveBtn);
+    const inputValue = chance.string({symbols:true,numeric:false,alpha:false,length:30})
+    input.value = inputValue
+    fireEvent(saveBtn,new Event("click"))
     expect(inputError.textContent).toBe(
       "Only alphanumeric and allowed special characters , ' -"
     );
-    // expect(mockSetItem).not.toHaveBeenCalled()
+  
   });
 });
 
-describe("to check that delete functionality",()=>{
-test("to check that delete delete button is clickable",async ()=>{
-const input = document.querySelector("#text-input")
-const saveBtn = document.querySelector("#save-btn-id");
-const form = document.querySelector("#submit-form")
-input.value = "delete this"
-form.dispatchEvent(new Event("submit"))
+describe("to check that delete functionality working properly", ()=>{
+test("to check that delete functionality is working by clicking it",()=>{
+  const input = document.querySelector("#text-input");
+  const saveBtn = document.querySelector("#save-btn-id");
+  const validInput = chance.string({symbols:false,numeric:false,alpha:true,length:30})
+  const todoList = document.querySelector("#task-list")
+  input.value = validInput;
+  fireEvent(saveBtn,new Event("click"))
+  const todoCards = document.querySelectorAll(".todo-card")
+  expect(todoCards.length).toBe(1);
 
+  // const deleteButton = getByAltText(todoList,"delete button")
+  const deleteButton = document.querySelector("#delete-btn-id");
+deleteButton.dispatchEvent(new Event("click"))
 
 
 })
 
 
 })
+

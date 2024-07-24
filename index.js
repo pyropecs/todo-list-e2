@@ -1,8 +1,3 @@
-
-  
-
-
-
 const form = document.querySelector("#submit-form");
 const input = document.querySelector("#text-input");
 const todoList = document.querySelector("#task-list");
@@ -11,31 +6,29 @@ const inputError = document.querySelector("#input-error");
 const saveBtn = document.querySelector("#save-btn-id");
 const deleteButton = document.querySelector("#delete-all");
 const cancelBtn = document.querySelector("#cancel-btn");
- const radio_btns = document.querySelectorAll(`input[type='radio'][name='radio_choices']`);
+const radio_btns = document.querySelectorAll(
+  `input[type='radio'][name='radio_choices']`
+);
 let selectedTasks = [];
-let selectedValue = "all"
+let selectedValue = "all";
 document.addEventListener("DOMContentLoaded", renderTasks);
 form.addEventListener("submit", submitForm);
-todoList.addEventListener("click", operations);
+
 // statusId.addEventListener("change", filterTodos);
 cancelBtn.addEventListener("click", cancelEditTask);
-cancelBtn.title = "Cancel the edit"
+cancelBtn.title = "Cancel the edit";
 deleteButton.addEventListener("click", deleteAll);
-saveBtn.addEventListener("click",submitForm)
+saveBtn.addEventListener("click", submitForm);
 input.addEventListener("input", removeError);
 input.addEventListener("focus", removeError);
 
-
-
 // to add event listeners to select radio buttons
 for (let target of radio_btns) {
-	target.addEventListener(`change`, () => {
-    selectedValue = target.value
-    renderTasks()
-	});
+  target.addEventListener(`change`, () => {
+    selectedValue = target.value;
+    renderTasks();
+  });
 }
-
-
 
 function submitForm(event) {
   //to submit the valid input task based on edit the task or creating the task it will be obtained from input form attribute
@@ -48,14 +41,11 @@ function submitForm(event) {
     const isEdit = input.getAttribute("edit");
 
     if (isEdit === "true") {
-      console.log(inputValue,"edit")
+      console.log(inputValue, "edit");
       const editIndex = input.getAttribute("edit-index");
       submitEditForm(inputValue, editIndex);
     } else {
-   
-        createTask(inputValue);
-    
-    
+      createTask(inputValue);
     }
     input.value = "";
   }
@@ -96,11 +86,10 @@ function submitEditForm(trimmedInput, editIndex) {
 function renderTasks() {
   //get the tasks from localstorage and create the taskcards and append into todolist container according to the selected value
   todoList.innerHTML = "";
-  
+
   const todos = getTodoFromLocalStorage();
 
   if (todos.length === 0) {
-  
     noTaskFound();
   } else {
     removeNoTaskFound();
@@ -112,8 +101,6 @@ function renderTasks() {
       );
 
       todoList.append(taskCard);
-
-     
     });
   }
 
@@ -125,10 +112,7 @@ function removeError(e) {
   //to remove already error in the input box
 
   inputError.textContent = "";
-
 }
-
-
 
 function noTaskFound() {
   //to append the paragraph tag content having "no tasks found"
@@ -158,19 +142,18 @@ function createTask(taskName) {
     // created_at: getCurrentTime(),
     // updated_at: getDefaultTime(),
   };
-selectedTasks =[]
+  selectedTasks = [];
   saveTodoToLocalStorage(task);
   removeNoTaskFound();
   renderTasks();
 }
-
-
 
 function createTaskCard(taskName, taskId, isCompleted) {
   //to create one task card which consists of checkbox and task name and group of buttons which contain delete ,edit button and return task card
   const taskCard = document.createElement("div");
   taskCard.classList.add("todo-card");
   taskCard.setAttribute("index", taskId);
+  taskCard.setAttribute("id", "#task-card");
   if (isCompleted) {
     taskCard.setAttribute("completed", isCompleted);
   }
@@ -190,31 +173,37 @@ function createToDoButtons(isCompleted) {
     "edit-btn-id",
     "./Images/edit.png",
     "edit icon",
-    "Edit task"
+    "Edit task",
+    checkAndEditTask
   );
   const deleteButton = createIconButton(
     "delete",
     "delete-btn-id",
     "./Images/trash.png",
     "delete button",
-    "Delete task"
+    "Delete task",
+    confirmAndDeleteTask
   );
-  if(isCompleted){
+  if (isCompleted) {
     const completedButton = createIconButton(
       "complete",
       "complete-btn-id",
       "./Images/checked.png",
       "completed icon",
-      "Undo the completed task"
+      "Undo the completed task",
+      completeTask
     );
     btnGroup.append(completedButton, editButton, deleteButton);
-  }else{
-    const completeBtn = createIconButton( "complete",
+  } else {
+    const completeBtn = createIconButton(
+      "complete",
       "complete-btn-id",
       "./Images/checkFill.png",
       "complete icon",
-      "Complete task")
-      btnGroup.append(completeBtn, editButton, deleteButton);
+      "Complete task",
+      completeTask
+    );
+    btnGroup.append(completeBtn, editButton, deleteButton);
   }
 
   return btnGroup;
@@ -225,7 +214,8 @@ function createIconButton(
   id,
   iconImageSource,
   alternateText,
-  title
+  title,
+  eventListener
 ) {
   //to create a button which contains icon image and append the image into button container
   const divContainer = document.createElement("div");
@@ -234,6 +224,7 @@ function createIconButton(
   img.src = iconImageSource;
   img.alt = alternateText;
   img.setAttribute("id", id);
+  img.addEventListener("click", eventListener);
   img.title = title;
   divContainer.append(img);
   return divContainer;
@@ -266,8 +257,9 @@ function createCheckbox() {
 
   checkInput.type = "checkbox";
   checkInput.setAttribute("id", "select-checkbox");
+  checkInput.addEventListener("click", selectTask);
   checkInput.classList.add("completed");
-checkInput.title = "Select the task"
+  checkInput.title = "Select the task";
   checkBoxContainer.append(checkInput);
   return checkBoxContainer;
 }
@@ -279,89 +271,79 @@ function noneSelected() {
   }
 }
 
-function operations(e) {
-  //to handle the buttons that clicked in the todo card
+function selectTask(e) {
+  const todoCard = e.target.parentNode.parentNode;
+  const selectedIndex = todoCard.getAttribute("index");
+  const checkBox = todoCard.querySelector("#select-checkbox");
+  const isChecked = checkBox.checked;
 
+  if (isChecked) {
+    selectedTasks.push(selectedIndex);
+  } else {
+    selectedTasks = selectedTasks.filter(
+      (selectedTask) => selectedTask !== selectedIndex
+    );
+  }
+
+  noneSelected();
+}
+function checkAndEditTask(e) {
   const target = e.target;
-
-  if (target.id === "select-checkbox") {
-    //to handle the clicking complete button behvaiour if its already completed then uncheck on the todo card
-
-    const todoCard = target.parentNode.parentNode;
-    const selectedIndex = todoCard.getAttribute("index");
-    const checkBox = todoCard.querySelector("#select-checkbox");
-    const isChecked = checkBox.checked;
-
-    if (isChecked) {
-      selectedTasks.push(selectedIndex);
-    } else {
-      selectedTasks = selectedTasks.filter(
-        (selectedTask) => selectedTask !== selectedIndex
-      );
-    }
-
-    noneSelected();
-  }
-  if (target.id === "edit-btn-id") {
-    //to handle the clicking edit button behaviour
-    
-    if(checkInputNotExist()){
-      editTask(target);
-    }
-   
-  }
-
-  if (target.id === "delete-btn-id") {
-    //to handle the delete button behaviour
-   
-    if (confirm("Do you want to delete the mentioned task")) {
-      deleteTask(target);
-    
-    }
-  }
-  if (target.id === "complete-btn-id") {
-    isTaskCompleted(target);
+ 
+  if (checkInputNotExist()) {
+    editTask(target);
   }
 }
-
-function checkInputNotExist(){
-  // to check that confirmation pop up will be shown when user clicks edit button when input field has some value
-  const value = input.value
-  if(value.length > 0){
-   return confirm("The input value will be erased if you click the edit button")
+function confirmAndDeleteTask(e) {
+  const target = e.target;
+  if (confirm("Do you want to delete the mentioned task")) {
+    deleteTask(target);
   }
-  return true
+}
+function completeTask(e) {
+  const target = e.target;
+  isTaskCompleted(target);
+}
+
+function checkInputNotExist() {
+  // to check that confirmation pop up will be shown when user clicks edit button when input field has some value
+  const value = input.value;
+  if (value.length > 0) {
+    return confirm(
+      "The input value will be erased if you click the edit button"
+    );
+  }
+  return true;
 }
 function editTask(target) {
   //to traverse the parent element todo card from edit button and queryselect the form input and get the value of the form input and setting attributes for editing and which todo card is editing by setting todo card index
   const todoCard = target.parentNode.parentNode.parentNode;
-  const completed = todoCard.getAttribute("completed")
   
-  if(completed === null){
+  const completed = todoCard.getAttribute("completed");
+  
+  if (completed === null) {
     saveBtn.textContent = "Save";
-    saveBtn.title="Save the task"
+    saveBtn.title = "Save the task";
     const taskName = todoCard.querySelector("#task-name-id");
+   
     const editIndex = todoCard.getAttribute("index");
-    input.value = taskName.value;
+    input.value = taskName.textContent;
     input.setAttribute("edit", true);
     input.setAttribute("edit-index", editIndex);
     input.focus();
     cancelBtn.classList.remove("hide");
     cancelBtn.classList.add("block");
-  
   }
-
 }
 function cancelEditTask(e) {
-
   if (confirm("Do you want to cancel the edit")) {
     input.value = "";
     input.setAttribute("edit", false);
     input.removeAttribute("edit-index");
     cancelBtn.classList.remove("block");
     cancelBtn.classList.add("hide");
-    saveBtn.textContent ="Add"
-    saveBtn.title = "Add the task"
+    saveBtn.textContent = "Add";
+    saveBtn.title = "Add the task";
   }
 
   // e.stopPropagation()
@@ -375,8 +357,8 @@ function deleteTask(target) {
   if (isEdit === "true") {
     input.value = "";
     input.setAttribute("edit", false);
-    saveBtn.textContent ="Add"
-    input.removeAttribute("edit-index")
+    saveBtn.textContent = "Add";
+    input.removeAttribute("edit-index");
     cancelBtn.classList.remove("block");
     cancelBtn.classList.add("hide");
   }
@@ -387,7 +369,7 @@ function deleteTask(target) {
 function isTaskCompleted(target) {
   // traverse the parent element from the checkbox completed and query select the task name element set the respective attributes if its completed or not and edit and update in the local storage
   const todoCard = target.parentNode.parentNode.parentNode;
-  
+
   const taskId = todoCard.getAttribute("index");
   const taskName = todoCard.querySelector("#task-name-id");
 
@@ -398,34 +380,27 @@ function isTaskCompleted(target) {
     ...currentTodo,
     completed: !isCompleted,
   };
-const newCompleted = !isCompleted
+  const newCompleted = !isCompleted;
 
   if (newCompleted) {
-      
     taskName.classList.add("opacity");
-   
- 
-  
-  } else{
-   
-
-    taskName.classList.remove("opacity")
-
-  };
+  } else {
+    taskName.classList.remove("opacity");
+  }
   updateTodotoLocalStorage(newTodo);
   renderTasks();
 }
 
 function filterTodos() {
   //to handle the select functionality with 3 states "completed" ,"assigned","all"
- 
+
   const todoCards = document.querySelectorAll(".todo-card");
   const p = document.querySelector("#no-tasks-id");
-  if(todoCards.length !== 0 ){
+  if (todoCards.length !== 0) {
     removeNoTaskFound();
   }
-  if(p && selectedValue !=="all"){
-    removeNoTaskFound()
+  if (p && selectedValue !== "all") {
+    removeNoTaskFound();
   }
 
   if (selectedValue === "completed") {
@@ -581,18 +556,16 @@ function getNextIndexFromLocalStorage() {
 
 function deleteAll() {
   //to delete the selected task from the local storage
-  
+
   if (confirm("Do you want to delete selected tasks ?")) {
-    if(checkInputNotExist()){
+    if (checkInputNotExist()) {
       cancelBtn.classList.remove("block");
       cancelBtn.classList.add("hide");
-      saveBtn.textContent = "Add"
-          deleteSelectedFromLocalStorage(selectedTasks);
+      saveBtn.textContent = "Add";
+      deleteSelectedFromLocalStorage(selectedTasks);
       selectedTasks = [];
       renderTasks();
     }
-
-    
   }
 }
 
@@ -676,8 +649,6 @@ function validateMinimumCharacters(text) {
     return true;
   } else return "Must be more than 3 characters";
 }
-
-
 
 // module.exports={
 //   submitForm,submitEditForm,cancelEditTask,checkInputNotExist,checkTaskExist,createCheckbox,createIconButton,createTask,createTaskCard,createTaskCard,createTaskName,createToDoButtons,deleteAll,deleteSelectedFromLocalStorage,deleteTask,deleteTodofromLocalStorage,editTask,filterTodos,getNextIndexFromLocalStorage,getTodoFromLocalStorage,getTodoFromLocalStorageUsingIndex,getValidInputValue,isTaskCompleted,noneSelected,operations,removeError,removeInputValue,
