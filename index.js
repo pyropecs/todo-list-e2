@@ -34,8 +34,8 @@ function submitForm(event) {
   //to submit the valid input task based on edit the task or creating the task it will be obtained from input form attribute
   event.preventDefault();
   removeError();
-
-  const inputValue = getValidInputValue();
+  const inputBoxValue = input.value;
+  const inputValue = getValidInputValue(inputBoxValue);
 
   if (inputValue) {
     const isEdit = input.getAttribute("edit");
@@ -51,10 +51,10 @@ function submitForm(event) {
   }
 }
 
-function getValidInputValue() {
+function getValidInputValue(inputValue) {
   //get the input and trim the white spaces and validate the input and return the valid input
-  const taskName = input.value;
-  const trimmedInput = taskName.trim();
+ 
+  const trimmedInput = inputValue.trim();
   const isValidinput = validateText(trimmedInput);
 
   if (isValidinput === true) {
@@ -685,4 +685,5 @@ module.exports = {
   renderAssignedTodos,
   renderCompletedTodos,
   renderTasks,
+  getValidInputValue
 };
