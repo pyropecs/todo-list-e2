@@ -692,6 +692,21 @@ describe("to check that edit functionality is working properly", () => {
       expect(document.querySelector("#input-error").textContent).toBe("");
     });
   });
+
+  test("to test that current input should not be erased without confirmation when clicking edit button",()=>{
+    const {renderTasks,saveTodoToLocalStorage}= require("../index.js")
+const input = document.querySelector("#text-input")
+input.value = chance.string()
+
+
+
+
+    })
+
+
+
+
+
 });
 
 describe("to check the multiple delete items is working properly", () => {
@@ -807,6 +822,7 @@ describe("checking input validation function components", () => {
       validateNotMorThan150Characters,
       validateOnlyAlphaNumericAndAllowedSpecialCharacters,
       validateMinimumCharacters,
+      filterTodos,
     } = require("../index.js");
     expect(validateText(validInput)).toBe(true);
     expect(validateNoEmptyString(validInput)).toBe(true);
@@ -1119,3 +1135,113 @@ describe("testing local storage invididuval compoents", () => {
     expect(newTodos).not.toStrictEqual(todos);
   });
 });
+
+describe("testing filter individual components", () => {
+  function createTask(validInput) {
+    if (validInput) {
+      const input = document.querySelector("#text-input");
+
+      const saveBtn = document.querySelector("#save-btn-id");
+
+      input.value = validInput;
+      fireEvent(saveBtn, new Event("click"));
+    } else {
+      throw new Error("input does not exist");
+    }
+  }
+  test("to test all state in filter st", () => {
+    const {
+      renderTasks,
+      saveTodoToLocalStorage,
+      getTodoFromLocalStorage,
+    } = require("../index.js");
+    const numberOfTasks = 7;
+    for (let i = 0; i < numberOfTasks; i++) {
+      const taskName = chance.string({
+        symbols: false,
+        alpha: true,
+        numeric: true,
+      });
+      const task = {
+        taskId: i,
+        completed: chance.bool({ likelihood: 60 }),
+        taskName,
+      };
+      saveTodoToLocalStorage(task);
+    }
+
+    renderTasks();
+    const todoCards = document.querySelectorAll(".todo-card");
+    expect(todoCards.length).toBe(7);
+  });
+  test("to test assigned state in filter", () => {
+    const {
+      renderTasks,
+      saveTodoToLocalStorage,
+      getTodoFromLocalStorage,
+      renderAssignedTodos,
+    } = require("../index.js");
+    const numberOfTasks = 7;
+    for (let i = 0; i < numberOfTasks; i++) {
+      const taskName = chance.string({
+        symbols: false,
+        alpha: true,
+        numeric: true,
+      });
+      const task = {
+        taskId: i,
+        completed: chance.bool({ likelihood: 60 }),
+        taskName,
+      };
+      saveTodoToLocalStorage(task);
+    }
+    renderTasks();
+    
+    const todoCards = document.querySelectorAll(".todo-card");
+    const assignedTasks = renderAssignedTodos(todoCards);
+    const todos = getTodoFromLocalStorage(); 
+    const assigned = todos.filter((todo) => {
+      return !todo.completed; // getting from the local storage and filter the un completed ones
+    });
+    expect(assigned.length).toBe(assignedTasks);
+  });
+
+  test("to test completed state in filter",()=>{
+    const {
+      renderTasks,
+      saveTodoToLocalStorage,
+      getTodoFromLocalStorage,
+      renderCompletedTodos,
+    } = require("../index.js");
+    const numberOfTasks = 7;
+    for (let i = 0; i < numberOfTasks; i++) {
+      const taskName = chance.string({
+        symbols: false,
+        alpha: true,
+        numeric: true,
+      });
+      const task = {
+        taskId: i,
+        completed: chance.bool({ likelihood: 60 }),
+        taskName,
+      };
+      saveTodoToLocalStorage(task);
+    }
+    renderTasks();//to get the todos from the local storage and append it to the dom
+    
+    const todoCards = document.querySelectorAll(".todo-card");
+    const completedTasks = renderCompletedTodos(todoCards);
+    const todos = getTodoFromLocalStorage(); 
+    const completed = todos.filter((todo) => {
+      
+      return todo.completed; // getting from the local storage and filter the completed ones
+    });
+    expect(completed.length).toBe(completedTasks);
+  })
+
+
+
+});
+
+
+

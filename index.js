@@ -328,7 +328,6 @@ function editTask(target) {
     saveBtn.textContent = "Save";
     saveBtn.title = "Save the task";
     const taskName = todoCard.querySelector("#task-name-id");
-
     const editIndex = todoCard.getAttribute("index");
     input.value = taskName.textContent;
     input.setAttribute("edit", true);
@@ -398,7 +397,7 @@ function isTaskCompleted(target) {
   }
 }
 
-function filterTodos() {
+function filterTodos(selectedValue) {
   //to handle the select functionality with 3 states "completed" ,"assigned","all"
 
   const todoCards = document.querySelectorAll(".todo-card");
@@ -448,6 +447,7 @@ function renderAssignedTodos(todoCards) {
   if (assignedTasks === 0) {
     noTaskFound();
   }
+  return assignedTasks;
 }
 
 function renderCompletedTodos(todoCards) {
@@ -469,6 +469,8 @@ function renderCompletedTodos(todoCards) {
   if (completedTask === 0) {
     noTaskFound();
   }
+
+  return completedTask;
 }
 function getTodoFromLocalStorage() {
   //to get the todos from local stoarge with the key "todos" if there no todo in the local storage then it will be empty array
@@ -679,4 +681,8 @@ module.exports = {
   getTodoFromLocalStorageUsingIndex,
   getNextIndexFromLocalStorage,
   deleteSelectedFromLocalStorage,
+  renderAllTodos,
+  renderAssignedTodos,
+  renderCompletedTodos,
+  renderTasks,
 };
