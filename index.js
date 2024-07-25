@@ -74,13 +74,13 @@ function submitEditForm(trimmedInput, editIndex) {
     taskName: trimmedInput,
     completed: false,
   };
-  
+
   updateTodotoLocalStorage(editTask);
   renderTasks();
   input.setAttribute("edit", false);
   saveBtn.textContent = "Add";
-  todoList.classList.remove("no-click")
-  deleteButton.classList.remove("no-click")
+  todoList.classList.remove("no-click");
+  deleteButton.classList.remove("no-click");
   cancelBtn.classList.remove("block");
   cancelBtn.classList.add("hide");
 }
@@ -274,9 +274,8 @@ function noneSelected() {
 }
 
 function selectTask(e) {
-  
   const todoCard = e.target.parentNode.parentNode;
-  
+
   const selectedIndex = todoCard.getAttribute("index");
   const checkBox = todoCard.querySelector("#select-checkbox");
   const isChecked = checkBox.checked;
@@ -293,7 +292,7 @@ function selectTask(e) {
 }
 function checkAndEditTask(e) {
   const target = e.target;
- 
+
   if (checkInputNotExist()) {
     editTask(target);
   }
@@ -324,35 +323,34 @@ function editTask(target) {
   const todoCard = target.parentNode.parentNode.parentNode;
 
   const completed = todoCard.getAttribute("completed");
-  
+
   if (completed === null) {
     saveBtn.textContent = "Save";
     saveBtn.title = "Save the task";
     const taskName = todoCard.querySelector("#task-name-id");
-   
+
     const editIndex = todoCard.getAttribute("index");
     input.value = taskName.textContent;
     input.setAttribute("edit", true);
     input.setAttribute("edit-index", editIndex);
     input.focus();
-    todoList.classList.add("no-click")
-    deleteButton.classList.add("no-click")
+    todoList.classList.add("no-click");
+    deleteButton.classList.add("no-click");
     cancelBtn.classList.remove("hide");
     cancelBtn.classList.add("block");
   }
 }
 function cancelEditTask(e) {
-
   if (confirm("Do you want to cancel the edit")) {
     input.value = "";
     input.setAttribute("edit", false);
     input.removeAttribute("edit-index");
     cancelBtn.classList.remove("block");
     cancelBtn.classList.add("hide");
-    todoList.classList.remove("no-click")
-    deleteButton.classList.remove("no-click")
+    todoList.classList.remove("no-click");
+    deleteButton.classList.remove("no-click");
     saveBtn.textContent = "Add";
-inputError.textContent=""
+    inputError.textContent = "";
     saveBtn.title = "Add the task";
   }
 
@@ -363,10 +361,13 @@ function deleteTask(target) {
   const todoCard = target.parentNode.parentNode.parentNode;
 
   const index = todoCard.getAttribute("index");
-  const isEdit = input.getAttribute("edit");
 
-  deleteTodofromLocalStorage(index);
-  renderTasks();
+  try {
+    deleteTodofromLocalStorage(index);
+    renderTasks();
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function isTaskCompleted(target) {
@@ -375,23 +376,26 @@ function isTaskCompleted(target) {
 
   const taskId = todoCard.getAttribute("index");
   const taskName = todoCard.querySelector("#task-name-id");
+  try {
+    const currentTodo = getTodoFromLocalStorageUsingIndex(taskId);
+    const isCompleted = currentTodo.completed;
 
-  const currentTodo = getTodoFromLocalStorageUsingIndex(taskId);
-  const isCompleted = currentTodo.completed;
+    const newTodo = {
+      ...currentTodo,
+      completed: !isCompleted,
+    };
+    const newCompleted = !isCompleted;
 
-  const newTodo = {
-    ...currentTodo,
-    completed: !isCompleted,
-  };
-  const newCompleted = !isCompleted;
-
-  if (newCompleted) {
-    taskName.classList.add("opacity");
-  } else {
-    taskName.classList.remove("opacity");
+    if (newCompleted) {
+      taskName.classList.add("opacity");
+    } else {
+      taskName.classList.remove("opacity");
+    }
+    updateTodotoLocalStorage(newTodo);
+    renderTasks();
+  } catch (error) {
+    console.log(error.message);
   }
-  updateTodotoLocalStorage(newTodo);
-  renderTasks();
 }
 
 function filterTodos() {
@@ -487,10 +491,13 @@ function saveTodoToLocalStorage(task) {
 function updateTodotoLocalStorage(task) {
   //to update the existing todo in the local storage
   const todos = JSON.parse(localStorage.getItem("todos"));
-
-  const updatedTodos = updateTask(todos, task);
-  localStorage.removeItem("todos");
-  localStorage.setItem("todos", JSON.stringify(updatedTodos));
+  try {
+    const updatedTodos = updateTask(todos, task);
+    localStorage.removeItem("todos");
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 function deleteTodofromLocalStorage(index) {
@@ -513,12 +520,19 @@ function deleteTodofromLocalStorage(index) {
 
     localStorage.removeItem("todos");
     localStorage.setItem("todos", JSON.stringify(newTodos));
+  } else {
+    throw new Error("No task exist like that");
   }
 }
 function getTodoFromLocalStorageUsingIndex(index) {
   const todos = getTodoFromLocalStorage();
-  const [todo] = todos.filter((todo) => todo.taskId === Number(index));
-  return todo;
+  const isTaskExist = checkTaskExist(todos, Number(index));
+  if (isTaskExist) {
+    const [todo] = todos.filter((todo) => todo.taskId === Number(index));
+    return todo;
+  } else {
+    throw new Error("the given task didnt exist");
+  }
 }
 
 function checkTaskExist(todos, index) {
@@ -534,16 +548,20 @@ function checkTaskExist(todos, index) {
 
 function updateTask(todos, task) {
   //to update the existing task from todos which is obtained from local storage and return updated todos
-  const newTodos = todos.map((todo) => {
-    if (todo.taskId === Number(task.taskId)) {
-      todo.taskName = task.taskName;
-      todo.completed = task.completed;
-      // todo.updated_at = getCurrentTime();
-    }
-    return todo;
-  });
-
-  return newTodos;
+  const isTaskExist = checkTaskExist(todos, Number(task.taskId));
+  if (isTaskExist) {
+    const newTodos = todos.map((todo) => {
+      if (todo.taskId === Number(task.taskId)) {
+        todo.taskName = task.taskName;
+        todo.completed = task.completed;
+        // todo.updated_at = getCurrentTime();
+      }
+      return todo;
+    });
+    return newTodos;
+  } else {
+    throw new Error("the given doesnt exist");
+  }
 }
 
 function getNextIndexFromLocalStorage() {
@@ -570,12 +588,6 @@ function deleteAll() {
       renderTasks();
     }
   }
-}
-
-function removeInputValue() {
-  //to remove the unwanted string present in the input
-  input.value = "";
-  input.setAttribute("edit", false);
 }
 
 function deleteSelectedFromLocalStorage(selectedTasks) {
@@ -653,4 +665,18 @@ function validateMinimumCharacters(text) {
   } else return "Must be more than 3 characters";
 }
 
-
+module.exports = {
+  validateText,
+  validateNoEmptyString,
+  validateThereisNoSpecialCharactersOnFirstLetter,
+  validateNotMorThan150Characters,
+  validateOnlyAlphaNumericAndAllowedSpecialCharacters,
+  validateMinimumCharacters,
+  getTodoFromLocalStorage,
+  saveTodoToLocalStorage,
+  updateTodotoLocalStorage,
+  deleteTodofromLocalStorage,
+  getTodoFromLocalStorageUsingIndex,
+  getNextIndexFromLocalStorage,
+  deleteSelectedFromLocalStorage,
+};

@@ -791,3 +791,331 @@ describe("to check the multiple delete items is working properly", () => {
     expect(todoCards.length).toBe(unselectTasks.length);
   });
 });
+
+describe("checking input validation function components", () => {
+  test("testing validation components with valid inputs", () => {
+    let validInput = chance.string({
+      symbols: false,
+      alpha: true,
+      numeric: true,
+      length: 20,
+    });
+    const {
+      validateText,
+      validateNoEmptyString,
+      validateThereisNoSpecialCharactersOnFirstLetter,
+      validateNotMorThan150Characters,
+      validateOnlyAlphaNumericAndAllowedSpecialCharacters,
+      validateMinimumCharacters,
+    } = require("../index.js");
+    expect(validateText(validInput)).toBe(true);
+    expect(validateNoEmptyString(validInput)).toBe(true);
+    expect(validateThereisNoSpecialCharactersOnFirstLetter(validInput)).toBe(
+      true
+    );
+    expect(validateNotMorThan150Characters(validInput)).toBe(true);
+    validInput = chance.string({
+      pool: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,'-",
+    });
+    expect(
+      validateOnlyAlphaNumericAndAllowedSpecialCharacters(validInput)
+    ).toBe(true);
+    expect(validateMinimumCharacters(validInput)).toBe(true);
+  });
+
+  test("testing input validation components with invalid inputs", () => {
+    const {
+      validateText,
+      validateNoEmptyString,
+      validateThereisNoSpecialCharactersOnFirstLetter,
+      validateNotMorThan150Characters,
+      validateOnlyAlphaNumericAndAllowedSpecialCharacters,
+      validateMinimumCharacters,
+    } = require("../index.js");
+
+    let invalidInput = chance.string({
+      symbols: true,
+      alpha: false,
+      numeric: false,
+    });
+    expect(validateText(invalidInput)).toBe(
+      "Only alphanumeric and allowed special characters , ' -"
+    );
+    invalidInput = "";
+    expect(validateNoEmptyString(invalidInput)).toBe("Input is required");
+    invalidInput =
+      chance.string({
+        symbols: true,
+        alpha: false,
+        numeric: false,
+        length: 1,
+      }) +
+      chance.string({
+        symbols: false,
+        alpha: true,
+        numeric: true,
+        length: 20,
+      });
+    expect(validateThereisNoSpecialCharactersOnFirstLetter(invalidInput)).toBe(
+      "First letter should be alphanumeric"
+    );
+    invalidInput = chance.string({
+      symbols: false,
+      alpha: true,
+      numeric: true,
+      length: 1000,
+    });
+    expect(validateNotMorThan150Characters(invalidInput)).toBe(
+      "Not more than 150 characters"
+    );
+    invalidInput = chance.string({
+      pool: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()[]",
+      length: 100,
+    });
+    expect(
+      validateOnlyAlphaNumericAndAllowedSpecialCharacters(invalidInput)
+    ).toBe("Only alphanumeric and allowed special characters , ' -");
+    invalidInput = chance.string({
+      length: 2,
+      symbols: false,
+      alpha: true,
+      numeric: true,
+    });
+    expect(validateMinimumCharacters(invalidInput)).toBe(
+      "Must be more than 3 characters"
+    );
+  });
+});
+
+describe("testing local storage invididuval compoents", () => {
+  function createTask(validInput) {
+    if (validInput) {
+      const input = document.querySelector("#text-input");
+
+      const saveBtn = document.querySelector("#save-btn-id");
+
+      input.value = validInput;
+      fireEvent(saveBtn, new Event("click"));
+    } else {
+      throw new Error("input does not exist");
+    }
+  }
+  test("getting from local storage functionality", () => {
+    const { getTodoFromLocalStorage } = require("../index.js");
+    //when there is no elements in local storage
+    let todos = getTodoFromLocalStorage();
+    expect(todos).toStrictEqual([]);
+    const tasks = [];
+    const numberOfTasks = 1;
+    for (let i = 0; i < numberOfTasks; i++) {
+      const validInput = chance.string({
+        symbols: false,
+        alpha: true,
+        numeric: true,
+      });
+      tasks.push(validInput);
+      createTask(tasks[i]);
+    }
+    for (let i = 0; i < numberOfTasks; i++) {}
+    // when there are some elements in it
+    todos = getTodoFromLocalStorage();
+    expect(todos).toStrictEqual([
+      { completed: false, taskId: 0, taskName: tasks[0] },
+    ]);
+  });
+
+  test("testing saving tasks in local storage", () => {
+    const { saveTodoToLocalStorage } = require("../index.js");
+    const taskName = chance.string({
+      length: 10,
+      symbols: false,
+      alpha: true,
+      numeric: true,
+    });
+    const task = {
+      completed: true,
+      taskId: 0,
+      taskName,
+    };
+    saveTodoToLocalStorage(task);
+    const todos = JSON.parse(localStorage.getItem("todos"));
+    expect(todos).toStrictEqual([task]); //to check that the given task is correctly got setted or not
+  });
+
+  test("Testing updating tasks in the local storage", () => {
+    const {
+      saveTodoToLocalStorage,
+      updateTodotoLocalStorage,
+    } = require("../index.js");
+    const taskName = chance.string({
+      length: 10,
+      symbols: false,
+      alpha: true,
+      numeric: true,
+    });
+    const task = {
+      completed: true,
+      taskId: 0,
+      taskName,
+    };
+    saveTodoToLocalStorage(task);
+    let todos = JSON.parse(localStorage.getItem("todos"));
+    expect(todos).toStrictEqual([task]);
+    const newTaskName = chance.string({
+      length: 10,
+      symbols: false,
+      alpha: true,
+      numeric: true,
+    });
+    let newTask = {
+      completed: true,
+      taskId: 0,
+      taskName: newTaskName,
+    };
+    try {
+      updateTodotoLocalStorage(newTask); //positive tsting when giving update task exist
+      todos = JSON.parse(localStorage.getItem("todos"));
+      expect(todos).toStrictEqual([newTask]);
+    } catch (error) {
+      expect(error.message).toBe(error.message);
+    }
+
+    try {
+      updateTodotoLocalStorage(newTask); //negative testing when giving update task does not exist
+      todos = JSON.parse(localStorage.getItem("todos"));
+      newTask = {
+        completed: true,
+        taskId: 1,
+        taskName: newTaskName,
+      };
+      expect(todos).toStrictEqual([newTask]);
+    } catch (error) {
+      expect(error.message).toBe(error.message);
+    }
+  });
+
+  test("to check the delete task from local storage", () => {
+    const {
+      deleteTodofromLocalStorage,
+      saveTodoToLocalStorage,
+      getTodoFromLocalStorage,
+    } = require("../index.js");
+    const numberOfTasks = 2;
+    const tasks = [];
+    for (let i = 0; i < numberOfTasks; i++) {
+      const taskName = chance.string({
+        length: 10,
+        symbols: false,
+        alpha: true,
+        numeric: true,
+      });
+      tasks.push(taskName);
+      const task = {
+        completed: true,
+        taskId: i,
+        taskName,
+      };
+
+      saveTodoToLocalStorage(task);
+    }
+    let todos = getTodoFromLocalStorage();
+    expect(todos).toStrictEqual([
+      { completed: true, taskId: 0, taskName: tasks[0] },
+      { completed: true, taskId: 1, taskName: tasks[1] },
+    ]);
+    try {
+      deleteTodofromLocalStorage(1);
+      todos = getTodoFromLocalStorage();
+      expect(todos).toStrictEqual([
+        { completed: true, taskId: 0, taskName: tasks[0] },
+      ]);
+    } catch (error) {
+      expect(error.message).toBe(error.message);
+    }
+  });
+  test("to test that loading task from local storage using index", () => {
+    const {
+      getTodoFromLocalStorageUsingIndex,
+      saveTodoToLocalStorage,
+    } = require("../index.js");
+
+    try {
+      const taskName = chance.string({
+        symbols: false,
+        numeric: true,
+        alpha: true,
+      });
+      const task = {
+        completed: false,
+        taskName,
+        taskId: 0,
+      };
+      saveTodoToLocalStorage(task);
+
+      const todo = getTodoFromLocalStorageUsingIndex(task.taskId); //positive testing when todo is exist
+      expect(todo).toStrictEqual(task);
+    } catch (error) {
+      expect(error.message).toBe("the given task didnt exist");
+    }
+
+    try {
+      const taskName = chance.string({
+        symbols: false,
+        numeric: true,
+        alpha: true,
+      });
+      const task = {
+        completed: false,
+        taskName,
+        taskId: 0,
+      };
+      saveTodoToLocalStorage(task);
+      const todo = getTodoFromLocalStorageUsingIndex(1000);
+      expect(todo).not.toStrictEqual(task); //negative testing when todo is not exist
+    } catch (error) {
+      expect(error.message).toBe("the given task didnt exist");
+    }
+  });
+
+  test("to test the get the next index of the local storage", () => {
+    const { getNextIndexFromLocalStorage } = require("../index.js");
+    let index = getNextIndexFromLocalStorage();
+    expect(index).toBe(0);
+    const validInput = chance.string({
+      symbols: false,
+      numeric: true,
+      alpha: true,
+    });
+    createTask(validInput);
+    index = getNextIndexFromLocalStorage();
+    expect(index).toBe(1);
+  });
+
+  test("to test the delete the selected task from local storage", () => {
+    const {
+      getTodoFromLocalStorage,
+      saveTodoToLocalStorage,
+      deleteSelectedFromLocalStorage,
+    } = require("../index.js");
+    const numberOfTasks = 5;
+    for (let i = 0; i < numberOfTasks; i++) {
+      const taskName = chance.string({
+        symbols: false,
+        numeric: true,
+        alpha: true,
+      });
+      const task = {
+        taskId: i,
+        completed: chance.bool({ likelihood: 60 }),
+        taskName,
+      };
+      saveTodoToLocalStorage(task);
+    }
+
+    const todos = getTodoFromLocalStorage();
+    const selectedTasks = ["1", "2", "4"];
+    deleteSelectedFromLocalStorage(selectedTasks);
+    const newTodos = getTodoFromLocalStorage();
+    expect(newTodos).not.toStrictEqual(todos);
+  });
+});
