@@ -3,11 +3,12 @@ const path = require("path");
 const {
   getByText,
   waitFor,
-
+getByRole,
   getByLabelText,
   fireEvent,
   prettyDOM,
   queryByText,
+  getByAltText,
 } = require("@testing-library/dom");
 
 const Chance = require("chance");
@@ -1310,4 +1311,34 @@ expect(getValidInputValue(input)).toBeNull()
 })
 
 
+describe("to test that ui individual functions working properly",()=>{
 
+test("to test that checkbox input is created inside the container",()=>{
+  const {createCheckbox} = require("../index.js")
+const checkBoxContainer = createCheckbox()
+expect(getByRole(checkBoxContainer,"checkbox")).toHaveRole("checkbox")
+
+})
+
+test("to test that given value inside the task name container",()=>{
+const {createTaskName}= require("../index.js")
+const validTaskName = chance.string({symbols:false,alpha:true,numeric:true})
+const taskNameContainer = createTaskName(validTaskName,true)
+expect(getByText(taskNameContainer,validTaskName).textContent).toBe(validTaskName)
+
+})
+test("to test that icon button are created ",()=>{
+const {createIconButton}=require("../index.js")
+const testFn = jest.fn()
+const iconElement = createIconButton("test-class-name","icon-id","image-source","alter text","title-test",testFn)
+expect(getByAltText(iconElement,"alter text")).toHaveAttribute("src","image-source")
+expect(getByAltText(iconElement,"alter text")).toHaveAttribute("id","icon-id")
+expect(iconElement.classList.contains("test-class-name")).toBeTruthy()
+expect(getByAltText(iconElement,"alter text")).toHaveAttribute("title","title-test")
+const testButton = getByAltText(iconElement,"alter text")
+fireEvent(testButton,new Event("click"))
+expect(testFn).toHaveBeenCalled();
+})
+
+
+})

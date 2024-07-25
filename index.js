@@ -233,6 +233,7 @@ function createIconButton(
 }
 function createTaskName(taskName, isCompleted) {
   //to create task name or edit the task name if its already completed it will have line through
+
   const taskNameContainer = document.createElement("div");
   taskNameContainer.classList.add("task-name-container");
 
@@ -248,6 +249,8 @@ function createTaskName(taskName, isCompleted) {
 
   taskNameContainer.append(taskNameInput);
   return taskNameContainer;
+
+
 }
 
 function createCheckbox() {
@@ -685,5 +688,9 @@ module.exports = {
   renderAssignedTodos,
   renderCompletedTodos,
   renderTasks,
-  getValidInputValue
+  getValidInputValue,
+  createCheckbox,
+  createTaskName,
+  createIconButton,
+  createToDoButtons
 };
