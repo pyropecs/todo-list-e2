@@ -248,6 +248,12 @@ function createTaskName(taskName, isCompleted) {
   }
 
   taskNameContainer.append(taskNameInput);
+
+
+
+  
+
+
   return taskNameContainer;
 
 
@@ -298,6 +304,8 @@ function checkAndEditTask(e) {
 
   if (checkInputNotExist()) {
     editTask(target);
+  }else{
+    input.focus()
   }
 }
 function confirmAndDeleteTask(e) {
@@ -318,8 +326,10 @@ function checkInputNotExist() {
     return confirm(
       "The input value will be erased if you click the edit button"
     );
+  }else{
+    return true;
   }
-  return true;
+ 
 }
 function editTask(target) {
   //to traverse the parent element todo card from edit button and queryselect the form input and get the value of the form input and setting attributes for editing and which todo card is editing by setting todo card index
@@ -340,6 +350,8 @@ function editTask(target) {
     deleteButton.classList.add("no-click");
     cancelBtn.classList.remove("hide");
     cancelBtn.classList.add("block");
+  }else{
+    return;
   }
 }
 function cancelEditTask(e) {
@@ -366,6 +378,7 @@ function deleteTask(target) {
 
   try {
     deleteTodofromLocalStorage(index);
+    selectedTasks=[]
     renderTasks();
   } catch (error) {
     console.log(error);
@@ -393,6 +406,7 @@ function isTaskCompleted(target) {
     } else {
       taskName.classList.remove("opacity");
     }
+    selectedTasks =[]
     updateTodotoLocalStorage(newTodo);
     renderTasks();
   } catch (error) {
@@ -560,8 +574,11 @@ function updateTask(todos, task) {
         todo.taskName = task.taskName;
         todo.completed = task.completed;
         // todo.updated_at = getCurrentTime();
+        return todo;
+      }else{
+        return todo;
       }
-      return todo;
+      
     });
     return newTodos;
   } else {
@@ -591,7 +608,11 @@ function deleteAll() {
       deleteSelectedFromLocalStorage(selectedTasks);
       selectedTasks = [];
       renderTasks();
+    }else{
+      input.focus()
     }
+  }else{
+    return;
   }
 }
 
@@ -694,5 +715,5 @@ module.exports = {
   createIconButton,
   createToDoButtons,
   createTaskCard,
-  createTask
+  createTask,checkAndEditTask
 };

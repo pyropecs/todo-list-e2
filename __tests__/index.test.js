@@ -782,7 +782,7 @@ describe("to check the multiple delete items is working properly", () => {
     for (let i = 0; i < numberOfTasks; i++) {
       const validInput = chance.string({
         symbols: false,
-        numeric: false,
+        numeric: true,
         alpha: true,
         length: 30,
       });
@@ -1416,8 +1416,17 @@ describe("to test that ui individual functions working properly", () => {
     expect(btnGroup).not.toBeNull();
   });
 
+  test("to check clicking edit button when input has some value clicking cancel confiormation", () => {
+    const { checkAndEditTask } = require("../index.js");
+    const event = { target: "dummy one" };
+    const input = document.querySelector("#text-input");
+    input.value = "sdafsfsfsfs";
+    window.confirm = jest.fn().mockReturnValue(false);
+
+    checkAndEditTask(event);
+    expect(window.confirm).toHaveBeenCalled();
+    expect(document.activeElement).toBe(input);
+  });
 
 
-
-  
 });
