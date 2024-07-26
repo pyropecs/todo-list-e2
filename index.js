@@ -1,7 +1,7 @@
 const form = document.querySelector("#submit-form");
 const input = document.querySelector("#text-input");
 const todoList = document.querySelector("#task-list");
-const statusId = document.querySelector("#status-id");
+
 const inputError = document.querySelector("#input-error");
 const saveBtn = document.querySelector("#save-btn-id");
 const deleteButton = document.querySelector("#delete-all");
