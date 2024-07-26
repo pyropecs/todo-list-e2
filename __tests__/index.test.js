@@ -3,7 +3,7 @@ const path = require("path");
 const {
   getByText,
   waitFor,
-getByRole,
+  getByRole,
   getByLabelText,
   fireEvent,
   prettyDOM,
@@ -463,9 +463,8 @@ describe("to check that delete functionality working properly", () => {
   });
 
   test("to check that delete functioality is not deleted when user cancel the confirmation", () => {
-   
     const todoList = document.querySelector("#task-list");
-     const input = document.querySelector("#text-input");
+    const input = document.querySelector("#text-input");
     const saveBtn = document.querySelector("#save-btn-id");
     const validInput = chance.string({
       symbols: false,
@@ -493,7 +492,7 @@ describe("to check that complete functionality working properly", () => {
   test("to check the uncompleted task got completed when clicking complete button", () => {
     const input = document.querySelector("#text-input");
     const saveBtn = document.querySelector("#save-btn-id");
-    const todoList = document.querySelector("#task-list")
+    const todoList = document.querySelector("#task-list");
     const validInput = chance.string({
       symbols: false,
       numeric: false,
@@ -510,16 +509,16 @@ describe("to check that complete functionality working properly", () => {
 
     let taskName = getByText(todoList, validInput);
     let todoCard = taskName.parentElement.parentElement;
-    
+
     completeButton = todoCard.querySelector("#complete-btn-id");
-   
+
     expect(completeButton).toHaveAttribute("src", "./Images/checkFill.png");
     opacityExists = taskName.classList.contains("opacity");
     expect(opacityExists).toBe(false);
     fireEvent(completeButton, new Event("click"));
     opacityExists = taskName.classList.contains("opacity");
-    taskName =  getByText(todoList, validInput);
-    todoCard = taskName.parentElement.parentElement
+    taskName = getByText(todoList, validInput);
+    todoCard = taskName.parentElement.parentElement;
     expect(opacityExists).toBe(true);
     completeButton = todoCard.querySelector("#complete-btn-id");
     expect(completeButton).toHaveAttribute("src", "./Images/checked.png");
@@ -575,7 +574,7 @@ describe("to check that complete functionality working properly", () => {
 describe("to check that edit functionality is working properly", () => {
   test("to check that clicking edit icon should fill input box with task name", () => {
     const input = document.querySelector("#text-input");
-    
+
     const saveBtn = document.querySelector("#save-btn-id");
     const validInput = chance.string({
       symbols: false,
@@ -589,7 +588,7 @@ describe("to check that edit functionality is working properly", () => {
     expect(todoCards.length).toBe(1);
     const taskName = getByText(document, validInput);
     const todoCard = taskName.parentElement.parentElement;
-    const editButton= todoCard.querySelector("#edit-btn-id");
+    const editButton = todoCard.querySelector("#edit-btn-id");
     fireEvent(editButton, new Event("click"));
     expect(input.value).toBe(validInput);
     expect(input).toHaveAttribute("edit", "true");
@@ -613,10 +612,10 @@ describe("to check that edit functionality is working properly", () => {
 
     expect(todoCards.length).toBe(1);
     let taskName = getByText(todoList, validInput);
-   
+
     const todoCard = taskName.parentElement.parentElement;
     const editButton = todoCard.querySelector("#edit-btn-id");
-   
+
     fireEvent(editButton, new Event("click"));
     expect(cancelBtn.classList.contains("block")).toBe(true);
     const newInput = chance.string({
@@ -1295,50 +1294,124 @@ describe("testing filter individual components", () => {
   });
 });
 
-describe("to test the form elements ",()=>{
-test("to test the function that checking input value is valid or not",()=>{
-  const {getValidInputValue}=require("../index.js")
-let input = chance.string({length:30,symbols:false,alpha:true,numeric:true})
+describe("to test the form elements ", () => {
+  test("to test the function that checking input value is valid or not", () => {
+    const { getValidInputValue } = require("../index.js");
+    let input = chance.string({
+      length: 30,
+      symbols: false,
+      alpha: true,
+      numeric: true,
+    });
 
-expect(getValidInputValue(input)).not.toBeNull() // valid input
-input = chance.string({length:151})
-expect(getValidInputValue(input)).toBeNull()
+    expect(getValidInputValue(input)).not.toBeNull(); // valid input
+    input = chance.string({ length: 151 });
+    expect(getValidInputValue(input)).toBeNull();
+  });
+});
 
-})
+describe("to test that ui individual functions working properly", () => {
+  test("to test that checkbox input is created inside the container", () => {
+    const { createCheckbox } = require("../index.js");
+    const checkBoxContainer = createCheckbox();
+    expect(getByRole(checkBoxContainer, "checkbox")).toHaveRole("checkbox");
+  });
 
+  test("to test that given value inside the task name container", () => {
+    const { createTaskName } = require("../index.js");
+    const validTaskName = chance.string({
+      symbols: false,
+      alpha: true,
+      numeric: true,
+    });
+    const taskNameContainer = createTaskName(validTaskName, true);
+    expect(getByText(taskNameContainer, validTaskName).textContent).toBe(
+      validTaskName
+    );
+  });
+  test("to test that icon button are created ", () => {
+    const { createIconButton } = require("../index.js");
+    const testFn = jest.fn();
+    const iconElement = createIconButton(
+      "test-class-name",
+      "icon-id",
+      "image-source",
+      "alter text",
+      "title-test",
+      testFn
+    );
+    expect(getByAltText(iconElement, "alter text")).toHaveAttribute(
+      "src",
+      "image-source"
+    );
+    expect(getByAltText(iconElement, "alter text")).toHaveAttribute(
+      "id",
+      "icon-id"
+    );
+    expect(iconElement.classList.contains("test-class-name")).toBeTruthy();
+    expect(getByAltText(iconElement, "alter text")).toHaveAttribute(
+      "title",
+      "title-test"
+    );
+    const testButton = getByAltText(iconElement, "alter text");
+    fireEvent(testButton, new Event("click"));
+    expect(testFn).toHaveBeenCalled();
+  });
 
+  test("to test that to do buttons are created for an uncompleted task", () => {
+    const { createToDoButtons } = require("../index.js");
+    const btnGroup = createToDoButtons(false); //task is not yet completed
+    expect(btnGroup.children.length).toBe(3);
+    const completeButton = getByAltText(btnGroup, "complete button");
+    const deleteButton = getByAltText(btnGroup, "delete button");
+    const editButton = getByAltText(btnGroup, "edit button");
 
-})
+    expect(completeButton).toHaveAttribute("id", "complete-btn-id");
+    expect(completeButton).toHaveAttribute("title", "Complete task");
+    expect(completeButton).toHaveAttribute("src", "./Images/checkFill.png");
+    expect(deleteButton).toHaveAttribute("id", "delete-btn-id");
+    expect(deleteButton).toHaveAttribute("title", "Delete task");
+    expect(deleteButton).toHaveAttribute("src", "./Images/trash.png");
+    expect(editButton).toHaveAttribute("id", "edit-btn-id");
+    expect(editButton).toHaveAttribute("title", "Edit task");
+    expect(editButton).toHaveAttribute("src", "./Images/edit.png");
+  });
 
+  test("to test that to do buttons are created for an completed task", () => {
+    const { createToDoButtons } = require("../index.js");
+    const btnGroup = createToDoButtons(true); //task is completed
+    expect(btnGroup.children.length).toBe(3);
+    const completeButton = getByAltText(btnGroup, "completed button");
+    const deleteButton = getByAltText(btnGroup, "delete button");
+    const editButton = getByAltText(btnGroup, "edit button");
 
-describe("to test that ui individual functions working properly",()=>{
+    expect(completeButton).toHaveAttribute("id", "complete-btn-id");
+    expect(completeButton).toHaveAttribute("title", "Undo the completed task");
+    expect(completeButton).toHaveAttribute("src", "./Images/checked.png");
+    expect(deleteButton).toHaveAttribute("id", "delete-btn-id");
+    expect(deleteButton).toHaveAttribute("title", "Delete task");
+    expect(deleteButton).toHaveAttribute("src", "./Images/trash.png");
+    expect(editButton).toHaveAttribute("id", "edit-btn-id");
+    expect(editButton).toHaveAttribute("title", "Edit task");
+    expect(editButton).toHaveAttribute("src", "./Images/edit.png");
+  });
 
-test("to test that checkbox input is created inside the container",()=>{
-  const {createCheckbox} = require("../index.js")
-const checkBoxContainer = createCheckbox()
-expect(getByRole(checkBoxContainer,"checkbox")).toHaveRole("checkbox")
-
-})
-
-test("to test that given value inside the task name container",()=>{
-const {createTaskName}= require("../index.js")
-const validTaskName = chance.string({symbols:false,alpha:true,numeric:true})
-const taskNameContainer = createTaskName(validTaskName,true)
-expect(getByText(taskNameContainer,validTaskName).textContent).toBe(validTaskName)
-
-})
-test("to test that icon button are created ",()=>{
-const {createIconButton}=require("../index.js")
-const testFn = jest.fn()
-const iconElement = createIconButton("test-class-name","icon-id","image-source","alter text","title-test",testFn)
-expect(getByAltText(iconElement,"alter text")).toHaveAttribute("src","image-source")
-expect(getByAltText(iconElement,"alter text")).toHaveAttribute("id","icon-id")
-expect(iconElement.classList.contains("test-class-name")).toBeTruthy()
-expect(getByAltText(iconElement,"alter text")).toHaveAttribute("title","title-test")
-const testButton = getByAltText(iconElement,"alter text")
-fireEvent(testButton,new Event("click"))
-expect(testFn).toHaveBeenCalled();
-})
-
-
-})
+  test("'to test that task card is created properly", () => {
+    const { createTaskCard } = require("../index.js");
+    const task = {
+      taskId: 0,
+      taskName: chance.string({ symbols: false, alpha: true, numeric: true }),
+      completed: true,
+    };
+    const todoCard = createTaskCard(task.taskName, task.taskId, task.completed);
+    expect(todoCard.classList.contains("todo-card")).toBe(true);
+    expect(todoCard.children.length).toBe(3);
+    console.log(prettyDOM(todoCard));
+    const checkBoxContainer = todoCard.querySelector(".checkbox-container");
+    const taskNameContainer = todoCard.querySelector(".task-name-container");
+    const btnGroup = todoCard.querySelector(".btn-group");
+    expect(checkBoxContainer).not.toBeNull();
+    expect(taskNameContainer).not.toBeNull();
+    expect(btnGroup).not.toBeNull();
+  });
+});

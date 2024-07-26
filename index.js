@@ -174,7 +174,7 @@ function createToDoButtons(isCompleted) {
     "edit",
     "edit-btn-id",
     "./Images/edit.png",
-    "edit icon",
+    "edit button",
     "Edit task",
     checkAndEditTask
   );
@@ -191,7 +191,7 @@ function createToDoButtons(isCompleted) {
       "complete",
       "complete-btn-id",
       "./Images/checked.png",
-      "completed icon",
+      "completed button",
       "Undo the completed task",
       completeTask
     );
@@ -201,7 +201,7 @@ function createToDoButtons(isCompleted) {
       "complete",
       "complete-btn-id",
       "./Images/checkFill.png",
-      "complete icon",
+      "complete button",
       "Complete task",
       completeTask
     );
@@ -692,5 +692,7 @@ module.exports = {
   createCheckbox,
   createTaskName,
   createIconButton,
-  createToDoButtons
+  createToDoButtons,
+  createTaskCard,
+  createTask
 };
