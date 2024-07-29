@@ -24,11 +24,13 @@ body {
   width: 100%;
 height:12%;
   display: flex;
+  align-items: center;
   justify-content: center;
 }
 
 .title {
   width: 100%;
+  margin:0%;
   text-align: center;
   font-family: sans-serif;
 }
@@ -43,7 +45,7 @@ height:12%;
 
 .todo-container {
   width: 95%;
-  height: 70%;
+  height: 95%;
 
 
   
@@ -123,6 +125,7 @@ position: relative;
   box-sizing: border-box;
   margin-top: 3%;
   margin-bottom: 3%;
+  padding-block: 2%;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
 
 }
@@ -196,9 +199,9 @@ white-space: nowrap;
 }
 
 .task-name-container {
-  width: 72%;
+  width: 57%;
 
-  padding-left: 1%;
+  padding-inline: 2%;
 
   height: 100%;
   display: flex;
@@ -231,18 +234,19 @@ cursor: pointer;
 
   outline: none;
   align-items: center;
-  display: flex;
+  display: inline-block;
   
 }
 .todo-list-container {
   width: 100%;
-  height: 52%;
+  height: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .btn-group {
-  width: 40%;
+  width: 30%;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -388,7 +392,10 @@ input[type="radio"]:checked + label {
     height: 80%;
     padding-left: 1.5%;
   }
-
+  .todo-list-container{
+    height:50%;
+    padding-top:1%;
+  }
   .todo-card {
     width: 100%;
     padding-top: 1.5%;
@@ -403,17 +410,19 @@ input[type="radio"]:checked + label {
   }
 
   .task-name-container {
-    width: 80%;
+    width: 72%;
     padding: 0%;
+    padding-inline: 1%;
   }
   .btn-group {
-    width: 20%;
+    width: 15%;
   }
   .wrap {
     justify-content: center;
   }
   .todo-container {
     width: 70%;
+    height: 70%;
   }
   .todo-status {
     width: 100%;
@@ -455,6 +464,7 @@ input[type="radio"]:checked + label {
   .todo-card {
     width: 100%;
   margin-top:1.5%;
+
   margin-bottom: 1.5%;
   }
   .task-name-container{
@@ -466,7 +476,7 @@ input[type="radio"]:checked + label {
 
   }
   .btn-group {
-    width: 18%;
+    width: 20%;
   }
   .status-container {
     margin: 0%;
@@ -486,7 +496,7 @@ input[type="radio"]:checked + label {
   /* very large screen */
 
   .btn-group{
-    width:12%;
+    width:20%;
   }
   .error{
     font-size: 14px;
