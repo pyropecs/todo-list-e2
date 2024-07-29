@@ -172,7 +172,7 @@ display: none;
 .todo-all {
   display: flex;
   width: 30%;
-  height:30%;
+  height:28%;
  
   padding-bottom: 2%;
   justify-content: space-between;
@@ -339,7 +339,7 @@ padding: 1% 2%;
  
   width: 96%;
   font-family: sans-serif;
-height:30%;
+height:28%;
   border-radius: 10px;
   
 }
@@ -410,9 +410,9 @@ input[type="radio"]:checked + label {
   }
 
   .task-name-container {
-    width: 72%;
+    width: 75%;
     padding: 0%;
-    padding-inline: 1%;
+    
   }
   .btn-group {
     width: 15%;
