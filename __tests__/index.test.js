@@ -385,6 +385,8 @@ describe("to check that filter button giving the exact output ", () => {
 });
 
 describe("to check that Add Functionality working properly ", () => {
+  const numberOfTasks = 5;
+
   function createTask() {
     const input = document.querySelector("#text-input");
     const saveBtn = document.querySelector("#save-btn-id");
@@ -399,11 +401,13 @@ describe("to check that Add Functionality working properly ", () => {
     fireEvent(saveBtn, new Event("click"));
   }
 
-  test("to check that with the valid input task is added to list ", async () => {
-    const numberOfTasks = 5;
+  beforeEach(() => {
     for (let i = 0; i < numberOfTasks; i++) {
       createTask();
     }
+  });
+
+  test("to check that with the valid input task is added to list ", async () => {
     const todoCards = document.querySelectorAll(".todo-card");
     expect(todoCards.length).toBe(numberOfTasks);
   });
@@ -411,7 +415,7 @@ describe("to check that Add Functionality working properly ", () => {
     const input = document.querySelector("#text-input");
     const saveBtn = document.querySelector("#save-btn-id");
     const inputError = document.querySelector("#input-error");
-
+    const todoList = document.querySelector("#task-list");
     const inputValue = chance.string({
       symbols: true,
       numeric: false,
@@ -423,10 +427,14 @@ describe("to check that Add Functionality working properly ", () => {
     expect(inputError.textContent).toBe(
       "Only alphanumeric and allowed special characters , ' -"
     );
+    expect(queryByText(todoList, inputValue)).toBeNull();
   });
 });
 
 describe("to check that delete functionality working properly", () => {
+  const tasks = [];
+  const numberOfTasks = 6;
+
   function createTask(inputValue) {
     const input = document.querySelector("#text-input");
     const saveBtn = document.querySelector("#save-btn-id");
@@ -434,10 +442,7 @@ describe("to check that delete functionality working properly", () => {
     input.value = inputValue;
     fireEvent(saveBtn, new Event("click"));
   }
-  test("to check that delete functionality is working by clicking it", async () => {
-    const todoList = document.querySelector("#task-list");
-    const numberOfTasks = 6;
-    const tasks = [];
+  beforeEach(() => {
     for (let i = 0; i < numberOfTasks; i++) {
       const inputValue = chance.string({
         symbols: false,
@@ -448,6 +453,11 @@ describe("to check that delete functionality working properly", () => {
       tasks.push(inputValue);
       createTask(inputValue);
     }
+  });
+
+  test("to check that delete functionality is working by clicking it", async () => {
+    const todoList = document.querySelector("#task-list");
+
     todoCards = document.querySelectorAll(".todo-card");
     expect(todoCards.length).toBe(numberOfTasks);
 
@@ -455,7 +465,7 @@ describe("to check that delete functionality working properly", () => {
     const taskName = getByText(todoList, tasks[1]);
     const todoCard = taskName.parentElement.parentElement.parentElement;
     const deleteButton = todoCard.querySelector("#delete-btn-id");
-    console.log(deleteButton)
+    console.log(deleteButton);
     deleteButton.dispatchEvent(new Event("click"));
     expect(window.confirm).toHaveBeenCalled();
     todoCards = document.querySelectorAll(".todo-card");
@@ -477,7 +487,7 @@ describe("to check that delete functionality working properly", () => {
     input.value = validInput;
     fireEvent(saveBtn, new Event("click"));
     todoCards = document.querySelectorAll(".todo-card");
-    expect(todoCards.length).toBe(1);
+    expect(todoCards.length).toBe(numberOfTasks + 1);
     window.confirm = jest.fn().mockReturnValue(false);
     const taskName = getByText(todoList, validInput);
     const todoCard = taskName.parentElement.parentElement.parentElement;
@@ -485,7 +495,7 @@ describe("to check that delete functionality working properly", () => {
     deleteButton.dispatchEvent(new Event("click"));
     expect(window.confirm).toHaveBeenCalled();
     todoCards = document.querySelectorAll(".todo-card");
-    expect(todoCards.length).toBe(1);
+    expect(todoCards.length).toBe(numberOfTasks + 1);
   });
 });
 
@@ -766,6 +776,8 @@ describe("to check that edit functionality is working properly", () => {
 });
 
 describe("to check the multiple delete items is working properly", () => {
+  let tasks = [];
+  const numberOfTasks = 7;
   function createTask(validInput) {
     const input = document.querySelector("#text-input");
 
@@ -774,12 +786,7 @@ describe("to check the multiple delete items is working properly", () => {
     input.value = validInput;
     fireEvent(saveBtn, new Event("click"));
   }
-  test(" select the multiple task and should be deleted by clicking delete button", () => {
-    const deleteButton = document.querySelector("#delete-all");
-    expect(deleteButton.disabled).toBe(true);
-    const numberOfTasks = 7;
-
-    const tasks = [];
+  beforeEach(() => {
     for (let i = 0; i < numberOfTasks; i++) {
       const validInput = chance.string({
         symbols: false,
@@ -790,6 +797,14 @@ describe("to check the multiple delete items is working properly", () => {
       tasks.push(validInput);
       createTask(validInput);
     }
+  });
+  afterEach(() => {
+    tasks = [];
+  });
+  test(" select the multiple task and should be deleted by clicking delete button", () => {
+    const deleteButton = document.querySelector("#delete-all");
+    expect(deleteButton.disabled).toBe(true);
+
     let todoCards = document.querySelectorAll(".todo-card");
 
     expect(todoCards.length).toBe(numberOfTasks);
@@ -818,19 +833,7 @@ describe("to check the multiple delete items is working properly", () => {
   test("to check that unselect the multiple task and should be deleted by clicking delete button", () => {
     const deleteButton = document.querySelector("#delete-all");
     expect(deleteButton.disabled).toBe(true);
-    const numberOfTasks = 7;
 
-    const tasks = [];
-    for (let i = 0; i < numberOfTasks; i++) {
-      const validInput = chance.string({
-        symbols: false,
-        numeric: false,
-        alpha: true,
-        length: 30,
-      });
-      tasks.push(validInput);
-      createTask(validInput);
-    }
     let todoCards = document.querySelectorAll(".todo-card");
     todoCards.forEach((todoCard) => {
       let selectCheckbox = todoCard.querySelector("#select-checkbox");
@@ -878,7 +881,6 @@ describe("checking input validation function components", () => {
       validateNotMorThan150Characters,
       validateOnlyAlphaNumericAndAllowedSpecialCharacters,
       validateMinimumCharacters,
-      filterTodos,
     } = require("../index.js");
     expect(validateText(validInput)).toBe(true);
     expect(validateNoEmptyString(validInput)).toBe(true);
@@ -960,6 +962,8 @@ describe("checking input validation function components", () => {
 });
 
 describe("testing local storage invididuval compoents", () => {
+  const tasks = [];
+  const numberOfTasks = 1;
   function createTask(validInput) {
     if (validInput) {
       const input = document.querySelector("#text-input");
@@ -977,8 +981,7 @@ describe("testing local storage invididuval compoents", () => {
     //when there is no elements in local storage
     let todos = getTodoFromLocalStorage();
     expect(todos).toStrictEqual([]);
-    const tasks = [];
-    const numberOfTasks = 1;
+
     for (let i = 0; i < numberOfTasks; i++) {
       const validInput = chance.string({
         symbols: false,
@@ -1044,26 +1047,19 @@ describe("testing local storage invididuval compoents", () => {
       taskId: 0,
       taskName: newTaskName,
     };
-    try {
-      updateTodotoLocalStorage(newTask); //positive tsting when giving update task exist
-      todos = JSON.parse(localStorage.getItem("todos"));
-      expect(todos).toStrictEqual([newTask]);
-    } catch (error) {
-      expect(error.message).toBe(error.message);
-    }
 
-    try {
-      updateTodotoLocalStorage(newTask); //negative testing when giving update task does not exist
-      todos = JSON.parse(localStorage.getItem("todos"));
-      newTask = {
-        completed: true,
-        taskId: 1,
-        taskName: newTaskName,
-      };
-      expect(todos).toStrictEqual([newTask]);
-    } catch (error) {
-      expect(error.message).toBe(error.message);
-    }
+    updateTodotoLocalStorage(newTask); //positive tsting when giving update task exist
+    todos = JSON.parse(localStorage.getItem("todos"));
+    expect(todos).toStrictEqual([newTask]);
+
+    //negative testing when giving update task does not exist
+    todos = JSON.parse(localStorage.getItem("todos"));
+    newTask = {
+      completed: true,
+      taskId: 1,
+      taskName: newTaskName,
+    };
+    expect(() => updateTodotoLocalStorage(newTask)).toThrow("the given task doesnt exist");
   });
 
   test("to check the delete task from local storage", () => {
@@ -1206,11 +1202,7 @@ describe("testing filter individual components", () => {
     }
   }
   test("to test all state in filter st", () => {
-    const {
-      renderTasks,
-      saveTodoToLocalStorage,
-      getTodoFromLocalStorage,
-    } = require("../index.js");
+    const { renderTasks, saveTodoToLocalStorage } = require("../index.js");
     const numberOfTasks = 7;
     for (let i = 0; i < numberOfTasks; i++) {
       const taskName = chance.string({
@@ -1408,7 +1400,7 @@ describe("to test that ui individual functions working properly", () => {
     const todoCard = createTaskCard(task.taskName, task.taskId, task.completed);
     expect(todoCard.classList.contains("todo-card")).toBe(true);
     expect(todoCard.children.length).toBe(3);
-    console.log(prettyDOM(todoCard));
+
     const checkBoxContainer = todoCard.querySelector(".checkbox-container");
     const taskNameContainer = todoCard.querySelector(".task-name-container");
     const btnGroup = todoCard.querySelector(".btn-group");
@@ -1424,10 +1416,32 @@ describe("to test that ui individual functions working properly", () => {
     input.value = "sdafsfsfsfs";
     window.confirm = jest.fn().mockReturnValue(false);
 
-    checkAndEditTask(event)
+    checkAndEditTask(event);
     expect(window.confirm).toHaveBeenCalled();
     expect(document.activeElement).toBe(input);
   });
+
+  test("to check that delete task when invalid inputs recieved", () => {
+    const { deleteTask, createTaskCard } = require("../index.js");
+    const task = {
+      taskId: "to be number but given as string as invalid",
+      completed: false,
+      taskName: "dasdasd",
+    };
+    const taskCard = createTaskCard(task.taskName, task.taskId, task.completed);
+    const text = getByText(taskCard, "dasdasd");
+    expect(() => deleteTask(text)).toThrow("No task exist like that");
+  });
+test("to check is completed indivudal component",()=>{
+
+const {isTaskCompleted,createTaskCard} =require("../index.js")
+const todoCard = createTaskCard("dsdsdsd","sdsdsd",false); //invalid taskId
+const taskContent = todoCard.querySelector("#complete-btn-id")
+ 
+expect(()=>isTaskCompleted(taskContent)).toThrow("the given task didnt exist")
+
+
+})
 
 
 });

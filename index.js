@@ -346,9 +346,7 @@ function editTask(target) {
     deleteButton.classList.add("no-click");
     cancelBtn.classList.remove("hide");
     cancelBtn.classList.add("block");
-  } else {
-    return;
-  }
+  } 
 }
 function cancelEditTask(e) {
   if (confirm("Do you want to cancel the edit")) {
@@ -377,7 +375,7 @@ function deleteTask(target) {
     selectedTasks = [];
     renderTasks();
   } catch (error) {
-    console.log(error);
+    throw new Error(error.message)
   }
 }
 
@@ -406,7 +404,7 @@ function isTaskCompleted(target) {
     updateTodotoLocalStorage(newTodo);
     renderTasks();
   } catch (error) {
-    console.log(error.message);
+    throw new Error(error.message)
   }
 }
 
@@ -511,7 +509,7 @@ function updateTodotoLocalStorage(task) {
     localStorage.removeItem("todos");
     localStorage.setItem("todos", JSON.stringify(updatedTodos));
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 }
 
@@ -570,14 +568,14 @@ function updateTask(todos, task) {
         todo.taskName = task.taskName;
         todo.completed = task.completed;
         // todo.updated_at = getCurrentTime();
-        return todo;
-      } else {
-        return todo;
+     
       }
+      return todo;
+    
     });
     return newTodos;
   } else {
-    throw new Error("the given doesnt exist");
+    throw new Error("the given task doesnt exist");
   }
 }
 
@@ -603,14 +601,9 @@ function deleteAll() {
       deleteSelectedFromLocalStorage(selectedTasks);
       selectedTasks = [];
       renderTasks();
-    } else {
-      input.focus();
     }
-  } else {
-    return;
-  }
 }
-
+}
 function deleteSelectedFromLocalStorage(selectedTasks) {
   const todos = getTodoFromLocalStorage();
 
@@ -712,4 +705,5 @@ module.exports = {
   createTaskCard,
   createTask,
   checkAndEditTask,
+  deleteTask,isTaskCompleted
 };
