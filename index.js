@@ -53,7 +53,7 @@ function submitForm(event) {
 
 function getValidInputValue(inputValue) {
   //get the input and trim the white spaces and validate the input and return the valid input
- 
+
   const trimmedInput = inputValue.trim();
   const isValidinput = validateText(trimmedInput);
 
@@ -238,28 +238,21 @@ function createTaskName(taskName, isCompleted) {
   taskNameContainer.classList.add("task-name-container");
 
   const taskNameInput = document.createElement("p");
-  
-const span = document.createElement("span")
+
+  const span = document.createElement("span");
   span.textContent = taskName;
   span.title = taskName;
 
   taskNameInput.classList.add("task-name");
-  
+
   taskNameInput.setAttribute("id", "task-name-id");
   if (isCompleted) {
     taskNameInput.classList.add("opacity");
   }
-taskNameInput.append(span)
+  taskNameInput.append(span);
   taskNameContainer.append(taskNameInput);
 
-
-
-  
-
-
   return taskNameContainer;
-
-
 }
 
 function createCheckbox() {
@@ -307,8 +300,8 @@ function checkAndEditTask(e) {
 
   if (checkInputNotExist()) {
     editTask(target);
-  }else{
-    input.focus()
+  } else {
+    input.focus();
   }
 }
 function confirmAndDeleteTask(e) {
@@ -329,10 +322,9 @@ function checkInputNotExist() {
     return confirm(
       "The input value will be erased if you click the edit button"
     );
-  }else{
+  } else {
     return true;
   }
- 
 }
 function editTask(target) {
   //to traverse the parent element todo card from edit button and queryselect the form input and get the value of the form input and setting attributes for editing and which todo card is editing by setting todo card index
@@ -344,8 +336,7 @@ function editTask(target) {
     saveBtn.textContent = "Save";
     saveBtn.title = "Save the task";
     const taskName = todoCard.querySelector("#task-name-id");
-    
-    
+
     const editIndex = todoCard.getAttribute("index");
     input.value = taskName.textContent;
     input.setAttribute("edit", true);
@@ -355,7 +346,7 @@ function editTask(target) {
     deleteButton.classList.add("no-click");
     cancelBtn.classList.remove("hide");
     cancelBtn.classList.add("block");
-  }else{
+  } else {
     return;
   }
 }
@@ -383,7 +374,7 @@ function deleteTask(target) {
 
   try {
     deleteTodofromLocalStorage(index);
-    selectedTasks=[]
+    selectedTasks = [];
     renderTasks();
   } catch (error) {
     console.log(error);
@@ -411,7 +402,7 @@ function isTaskCompleted(target) {
     } else {
       taskName.classList.remove("opacity");
     }
-    selectedTasks =[]
+    selectedTasks = [];
     updateTodotoLocalStorage(newTodo);
     renderTasks();
   } catch (error) {
@@ -580,10 +571,9 @@ function updateTask(todos, task) {
         todo.completed = task.completed;
         // todo.updated_at = getCurrentTime();
         return todo;
-      }else{
+      } else {
         return todo;
       }
-      
     });
     return newTodos;
   } else {
@@ -613,10 +603,10 @@ function deleteAll() {
       deleteSelectedFromLocalStorage(selectedTasks);
       selectedTasks = [];
       renderTasks();
-    }else{
-      input.focus()
+    } else {
+      input.focus();
     }
-  }else{
+  } else {
     return;
   }
 }
@@ -720,5 +710,6 @@ module.exports = {
   createIconButton,
   createToDoButtons,
   createTaskCard,
-  createTask,checkAndEditTask
+  createTask,
+  checkAndEditTask,
 };
