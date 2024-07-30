@@ -227,16 +227,21 @@ cursor: pointer;
   margin: 0%;
   font-family: sans-serif;
   padding: 0% 1%;
-  text-overflow: ellipsis;
-  overflow: hidden;
+ 
+
   font-size: 16px;
-  white-space: nowrap;
+
   border: none;
 
   outline: none;
   align-items: center;
-  display: inline-block;
+  display: flex;
   
+}
+.task-name >span{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .todo-list-container {
   width: 100%;

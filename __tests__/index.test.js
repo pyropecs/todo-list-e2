@@ -455,6 +455,7 @@ describe("to check that delete functionality working properly", () => {
     const taskName = getByText(todoList, tasks[1]);
     const todoCard = taskName.parentElement.parentElement;
     const deleteButton = todoCard.querySelector("#delete-btn-id");
+    console.log(deleteButton)
     deleteButton.dispatchEvent(new Event("click"));
     expect(window.confirm).toHaveBeenCalled();
     todoCards = document.querySelectorAll(".todo-card");
@@ -1423,7 +1424,7 @@ describe("to test that ui individual functions working properly", () => {
     input.value = "sdafsfsfsfs";
     window.confirm = jest.fn().mockReturnValue(false);
 
-    checkAndEditTask(event);
+    checkAndEditTask(event)
     expect(window.confirm).toHaveBeenCalled();
     expect(document.activeElement).toBe(input);
   });

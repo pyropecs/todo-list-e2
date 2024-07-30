@@ -53,7 +53,7 @@ function submitForm(event) {
 
 function getValidInputValue(inputValue) {
   //get the input and trim the white spaces and validate the input and return the valid input
-
+ 
   const trimmedInput = inputValue.trim();
   const isValidinput = validateText(trimmedInput);
 
@@ -170,7 +170,6 @@ function createToDoButtons(isCompleted) {
   //to create the button group which consists of edit button and delete button and complete button for each individual task card
   const btnGroup = document.createElement("div");
   btnGroup.classList.add("btn-group");
-
   const editButton = createIconButton(
     "edit",
     "edit-btn-id",
@@ -196,8 +195,6 @@ function createToDoButtons(isCompleted) {
       "Undo the completed task",
       completeTask
     );
-    editButton.classList.add("no-click");
-    deleteButton.classList.add("no-click");
     btnGroup.append(completedButton, editButton, deleteButton);
   } else {
     const completeBtn = createIconButton(
@@ -208,9 +205,6 @@ function createToDoButtons(isCompleted) {
       "Complete task",
       completeTask
     );
-
-    editButton.classList.remove("no-click");
-    deleteButton.classList.remove("no-click");
     btnGroup.append(completeBtn, editButton, deleteButton);
   }
 
@@ -255,7 +249,14 @@ function createTaskName(taskName, isCompleted) {
 
   taskNameContainer.append(taskNameInput);
 
+
+
+  
+
+
   return taskNameContainer;
+
+
 }
 
 function createCheckbox() {
@@ -303,8 +304,8 @@ function checkAndEditTask(e) {
 
   if (checkInputNotExist()) {
     editTask(target);
-  } else {
-    input.focus();
+  }else{
+    input.focus()
   }
 }
 function confirmAndDeleteTask(e) {
@@ -325,9 +326,10 @@ function checkInputNotExist() {
     return confirm(
       "The input value will be erased if you click the edit button"
     );
-  } else {
+  }else{
     return true;
   }
+ 
 }
 function editTask(target) {
   //to traverse the parent element todo card from edit button and queryselect the form input and get the value of the form input and setting attributes for editing and which todo card is editing by setting todo card index
@@ -348,7 +350,7 @@ function editTask(target) {
     deleteButton.classList.add("no-click");
     cancelBtn.classList.remove("hide");
     cancelBtn.classList.add("block");
-  } else {
+  }else{
     return;
   }
 }
@@ -376,7 +378,7 @@ function deleteTask(target) {
 
   try {
     deleteTodofromLocalStorage(index);
-    selectedTasks = [];
+    selectedTasks=[]
     renderTasks();
   } catch (error) {
     console.log(error);
@@ -386,20 +388,13 @@ function deleteTask(target) {
 function isTaskCompleted(target) {
   // traverse the parent element from the checkbox completed and query select the task name element set the respective attributes if its completed or not and edit and update in the local storage
   const todoCard = target.parentNode.parentNode.parentNode;
-  const editButton = todoCard.querySelector("#edit-btn-id");
-  const deleteButton = todoCard.querySelector("#delete-btn-id");
+
   const taskId = todoCard.getAttribute("index");
   const taskName = todoCard.querySelector("#task-name-id");
   try {
     const currentTodo = getTodoFromLocalStorageUsingIndex(taskId);
     const isCompleted = currentTodo.completed;
-    if (isCompleted) {
-      editButton.classList.add("no-click");
-      deleteButton.classList.add("no-click");
-    } else {
-      editButton.classList.remove("no-click");
-      deleteButton.classList.remove("no-click");
-    }
+
     const newTodo = {
       ...currentTodo,
       completed: !isCompleted,
@@ -411,7 +406,7 @@ function isTaskCompleted(target) {
     } else {
       taskName.classList.remove("opacity");
     }
-    selectedTasks = [];
+    selectedTasks =[]
     updateTodotoLocalStorage(newTodo);
     renderTasks();
   } catch (error) {
@@ -580,9 +575,10 @@ function updateTask(todos, task) {
         todo.completed = task.completed;
         // todo.updated_at = getCurrentTime();
         return todo;
-      } else {
+      }else{
         return todo;
       }
+      
     });
     return newTodos;
   } else {
@@ -612,10 +608,10 @@ function deleteAll() {
       deleteSelectedFromLocalStorage(selectedTasks);
       selectedTasks = [];
       renderTasks();
-    } else {
-      input.focus();
+    }else{
+      input.focus()
     }
-  } else {
+  }else{
     return;
   }
 }
@@ -719,6 +715,5 @@ module.exports = {
   createIconButton,
   createToDoButtons,
   createTaskCard,
-  createTask,
-  checkAndEditTask,
+  createTask,checkAndEditTask
 };
