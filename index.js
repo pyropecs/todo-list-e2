@@ -238,15 +238,18 @@ function createTaskName(taskName, isCompleted) {
   taskNameContainer.classList.add("task-name-container");
 
   const taskNameInput = document.createElement("p");
-  taskNameInput.textContent = taskName;
+  
+const span = document.createElement("span")
+  span.textContent = taskName;
+  span.title = taskName
 
-  taskNameInput.readOnly = true;
   taskNameInput.classList.add("task-name");
+  
   taskNameInput.setAttribute("id", "task-name-id");
   if (isCompleted) {
     taskNameInput.classList.add("opacity");
   }
-
+taskNameInput.append(span)
   taskNameContainer.append(taskNameInput);
 
 
@@ -341,6 +344,8 @@ function editTask(target) {
     saveBtn.textContent = "Save";
     saveBtn.title = "Save the task";
     const taskName = todoCard.querySelector("#task-name-id");
+    
+    
     const editIndex = todoCard.getAttribute("index");
     input.value = taskName.textContent;
     input.setAttribute("edit", true);
