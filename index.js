@@ -241,7 +241,7 @@ function createTaskName(taskName, isCompleted) {
   
 const span = document.createElement("span")
   span.textContent = taskName;
-  span.title = taskName
+  span.title = taskName;
 
   taskNameInput.classList.add("task-name");
   

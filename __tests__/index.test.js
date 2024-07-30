@@ -453,7 +453,7 @@ describe("to check that delete functionality working properly", () => {
 
     window.confirm = jest.fn().mockReturnValue(true);
     const taskName = getByText(todoList, tasks[1]);
-    const todoCard = taskName.parentElement.parentElement;
+    const todoCard = taskName.parentElement.parentElement.parentElement;
     const deleteButton = todoCard.querySelector("#delete-btn-id");
     console.log(deleteButton)
     deleteButton.dispatchEvent(new Event("click"));
@@ -480,7 +480,7 @@ describe("to check that delete functionality working properly", () => {
     expect(todoCards.length).toBe(1);
     window.confirm = jest.fn().mockReturnValue(false);
     const taskName = getByText(todoList, validInput);
-    const todoCard = taskName.parentElement.parentElement;
+    const todoCard = taskName.parentElement.parentElement.parentElement;
     const deleteButton = todoCard.querySelector("#delete-btn-id");
     deleteButton.dispatchEvent(new Event("click"));
     expect(window.confirm).toHaveBeenCalled();
@@ -509,7 +509,7 @@ describe("to check that complete functionality working properly", () => {
     let opacityExists;
 
     let taskName = getByText(todoList, validInput);
-    let todoCard = taskName.parentElement.parentElement;
+    let todoCard = taskName.parentElement.parentElement.parentElement;
 
     completeButton = todoCard.querySelector("#complete-btn-id");
 
@@ -517,9 +517,9 @@ describe("to check that complete functionality working properly", () => {
     opacityExists = taskName.classList.contains("opacity");
     expect(opacityExists).toBe(false);
     fireEvent(completeButton, new Event("click"));
-    opacityExists = taskName.classList.contains("opacity");
+    opacityExists = taskName.parentElement.classList.contains("opacity");
     taskName = getByText(todoList, validInput);
-    todoCard = taskName.parentElement.parentElement;
+    todoCard = taskName.parentElement.parentElement.parentElement;
     expect(opacityExists).toBe(true);
     completeButton = todoCard.querySelector("#complete-btn-id");
     expect(completeButton).toHaveAttribute("src", "./Images/checked.png");
@@ -588,7 +588,7 @@ describe("to check that edit functionality is working properly", () => {
     todoCards = document.querySelectorAll(".todo-card");
     expect(todoCards.length).toBe(1);
     const taskName = getByText(document, validInput);
-    const todoCard = taskName.parentElement.parentElement;
+    const todoCard = taskName.parentElement.parentElement.parentElement;
     const editButton = todoCard.querySelector("#edit-btn-id");
     fireEvent(editButton, new Event("click"));
     expect(input.value).toBe(validInput);
@@ -614,7 +614,7 @@ describe("to check that edit functionality is working properly", () => {
     expect(todoCards.length).toBe(1);
     let taskName = getByText(todoList, validInput);
 
-    const todoCard = taskName.parentElement.parentElement;
+    const todoCard = taskName.parentElement.parentElement.parentElement;
     const editButton = todoCard.querySelector("#edit-btn-id");
 
     fireEvent(editButton, new Event("click"));
@@ -755,7 +755,7 @@ describe("to check that edit functionality is working properly", () => {
     });
 
     const taskName = getByText(todoList, tasks[1]);
-    const todoCard = taskName.parentElement.parentElement;
+    const todoCard = taskName.parentElement.parentElement.parentElement;
     const editButton = todoCard.querySelector("#edit-btn-id");
     window.confirm = jest.fn().mockReturnValue(true);
 
