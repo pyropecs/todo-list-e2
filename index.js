@@ -346,7 +346,7 @@ function editTask(target) {
     deleteButton.classList.add("no-click");
     cancelBtn.classList.remove("hide");
     cancelBtn.classList.add("block");
-  } 
+  }
 }
 function cancelEditTask(e) {
   if (confirm("Do you want to cancel the edit")) {
@@ -375,7 +375,7 @@ function deleteTask(target) {
     selectedTasks = [];
     renderTasks();
   } catch (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 }
 
@@ -404,7 +404,7 @@ function isTaskCompleted(target) {
     updateTodotoLocalStorage(newTodo);
     renderTasks();
   } catch (error) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 }
 
@@ -568,10 +568,8 @@ function updateTask(todos, task) {
         todo.taskName = task.taskName;
         todo.completed = task.completed;
         // todo.updated_at = getCurrentTime();
-     
       }
       return todo;
-    
     });
     return newTodos;
   } else {
@@ -602,7 +600,7 @@ function deleteAll() {
       selectedTasks = [];
       renderTasks();
     }
-}
+  }
 }
 function deleteSelectedFromLocalStorage(selectedTasks) {
   const todos = getTodoFromLocalStorage();
@@ -705,5 +703,6 @@ module.exports = {
   createTaskCard,
   createTask,
   checkAndEditTask,
-  deleteTask,isTaskCompleted
+  deleteTask,
+  isTaskCompleted,
 };

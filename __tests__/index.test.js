@@ -66,70 +66,43 @@ describe("to test that input and button html are present", () => {
     expect(titleValue).toBe("To-Do List");
   });
 
-  test("test input field has placeholder", () => {
+  test("test input field is displayed and necessary attributes", () => {
     const input = document.querySelector("#text-input");
     const inputPlacholder = input.getAttribute("placeholder");
     expect(inputPlacholder).toBe("Enter Task");
-  });
-  test("test input field has class todo-textfield", () => {
-    const input = document.querySelector("#text-input");
     const inputClass = input.classList.contains("todo-textfield");
     expect(inputClass).toBeTruthy();
     expect(input.disabled).toBe(false);
-  });
-  test("test input field autocomplete is off", () => {
-    const input = document.querySelector("#text-input");
+   
     const autocomplete = input.getAttribute("autocomplete");
     expect(autocomplete).toBe("off");
-  });
-
-  test("to test input field is present", () => {
-    const input = document.querySelector("#text-input");
+   
     expect(input).not.toBeNull();
-  });
-
-  test("to test that input field has name attribute", () => {
-    const input = document.querySelector("#text-input");
     const inputName = input.getAttribute("name");
     expect(inputName).toBe("input");
+    const inputType = input.getAttribute("type");
+    expect(inputType).toBe("text");
   });
-  test("to test that input field has type attribute equal to input", () => {
-    const input = document.querySelector("#text-input");
-    const inputName = input.getAttribute("type");
-    expect(inputName).toBe("text");
-  });
+
 
   test("to test that add button is present", () => {
     const button = document.querySelector("#save-btn-id");
 
     expect(button).not.toBeNull();
-  });
-
-  test("to test that Add content is displayed on that button", () => {
-    const button = document.querySelector("#save-btn-id");
     const buttonContent = button.textContent;
     expect(buttonContent).toBe("Add");
-  });
-
-  test("to test add button have its btn class", () => {
-    const button = document.querySelector("#save-btn-id");
     const buttonClass = button.classList.contains("btn");
     expect(buttonClass).toBeTruthy();
-  });
-
-  test("to test that title attribute is present in the add button", () => {
-    const button = document.querySelector("#save-btn-id");
     const titleAttributeButton = button.getAttribute("title");
     expect(titleAttributeButton).toBe("Add the task");
+    const typeAttributeButton = button.getAttribute("type");
+    expect(typeAttributeButton).toBe("submit");
   });
-  test("to test that add button has type submit ", () => {
-    const button = document.querySelector("#save-btn-id");
-    const titleAttributeButton = button.getAttribute("type");
-    expect(titleAttributeButton).toBe("submit");
-  });
+
+
 });
 
-describe("to test that task status tabs elements are present", () => {
+describe("to test that task status tabs elements are present and delete button is displayed", () => {
   test("switch tab wrapped by form elements", () => {
     const radioButtons = document.querySelector("#radio-buttons");
     const radioButtonsChilds = radioButtons.childElementCount;
@@ -196,14 +169,15 @@ describe("to test that task status tabs elements are present", () => {
     expect(radioValueAttribute).toBe("completed");
     expect(radioCheckedAttribute).not.toBe("checked");
   });
+  test("to test that delete button is displayed and not clickable",()=>{
+
+      const deleteBtn = document.querySelector("#delete-all");
+  expect(deleteBtn).not.toBeNull();
+  const deleteBtnDisabled = deleteBtn.disabled;
+  expect(deleteBtnDisabled).toBeTruthy();
+  })
 });
 
-// describe("to check button element is present and disabled initially", () => {
-//   const deleteBtn = document.querySelector("#delete-all");
-//   expect(deleteBtn).not.toBeNull();
-//   const deleteBtnDisabled = deleteBtn.disabled;
-//   expect(deleteBtnDisabled).toBeTruthy();
-// });
 
 describe("to test the input validation ", () => {
   test("input validation with valid inputs", () => {
@@ -218,9 +192,13 @@ describe("to test the input validation ", () => {
       numeric: true,
     });
     input.value = validInput;
+    let noTask = document.querySelector("#no-tasks-id");
+    expect(noTask).not.toBeNull();
     expect(input).toHaveValue(validInput);
     fireEvent(submitButton, new Event("click"));
     expect(input).toHaveValue("");
+     noTask = document.querySelector("#no-tasks-id");
+    expect(noTask).toBeNull();                                                          
     expect(inputError.textContent).toBe("");
     const tasks = JSON.parse(localStorage.getItem("todos"));
     expect(tasks).toStrictEqual([
