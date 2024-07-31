@@ -6,9 +6,9 @@ const {
   getByRole,
   getByLabelText,
   fireEvent,
-  prettyDOM,
   queryByText,
   getByAltText,
+  prettyDOM,
 } = require("@testing-library/dom");
 
 const Chance = require("chance");
@@ -75,6 +75,7 @@ describe("to test that input and button html are present", () => {
     const input = document.querySelector("#text-input");
     const inputClass = input.classList.contains("todo-textfield");
     expect(inputClass).toBeTruthy();
+    expect(input.disabled).toBe(false);
   });
   test("test input field autocomplete is off", () => {
     const input = document.querySelector("#text-input");
@@ -209,7 +210,6 @@ describe("to test the input validation ", () => {
     const input = document.querySelector("#text-input");
     const inputError = document.querySelector("#input-error");
     const submitButton = document.querySelector("#save-btn-id");
-    const form = document.querySelector("#submit-form");
 
     const validInput = chance.string({
       length: 30,
@@ -318,70 +318,88 @@ describe("to test the input validation ", () => {
 });
 
 describe("to check that filter button giving the exact output ", () => {
-  test("to check that filter buttons are displayed", () => {
+  const validInput = chance.string({
+    symbols: false,
+    alpha: true,
+    numeric: true,
+  });
+  beforeEach(() => {
+    const input = document.querySelector("#text-input");
+    const saveBtn = document.querySelector("#save-btn-id");
+    input.value = validInput;
+    fireEvent(saveBtn, new Event("click"));
+  });
+  test("to check that clicking completed button in the task going from assigned state to completed state", async () => {
     const radioButtonContainer = document.querySelector("#radio-buttons");
     const radioButtons = document.querySelectorAll(
       '#radio-buttons input[type="radio"]'
     );
     const radioButtonsLength = radioButtons.length;
+
     expect(radioButtonsLength).toBe(3);
 
     expect(getByText(radioButtonContainer, /All/)).toBeInTheDocument();
     expect(getByText(radioButtonContainer, /Assigned/)).toBeInTheDocument();
     expect(getByText(radioButtonContainer, /Completed/)).toBeInTheDocument();
-  });
-  test("to check that clicking any status giving the correct value as output", async () => {
-    const radioButtonContainer = document.querySelector("#radio-buttons");
-
     const assignedButton = getByLabelText(radioButtonContainer, /Assigned/, {
       selector: "input",
     });
-    await userEvent.click(assignedButton);
-    await waitFor(() => {
-      expect(assignedButton.checked).toBe(true);
-    });
-
     const allButton = getByLabelText(radioButtonContainer, /All/, {
       selector: "input",
     });
-    await userEvent.click(allButton);
-    await waitFor(() => {
-      expect(assignedButton.checked).toBe(false);
-    });
-  });
-
-  test("to check that list of tasks shown in the completed section", async () => {
-    const radioButtonContainer = document.querySelector("#radio-buttons");
     const completedButton = getByLabelText(radioButtonContainer, /Completed/, {
       selector: "input",
     });
-    await userEvent.click(completedButton);
-    await waitFor(() => {
-      const todoList = document.querySelector("#task-list");
-      const todoCards = todoList.querySelectorAll(".todo-card");
-      let count = 0;
-      todoCards.forEach((todoCard) => {
-        const hide = todoCard.classList.contains("hide");
-        if (!hide) {
-          count++;
-        }
-      });
-      expect(count).toBe(0);
-    });
-  });
-  test("to check that list of tasks shown in the assigfned section", async () => {
-    const radioButtonContainer = document.querySelector("#radio-buttons");
-    const assignedButton = getByLabelText(radioButtonContainer, /Assigned/, {
-      selector: "input",
-    });
-    await userEvent.click(assignedButton);
-    await waitFor(() => {
-      const todoList = document.querySelector("#task-list");
-      const todoListChildren = todoList.childElementCount;
+    assignedButton.click();
 
-      expect(todoListChildren).toBe(todoListChildren);
+    expect(assignedButton.checked).toBe(true);
+
+    allButton.click();
+
+    expect(assignedButton.checked).toBe(false);
+    completedButton.click();
+
+    let todoList = document.querySelector("#task-list");
+    let todoCards = todoList.querySelectorAll(".todo-card");
+    let count = 0;
+    todoCards.forEach((todoCard) => {
+      console.log(todoCard.getAttribute("completed"));
+      const isCompleted = todoCard.getAttribute("completed") === "true";
+      if (isCompleted) {
+        count++;
+      }
     });
+    expect(count).toBe(0);
+    const completeButton = todoList
+      .querySelector(".todo-card")
+      .querySelector("#complete-btn-id");
+    completeButton.click();
+    todoList = document.querySelector("#task-list");
+    todoCards = todoList.querySelectorAll(".todo-card");
+    count = 0;
+    todoCards.forEach((todoCard) => {
+      const isCompleted = todoCard.getAttribute("completed") === "true";
+      if (isCompleted) {
+        count++;
+      }
+    });
+
+    expect(count).toBe(1);
   });
+
+  // test("to check that list of tasks shown in the assigfned section", async () => {
+  //   const radioButtonContainer = document.querySelector("#radio-buttons");
+  //   const assignedButton = getByLabelText(radioButtonContainer, /Assigned/, {
+  //     selector: "input",
+  //   });
+  //   await userEvent.click(assignedButton);
+  //   await waitFor(() => {
+  //     const todoList = document.querySelector("#task-list");
+  //     const todoListChildren = todoList.childElementCount;
+
+  //     expect(todoListChildren).toBe(todoListChildren);
+  //   });
+  // });
 });
 
 describe("to check that Add Functionality working properly ", () => {
@@ -456,6 +474,7 @@ describe("to check that delete functionality working properly", () => {
   });
 
   test("to check that delete functionality is working by clicking it", async () => {
+    let todoCards;
     const todoList = document.querySelector("#task-list");
 
     todoCards = document.querySelectorAll(".todo-card");
@@ -595,7 +614,7 @@ describe("to check that edit functionality is working properly", () => {
     });
     input.value = validInput;
     fireEvent(saveBtn, new Event("click"));
-    todoCards = document.querySelectorAll(".todo-card");
+    let todoCards = document.querySelectorAll(".todo-card");
     expect(todoCards.length).toBe(1);
     const taskName = getByText(document, validInput);
     const todoCard = taskName.parentElement.parentElement.parentElement;
@@ -619,7 +638,7 @@ describe("to check that edit functionality is working properly", () => {
     });
     input.value = validInput;
     fireEvent(saveBtn, new Event("click"));
-    todoCards = document.querySelectorAll(".todo-card");
+    let todoCards = document.querySelectorAll(".todo-card");
 
     expect(todoCards.length).toBe(1);
     let taskName = getByText(todoList, validInput);
@@ -657,7 +676,7 @@ describe("to check that edit functionality is working properly", () => {
     });
     input.value = validInput;
     fireEvent(saveBtn, new Event("click"));
-    todoCards = document.querySelectorAll(".todo-card");
+    let todoCards = document.querySelectorAll(".todo-card");
 
     expect(todoCards.length).toBe(1);
 
@@ -722,7 +741,7 @@ describe("to check that edit functionality is working properly", () => {
     });
     input.value = validInput;
     fireEvent(saveBtn, new Event("click"));
-    todoCards = document.querySelectorAll(".todo-card");
+    let todoCards = document.querySelectorAll(".todo-card");
     expect(todoCards.length).toBe(1);
     const editButton = document.querySelector("#edit-btn-id");
     fireEvent(editButton, new Event("click"));
@@ -1059,7 +1078,9 @@ describe("testing local storage invididuval compoents", () => {
       taskId: 1,
       taskName: newTaskName,
     };
-    expect(() => updateTodotoLocalStorage(newTask)).toThrow("the given task doesnt exist");
+    expect(() => updateTodotoLocalStorage(newTask)).toThrow(
+      "the given task doesnt exist"
+    );
   });
 
   test("to check the delete task from local storage", () => {
@@ -1373,6 +1394,7 @@ describe("to test that ui individual functions working properly", () => {
 
   test("to test that to do buttons are created for an completed task", () => {
     const { createToDoButtons } = require("../index.js");
+
     const btnGroup = createToDoButtons(true); //task is completed
     expect(btnGroup.children.length).toBe(3);
     const completeButton = getByAltText(btnGroup, "completed button");
@@ -1432,16 +1454,13 @@ describe("to test that ui individual functions working properly", () => {
     const text = getByText(taskCard, "dasdasd");
     expect(() => deleteTask(text)).toThrow("No task exist like that");
   });
-test("to check is completed indivudal component",()=>{
+  test("to check is completed indivudal component", () => {
+    const { isTaskCompleted, createTaskCard } = require("../index.js");
+    const todoCard = createTaskCard("dsdsdsd", "sdsdsd", false); //invalid taskId
+    const taskContent = todoCard.querySelector("#complete-btn-id");
 
-const {isTaskCompleted,createTaskCard} =require("../index.js")
-const todoCard = createTaskCard("dsdsdsd","sdsdsd",false); //invalid taskId
-const taskContent = todoCard.querySelector("#complete-btn-id")
- 
-expect(()=>isTaskCompleted(taskContent)).toThrow("the given task didnt exist")
-
-
-})
-
-
+    expect(() => isTaskCompleted(taskContent)).toThrow(
+      "the given task didnt exist"
+    );
+  });
 });
