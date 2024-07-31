@@ -122,12 +122,15 @@ describe("to test that task status tabs elements are present and delete button i
     expect(radioNameInput).toBe("radio_choices");
     expect(radioValueAttribute).toBe("all");
     expect(radioCheckedAttribute).toBe("checked");
+    expect(radioInput.disabled).toBeFalsy()
     const assigned = document.querySelector("#assigned");
     label = assigned.labels[0];
     labelText = label.textContent;
     labelFor = label.getAttribute("for");
     expect(labelFor).toBe("assigned");
     expect(labelText).toBe("Assigned");
+    expect(assigned.disabled).toBeFalsy()
+
     const assignedTypeAttribute = assigned.getAttribute("type");
     const assignedNameInput = assigned.getAttribute("name");
     const assignedValueAttribute = assigned.getAttribute("value");
@@ -142,6 +145,7 @@ describe("to test that task status tabs elements are present and delete button i
     labelFor = label.getAttribute("for");
     expect(labelFor).toBe("completed");
     expect(labelText).toBe("Completed");
+    expect(completed.disabled).toBeFalsy()
     const completedInput = document.querySelector("#completed");
     const completedTypeAttribute = completedInput.getAttribute("type");
     const completedNameInput = completedInput.getAttribute("name");
