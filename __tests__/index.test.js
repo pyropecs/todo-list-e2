@@ -73,17 +73,16 @@ describe("to test that input and button html are present", () => {
     const inputClass = input.classList.contains("todo-textfield");
     expect(inputClass).toBeTruthy();
     expect(input.disabled).toBe(false);
-   
+
     const autocomplete = input.getAttribute("autocomplete");
     expect(autocomplete).toBe("off");
-   
+
     expect(input).not.toBeNull();
     const inputName = input.getAttribute("name");
     expect(inputName).toBe("input");
     const inputType = input.getAttribute("type");
     expect(inputType).toBe("text");
   });
-
 
   test("to test that add button is present", () => {
     const button = document.querySelector("#save-btn-id");
@@ -98,8 +97,6 @@ describe("to test that input and button html are present", () => {
     const typeAttributeButton = button.getAttribute("type");
     expect(typeAttributeButton).toBe("submit");
   });
-
-
 });
 
 describe("to test that task status tabs elements are present and delete button is displayed", () => {
@@ -110,74 +107,59 @@ describe("to test that task status tabs elements are present and delete button i
     expect(radioButtonsChilds).toBe(6);
   });
 
-  test("tab switch all has corresponing label", () => {
-    const radioInput = document.querySelector("#all");
-    const label = radioInput.labels[0];
-    const labelText = label.textContent;
-    const labelFor = label.getAttribute("for");
-    expect(labelFor).toBe("all");
-    expect(labelText).toBe("All");
-  });
-  test("to test that all inputs have the all corresponding attributes", () => {
+  test("to check the assigned and completed and all tabs have the expected attributes", () => {
     const radioInput = document.querySelector("#all");
     const radioTypeAttribute = radioInput.getAttribute("type");
     const radioNameInput = radioInput.getAttribute("name");
     const radioValueAttribute = radioInput.getAttribute("value");
     const radioCheckedAttribute = radioInput.getAttribute("checked");
+    let label = radioInput.labels[0];
+    let labelText = label.textContent;
+    let labelFor = label.getAttribute("for");
+    expect(labelFor).toBe("all");
+    expect(labelText).toBe("All");
     expect(radioTypeAttribute).toBe("radio");
     expect(radioNameInput).toBe("radio_choices");
     expect(radioValueAttribute).toBe("all");
     expect(radioCheckedAttribute).toBe("checked");
-  });
-
-  test("tab switch assigned has corresponing label", () => {
-    const radioInput = document.querySelector("#assigned");
-    const label = radioInput.labels[0];
-    const labelText = label.textContent;
-    const labelFor = label.getAttribute("for");
+    const assigned = document.querySelector("#assigned");
+    label = assigned.labels[0];
+    labelText = label.textContent;
+    labelFor = label.getAttribute("for");
     expect(labelFor).toBe("assigned");
     expect(labelText).toBe("Assigned");
-  });
-  test("to test that assigned inputs have the all corresponding attributes", () => {
-    const radioInput = document.querySelector("#assigned");
-    const radioTypeAttribute = radioInput.getAttribute("type");
-    const radioNameInput = radioInput.getAttribute("name");
-    const radioValueAttribute = radioInput.getAttribute("value");
-    const radioCheckedAttribute = radioInput.getAttribute("checked");
-    expect(radioTypeAttribute).toBe("radio");
-    expect(radioNameInput).toBe("radio_choices");
-    expect(radioValueAttribute).toBe("assigned");
-    expect(radioCheckedAttribute).not.toBe("checked");
-  });
-
-  test("tab switch completed has corresponing label", () => {
-    const radioInput = document.querySelector("#completed");
-    const label = radioInput.labels[0];
-    const labelText = label.textContent;
-    const labelFor = label.getAttribute("for");
+    const assignedTypeAttribute = assigned.getAttribute("type");
+    const assignedNameInput = assigned.getAttribute("name");
+    const assignedValueAttribute = assigned.getAttribute("value");
+    const assignedCheckedAttribute = assigned.getAttribute("checked");
+    expect(assignedTypeAttribute).toBe("radio");
+    expect(assignedNameInput).toBe("radio_choices");
+    expect(assignedValueAttribute).toBe("assigned");
+    expect(assignedCheckedAttribute).not.toBe("checked");
+    const completed = document.querySelector("#completed");
+    label = completed.labels[0];
+    labelText = label.textContent;
+    labelFor = label.getAttribute("for");
     expect(labelFor).toBe("completed");
     expect(labelText).toBe("Completed");
+    const completedInput = document.querySelector("#completed");
+    const completedTypeAttribute = completedInput.getAttribute("type");
+    const completedNameInput = completedInput.getAttribute("name");
+    const completedValueAttribute = completedInput.getAttribute("value");
+    const completedCheckedAttribute = completedInput.getAttribute("checked");
+    expect(completedTypeAttribute).toBe("radio");
+    expect(completedNameInput).toBe("radio_choices");
+    expect(completedValueAttribute).toBe("completed");
+    expect(completedCheckedAttribute).not.toBe("checked");
   });
-  test("to test that completed inputs have the all corresponding attributes", () => {
-    const radioInput = document.querySelector("#completed");
-    const radioTypeAttribute = radioInput.getAttribute("type");
-    const radioNameInput = radioInput.getAttribute("name");
-    const radioValueAttribute = radioInput.getAttribute("value");
-    const radioCheckedAttribute = radioInput.getAttribute("checked");
-    expect(radioTypeAttribute).toBe("radio");
-    expect(radioNameInput).toBe("radio_choices");
-    expect(radioValueAttribute).toBe("completed");
-    expect(radioCheckedAttribute).not.toBe("checked");
-  });
-  test("to test that delete button is displayed and not clickable",()=>{
 
-      const deleteBtn = document.querySelector("#delete-all");
-  expect(deleteBtn).not.toBeNull();
-  const deleteBtnDisabled = deleteBtn.disabled;
-  expect(deleteBtnDisabled).toBeTruthy();
-  })
+  test("to test that delete button is displayed and not clickable", () => {
+    const deleteBtn = document.querySelector("#delete-all");
+    expect(deleteBtn).not.toBeNull();
+    const deleteBtnDisabled = deleteBtn.disabled;
+    expect(deleteBtnDisabled).toBeTruthy();
+  });
 });
-
 
 describe("to test the input validation ", () => {
   test("input validation with valid inputs", () => {
@@ -197,8 +179,8 @@ describe("to test the input validation ", () => {
     expect(input).toHaveValue(validInput);
     fireEvent(submitButton, new Event("click"));
     expect(input).toHaveValue("");
-     noTask = document.querySelector("#no-tasks-id");
-    expect(noTask).toBeNull();                                                          
+    noTask = document.querySelector("#no-tasks-id");
+    expect(noTask).toBeNull();
     expect(inputError.textContent).toBe("");
     const tasks = JSON.parse(localStorage.getItem("todos"));
     expect(tasks).toStrictEqual([
