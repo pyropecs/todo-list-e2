@@ -666,7 +666,7 @@ function validateOnlyAlphaNumericAndAllowedSpecialCharacters(text) {
   if (text.match(alphaNumeric)) {
     return true;
   } else {
-    return "Only alphanumeric and allowed special characters , ' -";
+    return "Only alphanumeric and allowed special characters . , ' -";
   }
 }
 function validateMinimumCharacters(text) {

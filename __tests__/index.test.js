@@ -8,7 +8,6 @@ const {
   fireEvent,
   queryByText,
   getByAltText,
-  prettyDOM,
 } = require("@testing-library/dom");
 
 const Chance = require("chance");
@@ -62,7 +61,6 @@ describe("to test that input and button html are present", () => {
   test("check title is displayed", () => {
     const title = document.querySelector(".title");
     const titleValue = title.textContent;
-
     expect(titleValue).toBe("To-Do List");
   });
 
@@ -73,10 +71,8 @@ describe("to test that input and button html are present", () => {
     const inputClass = input.classList.contains("todo-textfield");
     expect(inputClass).toBeTruthy();
     expect(input.disabled).toBe(false);
-
     const autocomplete = input.getAttribute("autocomplete");
     expect(autocomplete).toBe("off");
-
     expect(input).not.toBeNull();
     const inputName = input.getAttribute("name");
     expect(inputName).toBe("input");
@@ -86,7 +82,6 @@ describe("to test that input and button html are present", () => {
 
   test("to test that add button is present", () => {
     const button = document.querySelector("#save-btn-id");
-
     expect(button).not.toBeNull();
     const buttonContent = button.textContent;
     expect(buttonContent).toBe("Add");
@@ -122,15 +117,14 @@ describe("to test that task status tabs elements are present and delete button i
     expect(radioNameInput).toBe("radio_choices");
     expect(radioValueAttribute).toBe("all");
     expect(radioCheckedAttribute).toBe("checked");
-    expect(radioInput.disabled).toBeFalsy()
+    expect(radioInput.disabled).toBeFalsy();
     const assigned = document.querySelector("#assigned");
     label = assigned.labels[0];
     labelText = label.textContent;
     labelFor = label.getAttribute("for");
     expect(labelFor).toBe("assigned");
     expect(labelText).toBe("Assigned");
-    expect(assigned.disabled).toBeFalsy()
-
+    expect(assigned.disabled).toBeFalsy();
     const assignedTypeAttribute = assigned.getAttribute("type");
     const assignedNameInput = assigned.getAttribute("name");
     const assignedValueAttribute = assigned.getAttribute("value");
@@ -145,7 +139,7 @@ describe("to test that task status tabs elements are present and delete button i
     labelFor = label.getAttribute("for");
     expect(labelFor).toBe("completed");
     expect(labelText).toBe("Completed");
-    expect(completed.disabled).toBeFalsy()
+    expect(completed.disabled).toBeFalsy();
     const completedInput = document.querySelector("#completed");
     const completedTypeAttribute = completedInput.getAttribute("type");
     const completedNameInput = completedInput.getAttribute("name");
@@ -248,7 +242,7 @@ describe("to test the input validation ", () => {
     expect(input).toHaveValue(symbolText);
     form.dispatchEvent(new Event("submit"));
     expect(inputError.textContent).toBe(
-      "Only alphanumeric and allowed special characters , ' -"
+      "Only alphanumeric and allowed special characters . , ' -"
     );
     const firstCharacterSymbol =
       "," +
@@ -350,20 +344,6 @@ describe("to check that filter button giving the exact output ", () => {
 
     expect(count).toBe(1);
   });
-
-  // test("to check that list of tasks shown in the assigfned section", async () => {
-  //   const radioButtonContainer = document.querySelector("#radio-buttons");
-  //   const assignedButton = getByLabelText(radioButtonContainer, /Assigned/, {
-  //     selector: "input",
-  //   });
-  //   await userEvent.click(assignedButton);
-  //   await waitFor(() => {
-  //     const todoList = document.querySelector("#task-list");
-  //     const todoListChildren = todoList.childElementCount;
-
-  //     expect(todoListChildren).toBe(todoListChildren);
-  //   });
-  // });
 });
 
 describe("to check that Add Functionality working properly ", () => {
@@ -407,7 +387,7 @@ describe("to check that Add Functionality working properly ", () => {
     input.value = inputValue;
     fireEvent(saveBtn, new Event("click"));
     expect(inputError.textContent).toBe(
-      "Only alphanumeric and allowed special characters , ' -"
+      "Only alphanumeric and allowed special characters . , ' -"
     );
     expect(queryByText(todoList, inputValue)).toBeNull();
   });
@@ -872,7 +852,7 @@ describe("checking input validation function components", () => {
     );
     expect(validateNotMorThan150Characters(validInput)).toBe(true);
     validInput = chance.string({
-      pool: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,'-",
+      pool: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,'-",
     });
     expect(
       validateOnlyAlphaNumericAndAllowedSpecialCharacters(validInput)
@@ -896,15 +876,13 @@ describe("checking input validation function components", () => {
       numeric: false,
     });
     expect(validateText(invalidInput)).toBe(
-      "Only alphanumeric and allowed special characters , ' -"
+      "Only alphanumeric and allowed special characters . , ' -"
     );
     invalidInput = "";
     expect(validateNoEmptyString(invalidInput)).toBe("Input is required");
     invalidInput =
       chance.string({
-        symbols: true,
-        alpha: false,
-        numeric: false,
+        pool: ".,'-",
         length: 1,
       }) +
       chance.string({
@@ -931,7 +909,7 @@ describe("checking input validation function components", () => {
     });
     expect(
       validateOnlyAlphaNumericAndAllowedSpecialCharacters(invalidInput)
-    ).toBe("Only alphanumeric and allowed special characters , ' -");
+    ).toBe("Only alphanumeric and allowed special characters . , ' -");
     invalidInput = chance.string({
       length: 2,
       symbols: false,
@@ -1399,7 +1377,13 @@ describe("to test that ui individual functions working properly", () => {
     const { checkAndEditTask } = require("../index.js");
     const event = { target: "dummy one" };
     const input = document.querySelector("#text-input");
-    input.value = "sdafsfsfsfs";
+    const validInput = chance.string({
+      symbols: false,
+      alpha: true,
+      numeric: true,
+      length: 30,
+    });
+    input.value = validInput;
     window.confirm = jest.fn().mockReturnValue(false);
 
     checkAndEditTask(event);
@@ -1409,13 +1393,19 @@ describe("to test that ui individual functions working properly", () => {
 
   test("to check that delete task when invalid inputs recieved", () => {
     const { deleteTask, createTaskCard } = require("../index.js");
+    const validInput = chance.string({
+      symbols: false,
+      alpha: true,
+      numeric: true,
+      length: 30,
+    });
     const task = {
       taskId: "to be number but given as string as invalid",
       completed: false,
-      taskName: "dasdasd",
+      taskName: validInput,
     };
     const taskCard = createTaskCard(task.taskName, task.taskId, task.completed);
-    const text = getByText(taskCard, "dasdasd");
+    const text = getByText(taskCard, validInput);
     expect(() => deleteTask(text)).toThrow("No task exist like that");
   });
   test("to check is completed indivudal component", () => {
