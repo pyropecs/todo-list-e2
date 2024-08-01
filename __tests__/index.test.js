@@ -277,6 +277,7 @@ describe("to test the input validation ", () => {
 });
 
 describe("to check that filter button giving the exact output ", () => {
+  
   const validInput = chance.string({
     symbols: false,
     alpha: true,
@@ -288,8 +289,16 @@ describe("to check that filter button giving the exact output ", () => {
     input.value = validInput;
     fireEvent(saveBtn, new Event("click"));
   });
+
+  afterEach(()=>{
+    document.body.innerHTML = ""
+  })
+
+
+
   test("to check that clicking completed button in the task going from assigned state to completed state", async () => {
     const radioButtonContainer = document.querySelector("#radio-buttons");
+    
     const radioButtons = document.querySelectorAll(
       '#radio-buttons input[type="radio"]'
     );
@@ -310,7 +319,7 @@ describe("to check that filter button giving the exact output ", () => {
       selector: "input",
     });
     assignedButton.click();
-
+    
     expect(assignedButton.checked).toBe(true);
 
     allButton.click();
@@ -326,8 +335,11 @@ describe("to check that filter button giving the exact output ", () => {
       const isCompleted = todoCard.getAttribute("completed") === "true";
       if (isCompleted) {
         count++;
+
+
       }
     });
+   assignedButton.click()
     expect(count).toBe(0);
     const completeButton = todoList
       .querySelector(".todo-card")
@@ -344,6 +356,7 @@ describe("to check that filter button giving the exact output ", () => {
     });
 
     expect(count).toBe(1);
+   
   });
 });
 
@@ -651,11 +664,11 @@ describe("to check that edit functionality is working properly", () => {
       fireEvent(saveBtn, new Event("click"));
     }
     createTask();
- 
+
     let todoList = document.querySelector("#task-list");
-    const todoCards = document.querySelectorAll(".todo-card")
-    expect(todoCards.length).toBe(2)
-    console.log(tasks)
+    const todoCards = document.querySelectorAll(".todo-card");
+    expect(todoCards.length).toBe(2);
+    console.log(tasks);
     const newTask = getByText(document, tasks[0]);
     const editBtnNew =
       newTask.parentElement.parentElement.parentElement.querySelector(
@@ -838,12 +851,34 @@ describe("to check the multiple delete items is working properly", () => {
 
     expect(todoCards.length).toBe(unselectTasks.length);
   });
+
+  test("to delete all property is working by selecting everything", () => {
+    const deleteButton = document.querySelector("#delete-all");
+    expect(deleteButton.disabled).toBe(true);
+
+    let todoCards = document.querySelectorAll(".todo-card");
+    todoCards.forEach((todoCard) => {
+      let selectCheckbox = todoCard.querySelector("#select-checkbox");
+      expect(selectCheckbox.checked).toBe(false);
+      fireEvent.click(selectCheckbox);
+      selectCheckbox = todoCard.querySelector("#select-checkbox");
+      //selecting all the tasks
+
+      expect(selectCheckbox.checked).toBe(true);
+    });
+
+    window.confirm = jest.fn().mockReturnValue(true);
+    expect(deleteButton.disabled).toBe(false);
+    fireEvent.click(deleteButton);
+    expect(window.confirm).toHaveBeenCalled();
+    const todoCard = document.querySelectorAll(".todo-card");
+    expect(todoCard.length).toBe(0);
+    const noTaskFound = document.querySelector("#no-tasks-id");
+    expect(noTaskFound).toBeInTheDocument();
+  });
 });
 
 describe("checking input validation function components", () => {
-
-
-
   test("testing validation components with valid inputs", () => {
     let validInput = chance.string({
       symbols: false,
@@ -952,7 +987,6 @@ describe("testing local storage invididuval compoents", () => {
     }
   }
 
- 
   test("getting from local storage functionality", () => {
     const { getTodoFromLocalStorage } = require("../index.js");
     //when there is no elements in local storage
@@ -968,7 +1002,7 @@ describe("testing local storage invididuval compoents", () => {
       tasks.push(validInput);
       createTask(tasks[i]);
     }
-   
+
     // when there are some elements in it
     todos = getTodoFromLocalStorage();
     expect(todos).toStrictEqual([
@@ -1168,18 +1202,6 @@ describe("testing local storage invididuval compoents", () => {
 });
 
 describe("testing filter individual components", () => {
-  function createTask(validInput) {
-    if (validInput) {
-      const input = document.querySelector("#text-input");
-
-      const saveBtn = document.querySelector("#save-btn-id");
-
-      input.value = validInput;
-      fireEvent(saveBtn, new Event("click"));
-    } else {
-      throw new Error("input does not exist");
-    }
-  }
   test("to test all state in filter st", () => {
     const { renderTasks, saveTodoToLocalStorage } = require("../index.js");
     const numberOfTasks = 7;
@@ -1264,6 +1286,8 @@ describe("testing filter individual components", () => {
     });
     expect(completed.length).toBe(completedTasks);
   });
+
+  
 });
 
 describe("to test the form elements ", () => {

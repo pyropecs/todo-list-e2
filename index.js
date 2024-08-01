@@ -412,11 +412,8 @@ function filterTodos(selectedValue) {
   //to handle the select functionality with 3 states "completed" ,"assigned","all"
 
   const todoCards = document.querySelectorAll(".todo-card");
-  const p = document.querySelector("#no-tasks-id");
+
   if (todoCards.length !== 0) {
-    removeNoTaskFound();
-  }
-  if (p && selectedValue !== "all") {
     removeNoTaskFound();
   }
 
@@ -433,16 +430,19 @@ function filterTodos(selectedValue) {
 }
 function renderAllTodos(todoCards) {
   //to render all the tasks when select state is "all"
-
+  removeNoTaskFound();
   todoCards.forEach((todoCard) => {
     todoCard.classList.add("flex");
     todoCard.classList.remove("hide");
   });
+  if (todoCards.length === 0) {
+    noTaskFound();
+  }
 }
 
 function renderAssignedTodos(todoCards) {
   //to render only the assigned tasks and not completed when select state is "assigned" and to check the assigned tasks whether it is empty or not
-
+  removeNoTaskFound();
   let assignedTasks = 0;
   todoCards.forEach((todoCard) => {
     const completed = todoCard.getAttribute("completed");
@@ -463,7 +463,7 @@ function renderAssignedTodos(todoCards) {
 
 function renderCompletedTodos(todoCards) {
   //to render only the completed tasks when select state is "completed" and to check the completed tasks whether it is empty or not
-
+  removeNoTaskFound();
   let completedTask = 0;
   todoCards.forEach((todoCard) => {
     todoCard.classList.remove("flex");
@@ -705,5 +705,5 @@ module.exports = {
   checkAndEditTask,
   deleteTask,
   isTaskCompleted,
-  submitForm
+  submitForm,
 };
