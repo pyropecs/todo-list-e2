@@ -350,21 +350,20 @@ describe("to check that filter button giving the exact output ", () => {
 describe("to check that Add Functionality working properly ", () => {
   const numberOfTasks = 5;
 
-  function createTask() {
-    const input = document.querySelector("#text-input");
-    const saveBtn = document.querySelector("#save-btn-id");
-
-    const inputValue = chance.string({
-      symbols: false,
-      numeric: true,
-      alpha: true,
-      length: 30,
-    });
-    input.value = inputValue;
-    fireEvent(saveBtn, new Event("click"));
-  }
-
   beforeEach(() => {
+    function createTask() {
+      const input = document.querySelector("#text-input");
+      const saveBtn = document.querySelector("#save-btn-id");
+
+      const inputValue = chance.string({
+        symbols: false,
+        numeric: true,
+        alpha: true,
+        length: 30,
+      });
+      input.value = inputValue;
+      fireEvent(saveBtn, new Event("click"));
+    }
     for (let i = 0; i < numberOfTasks; i++) {
       createTask();
     }
@@ -398,14 +397,14 @@ describe("to check that delete functionality working properly", () => {
   const tasks = [];
   const numberOfTasks = 6;
 
-  function createTask(inputValue) {
-    const input = document.querySelector("#text-input");
-    const saveBtn = document.querySelector("#save-btn-id");
-
-    input.value = inputValue;
-    fireEvent(saveBtn, new Event("click"));
-  }
   beforeEach(() => {
+    function createTask(inputValue) {
+      const input = document.querySelector("#text-input");
+      const saveBtn = document.querySelector("#save-btn-id");
+
+      input.value = inputValue;
+      fireEvent(saveBtn, new Event("click"));
+    }
     for (let i = 0; i < numberOfTasks; i++) {
       const inputValue = chance.string({
         symbols: false,
@@ -464,19 +463,29 @@ describe("to check that delete functionality working properly", () => {
 });
 
 describe("to check that complete functionality working properly", () => {
-  test("to check the uncompleted task got completed when clicking complete button", () => {
+  const validInput = chance.string({
+    symbols: false,
+    numeric: false,
+    alpha: true,
+    length: 30,
+  });
+
+  beforeEach(() => {
     const input = document.querySelector("#text-input");
     const saveBtn = document.querySelector("#save-btn-id");
-    const todoList = document.querySelector("#task-list");
-    const validInput = chance.string({
-      symbols: false,
-      numeric: false,
-      alpha: true,
-      length: 30,
-    });
-    let todoCards;
+
     input.value = validInput;
     fireEvent(saveBtn, new Event("click"));
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = "";
+  });
+
+  test("to check the uncompleted task got completed when clicking complete button", () => {
+    let todoCards;
+    const todoList = document.querySelector("#task-list");
+
     todoCards = document.querySelectorAll(".todo-card");
     expect(todoCards.length).toBe(1);
     let completeButton;
@@ -501,17 +510,7 @@ describe("to check that complete functionality working properly", () => {
 
   test("to check that completed task got uncompleted when clicking complete button", () => {
     //creating task
-    const input = document.querySelector("#text-input");
-    const saveBtn = document.querySelector("#save-btn-id");
-    const validInput = chance.string({
-      symbols: false,
-      numeric: false,
-      alpha: true,
-      length: 30,
-    });
-    let todoCards;
-    input.value = validInput;
-    fireEvent(saveBtn, new Event("click"));
+
     todoCards = document.querySelectorAll(".todo-card");
     expect(todoCards.length).toBe(1);
     //complete task
@@ -547,18 +546,27 @@ describe("to check that complete functionality working properly", () => {
 });
 
 describe("to check that edit functionality is working properly", () => {
-  test("to check that clicking edit icon should fill input box with task name", () => {
+  const validInput = chance.string({
+    symbols: false,
+    numeric: false,
+    alpha: true,
+    length: 30,
+  });
+  beforeEach(() => {
     const input = document.querySelector("#text-input");
 
     const saveBtn = document.querySelector("#save-btn-id");
-    const validInput = chance.string({
-      symbols: false,
-      numeric: false,
-      alpha: true,
-      length: 30,
-    });
+
     input.value = validInput;
     fireEvent(saveBtn, new Event("click"));
+  });
+  afterEach(() => {
+    document.body.innerHTML = "";
+  });
+
+  test("to check that clicking edit icon should fill input box with task name", () => {
+    const saveBtn = document.querySelector("#save-btn-id");
+    const input = document.querySelector("#text-input");
     let todoCards = document.querySelectorAll(".todo-card");
     expect(todoCards.length).toBe(1);
     const taskName = getByText(document, validInput);
@@ -573,16 +581,9 @@ describe("to check that edit functionality is working properly", () => {
   test("to check that user can cancel the changes they made after confirmatiion", () => {
     const input = document.querySelector("#text-input");
     const cancelBtn = document.querySelector("#cancel-btn");
-    const saveBtn = document.querySelector("#save-btn-id");
+
     const todoList = document.querySelector("#task-list");
-    const validInput = chance.string({
-      symbols: false,
-      numeric: false,
-      alpha: true,
-      length: 30,
-    });
-    input.value = validInput;
-    fireEvent(saveBtn, new Event("click"));
+
     let todoCards = document.querySelectorAll(".todo-card");
 
     expect(todoCards.length).toBe(1);
@@ -611,16 +612,7 @@ describe("to check that edit functionality is working properly", () => {
   test("to check that user can continue the edit functionality when they cancel the confirmatiion pop up", () => {
     const input = document.querySelector("#text-input");
     const cancelBtn = document.querySelector("#cancel-btn");
-    const saveBtn = document.querySelector("#save-btn-id");
 
-    const validInput = chance.string({
-      symbols: false,
-      numeric: false,
-      alpha: true,
-      length: 30,
-    });
-    input.value = validInput;
-    fireEvent(saveBtn, new Event("click"));
     let todoCards = document.querySelectorAll(".todo-card");
 
     expect(todoCards.length).toBe(1);
@@ -668,13 +660,9 @@ describe("to check that edit functionality is working properly", () => {
       );
     expect(todoList.classList.contains("no-click")).toBeFalsy();
     editBtnFirst.click();
-    
+
     todoList = document.querySelector("#task-list");
     expect(todoList.classList.contains("no-click")).toBeTruthy();
-
-
- 
-  
   });
 
   test("to check that editing the task actually got updated in task list", () => {
@@ -682,14 +670,6 @@ describe("to check that edit functionality is working properly", () => {
     const todoList = document.querySelector("#task-list");
     const saveBtn = document.querySelector("#save-btn-id");
 
-    const validInput = chance.string({
-      symbols: false,
-      numeric: false,
-      alpha: true,
-      length: 30,
-    });
-    input.value = validInput;
-    fireEvent(saveBtn, new Event("click"));
     const todoCards = document.querySelectorAll(".todo-card");
     expect(todoCards.length).toBe(1);
     let taskName = getByText(todoList, validInput);
@@ -713,14 +693,6 @@ describe("to check that edit functionality is working properly", () => {
     const inputError = document.querySelector("#input-error");
     const saveBtn = document.querySelector("#save-btn-id");
 
-    const validInput = chance.string({
-      symbols: false,
-      numeric: false,
-      alpha: true,
-      length: 30,
-    });
-    input.value = validInput;
-    fireEvent(saveBtn, new Event("click"));
     let todoCards = document.querySelectorAll(".todo-card");
     expect(todoCards.length).toBe(1);
     const editButton = document.querySelector("#edit-btn-id");
