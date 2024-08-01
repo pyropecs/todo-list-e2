@@ -8,6 +8,7 @@ const {
   fireEvent,
   queryByText,
   getByAltText,
+  prettyDOM,
 } = require("@testing-library/dom");
 
 const Chance = require("chance");
@@ -639,6 +640,41 @@ describe("to check that edit functionality is working properly", () => {
 
     expect(window.confirm).toHaveBeenCalled();
     expect(input.value).toBe(newInput);
+  });
+
+  test("to check that no  edit button should be clicked on other todo card if one edit button for todo card is clicked", () => {
+    const tasks = [];
+
+    function createTask() {
+      const input = document.querySelector("#text-input");
+      const validInput = chance.string({
+        symbols: false,
+        numeric: false,
+        alpha: true,
+        length: 30,
+      });
+      const saveBtn = document.querySelector("#save-btn-id");
+      tasks.push(validInput);
+      input.value = validInput;
+      fireEvent(saveBtn, new Event("click"));
+    }
+    createTask();
+    createTask();
+    let todoList = document.querySelector("#task-list");
+    const firstTask = getByText(document, tasks[0]);
+    const editBtnFirst =
+      firstTask.parentElement.parentElement.parentElement.querySelector(
+        "#edit-btn-id"
+      );
+    expect(todoList.classList.contains("no-click")).toBeFalsy();
+    editBtnFirst.click();
+    
+    todoList = document.querySelector("#task-list");
+    expect(todoList.classList.contains("no-click")).toBeTruthy();
+
+
+ 
+  
   });
 
   test("to check that editing the task actually got updated in task list", () => {
@@ -1410,7 +1446,15 @@ describe("to test that ui individual functions working properly", () => {
   });
   test("to check is completed indivudal component", () => {
     const { isTaskCompleted, createTaskCard } = require("../index.js");
-    const todoCard = createTaskCard("dsdsdsd", "sdsdsd", false); //invalid taskId
+    const invalidTaskId = chance.string(); //taskid only accepts number
+    const validInput = chance.string({
+      length: 30,
+      alpha: true,
+      numeric: true,
+      symbols: false,
+    });
+    const isCompleted = chance.bool({ likelihood: 30 });
+    const todoCard = createTaskCard(validInput, invalidTaskId, isCompleted); //invalid taskId
     const taskContent = todoCard.querySelector("#complete-btn-id");
 
     expect(() => isTaskCompleted(taskContent)).toThrow(

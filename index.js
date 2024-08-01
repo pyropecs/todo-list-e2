@@ -705,4 +705,5 @@ module.exports = {
   checkAndEditTask,
   deleteTask,
   isTaskCompleted,
+  submitForm
 };
