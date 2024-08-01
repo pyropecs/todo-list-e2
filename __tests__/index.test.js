@@ -639,27 +639,30 @@ describe("to check that edit functionality is working properly", () => {
 
     function createTask() {
       const input = document.querySelector("#text-input");
-      const validInput = chance.string({
+      const newInput = chance.string({
         symbols: false,
         numeric: false,
         alpha: true,
         length: 30,
       });
       const saveBtn = document.querySelector("#save-btn-id");
-      tasks.push(validInput);
-      input.value = validInput;
+      tasks.push(newInput);
+      input.value = newInput;
       fireEvent(saveBtn, new Event("click"));
     }
     createTask();
-    createTask();
+ 
     let todoList = document.querySelector("#task-list");
-    const firstTask = getByText(document, tasks[0]);
-    const editBtnFirst =
-      firstTask.parentElement.parentElement.parentElement.querySelector(
+    const todoCards = document.querySelectorAll(".todo-card")
+    expect(todoCards.length).toBe(2)
+    console.log(tasks)
+    const newTask = getByText(document, tasks[0]);
+    const editBtnNew =
+      newTask.parentElement.parentElement.parentElement.querySelector(
         "#edit-btn-id"
       );
     expect(todoList.classList.contains("no-click")).toBeFalsy();
-    editBtnFirst.click();
+    editBtnNew.click();
 
     todoList = document.querySelector("#task-list");
     expect(todoList.classList.contains("no-click")).toBeTruthy();
