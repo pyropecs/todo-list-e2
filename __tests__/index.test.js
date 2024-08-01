@@ -841,6 +841,9 @@ describe("to check the multiple delete items is working properly", () => {
 });
 
 describe("checking input validation function components", () => {
+
+
+
   test("testing validation components with valid inputs", () => {
     let validInput = chance.string({
       symbols: false,
@@ -948,6 +951,8 @@ describe("testing local storage invididuval compoents", () => {
       throw new Error("input does not exist");
     }
   }
+
+ 
   test("getting from local storage functionality", () => {
     const { getTodoFromLocalStorage } = require("../index.js");
     //when there is no elements in local storage
@@ -963,7 +968,7 @@ describe("testing local storage invididuval compoents", () => {
       tasks.push(validInput);
       createTask(tasks[i]);
     }
-    for (let i = 0; i < numberOfTasks; i++) {}
+   
     // when there are some elements in it
     todos = getTodoFromLocalStorage();
     expect(todos).toStrictEqual([
