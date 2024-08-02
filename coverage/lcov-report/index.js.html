@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>340/340</span>
+                <span class='fraction'>339/339</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>338/338</span>
+                <span class='fraction'>337/337</span>
             </div>
         
             
@@ -772,10 +772,7 @@
 <a name='L707'></a><a href='#L707'>707</a>
 <a name='L708'></a><a href='#L708'>708</a>
 <a name='L709'></a><a href='#L709'>709</a>
-<a name='L710'></a><a href='#L710'>710</a>
-<a name='L711'></a><a href='#L711'>711</a>
-<a name='L712'></a><a href='#L712'>712</a>
-<a name='L713'></a><a href='#L713'>713</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">51x</span>
+<a name='L710'></a><a href='#L710'>710</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1189,12 +1186,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">78x</span>
-<span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">78x</span>
 <span class="cline-any cline-yes">77x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">78x</span>
@@ -1251,9 +1245,9 @@
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1500,7 +1494,7 @@ const radio_btns = document.querySelectorAll(
 );
 let selectedTasks = [];
 let selectedValue = "all";
-document.addEventListener("DOMContentLoaded", renderTasks);
+document.addEventListener("DOMContentLoaded",renderTasks);
 form.addEventListener("submit", submitForm);
 &nbsp;
 // statusId.addEventListener("change", filterTodos);
@@ -1901,13 +1895,10 @@ function filterTodos(selectedValue) {
   //to handle the select functionality with 3 states "completed" ,"assigned","all"
 &nbsp;
   const todoCards = document.querySelectorAll(".todo-card");
-  const p = document.querySelector("#no-tasks-id");
+&nbsp;
   if (todoCards.length !== 0) {
     removeNoTaskFound();
   }
-  // if (p &amp;&amp; selectedValue !== "all") {
-  //   removeNoTaskFound();
-  // }
 &nbsp;
   if (selectedValue === "completed") {
     renderCompletedTodos(todoCards);
@@ -1922,19 +1913,19 @@ function filterTodos(selectedValue) {
 }
 function renderAllTodos(todoCards) {
   //to render all the tasks when select state is "all"
-removeNoTaskFound()
+  removeNoTaskFound();
   todoCards.forEach((todoCard) =&gt; {
     todoCard.classList.add("flex");
     todoCard.classList.remove("hide");
   });
-  if(todoCards.length ===0){
-    noTaskFound()
+  if (todoCards.length === 0) {
+    noTaskFound();
   }
 }
 &nbsp;
 function renderAssignedTodos(todoCards) {
   //to render only the assigned tasks and not completed when select state is "assigned" and to check the assigned tasks whether it is empty or not
-  removeNoTaskFound()
+  removeNoTaskFound();
   let assignedTasks = 0;
   todoCards.forEach((todoCard) =&gt; {
     const completed = todoCard.getAttribute("completed");
@@ -1955,7 +1946,7 @@ function renderAssignedTodos(todoCards) {
 &nbsp;
 function renderCompletedTodos(todoCards) {
   //to render only the completed tasks when select state is "completed" and to check the completed tasks whether it is empty or not
-  removeNoTaskFound()
+  removeNoTaskFound();
   let completedTask = 0;
   todoCards.forEach((todoCard) =&gt; {
     todoCard.classList.remove("flex");
@@ -2197,7 +2188,7 @@ module.exports = {
   checkAndEditTask,
   deleteTask,
   isTaskCompleted,
-  submitForm
+  submitForm,
 };
 &nbsp;</pre></td></tr></table></pre>
 
@@ -2206,7 +2197,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-08-01T07:38:21.252Z
+                at 2024-08-02T05:14:23.803Z
             </div>
         <script src="prettify.js"></script>
         <script>

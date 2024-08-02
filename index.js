@@ -11,7 +11,7 @@ const radio_btns = document.querySelectorAll(
 );
 let selectedTasks = [];
 let selectedValue = "all";
-document.addEventListener("DOMContentLoaded", renderTasks);
+document.addEventListener("DOMContentLoaded",renderTasks);
 form.addEventListener("submit", submitForm);
 
 // statusId.addEventListener("change", filterTodos);
