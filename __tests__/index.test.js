@@ -8,7 +8,6 @@ const {
   fireEvent,
   queryByText,
   getByAltText,
- 
 } = require("@testing-library/dom");
 
 const Chance = require("chance");
@@ -238,7 +237,7 @@ describe("to test the input validation ", () => {
     form.dispatchEvent(new Event("submit"));
     const inputRequired = inputError.textContent;
     expect(inputRequired).toBe("Input is required");
-    const symbolText = chance.string({ pool: "$#$#$#$#$#" });
+    const symbolText = chance.string({ pool: "!@#$%^&*()_+=[]{}|;:<>?/~" });
     input.value = symbolText;
     expect(input).toHaveValue(symbolText);
     form.dispatchEvent(new Event("submit"));
@@ -328,7 +327,6 @@ describe("to check that filter button giving the exact output ", () => {
     let todoCards = todoList.querySelectorAll(".todo-card");
     let count = 0;
     todoCards.forEach((todoCard) => {
-    
       const isCompleted = todoCard.getAttribute("completed") === "true";
       if (isCompleted) {
         count++;
@@ -435,7 +433,7 @@ describe("to check that delete functionality working properly", () => {
     const taskName = getByText(todoList, tasks[1]);
     const todoCard = taskName.parentElement.parentElement.parentElement;
     const deleteButton = todoCard.querySelector("#delete-btn-id");
-    
+
     deleteButton.dispatchEvent(new Event("click"));
     expect(window.confirm).toHaveBeenCalled();
     todoCards = document.querySelectorAll(".todo-card");
@@ -507,9 +505,10 @@ describe("to check that complete functionality working properly", () => {
     opacityExists = taskName.classList.contains("opacity");
     expect(opacityExists).toBe(false);
     fireEvent(completeButton, new Event("click"));
-    opacityExists = taskName.parentElement.classList.contains("opacity");
+    const taskNameContainer = taskName.parentElement;
+    opacityExists = taskNameContainer.classList.contains("opacity");
     taskName = getByText(todoList, validInput);
-    todoCard = taskName.parentElement.parentElement.parentElement;
+    todoCard = taskName.parentElement.parentElement.parentElement; //span -> .task-name -> .task-name-container -> .todo-card
     expect(opacityExists).toBe(true);
     completeButton = todoCard.querySelector("#complete-btn-id");
     expect(completeButton).toHaveAttribute("src", "./Images/checked.png");
@@ -588,17 +587,12 @@ describe("to check that edit functionality is working properly", () => {
   test("to check that user can cancel the changes they made after confirmatiion", () => {
     const input = document.querySelector("#text-input");
     const cancelBtn = document.querySelector("#cancel-btn");
-
     const todoList = document.querySelector("#task-list");
-
     let todoCards = document.querySelectorAll(".todo-card");
-
     expect(todoCards.length).toBe(1);
     let taskName = getByText(todoList, validInput);
-
     const todoCard = taskName.parentElement.parentElement.parentElement;
     const editButton = todoCard.querySelector("#edit-btn-id");
-
     fireEvent(editButton, new Event("click"));
     expect(cancelBtn.classList.contains("block")).toBe(true);
     const newInput = chance.string({
@@ -610,7 +604,6 @@ describe("to check that edit functionality is working properly", () => {
     input.value = newInput;
     window.confirm = jest.fn().mockReturnValue(true);
     fireEvent(cancelBtn, new Event("click"));
-
     expect(window.confirm).toHaveBeenCalled();
     expect(input.value).toBe("");
     expect(cancelBtn.classList.contains("block")).toBe(false);
@@ -619,11 +612,8 @@ describe("to check that edit functionality is working properly", () => {
   test("to check that user can continue the edit functionality when they cancel the confirmatiion pop up", () => {
     const input = document.querySelector("#text-input");
     const cancelBtn = document.querySelector("#cancel-btn");
-
     let todoCards = document.querySelectorAll(".todo-card");
-
     expect(todoCards.length).toBe(1);
-
     const editButton = document.querySelector("#edit-btn-id");
     fireEvent(editButton, new Event("click"));
     expect(cancelBtn.classList.contains("block")).toBe(true);
@@ -636,14 +626,12 @@ describe("to check that edit functionality is working properly", () => {
     input.value = newInput;
     window.confirm = jest.fn().mockReturnValue(false);
     fireEvent(cancelBtn, new Event("click"));
-
     expect(window.confirm).toHaveBeenCalled();
     expect(input.value).toBe(newInput);
   });
 
   test("to check that no  edit button should be clicked on other todo card if one edit button for todo card is clicked", () => {
     const tasks = [];
-
     function createTask() {
       const input = document.querySelector("#text-input");
       const newInput = chance.string({
@@ -658,11 +646,9 @@ describe("to check that edit functionality is working properly", () => {
       fireEvent(saveBtn, new Event("click"));
     }
     createTask();
-
     let todoList = document.querySelector("#task-list");
     const todoCards = document.querySelectorAll(".todo-card");
     expect(todoCards.length).toBe(2);
-   
     const newTask = getByText(document, tasks[0]);
     const editBtnNew =
       newTask.parentElement.parentElement.parentElement.querySelector(
@@ -670,7 +656,6 @@ describe("to check that edit functionality is working properly", () => {
       );
     expect(todoList.classList.contains("no-click")).toBeFalsy();
     editBtnNew.click();
-
     todoList = document.querySelector("#task-list");
     expect(todoList.classList.contains("no-click")).toBeTruthy();
   });
@@ -679,7 +664,6 @@ describe("to check that edit functionality is working properly", () => {
     const input = document.querySelector("#text-input");
     const todoList = document.querySelector("#task-list");
     const saveBtn = document.querySelector("#save-btn-id");
-
     const todoCards = document.querySelectorAll(".todo-card");
     expect(todoCards.length).toBe(1);
     let taskName = getByText(todoList, validInput);
@@ -702,7 +686,6 @@ describe("to check that edit functionality is working properly", () => {
     const todoList = document.querySelector("#task-list");
     const inputError = document.querySelector("#input-error");
     const saveBtn = document.querySelector("#save-btn-id");
-
     let todoCards = document.querySelectorAll(".todo-card");
     expect(todoCards.length).toBe(1);
     const editButton = document.querySelector("#edit-btn-id");
@@ -785,9 +768,7 @@ describe("to check the multiple delete items is working properly", () => {
   test(" select the multiple task and should be deleted by clicking delete button", () => {
     const deleteButton = document.querySelector("#delete-all");
     expect(deleteButton.disabled).toBe(true);
-
     let todoCards = document.querySelectorAll(".todo-card");
-
     expect(todoCards.length).toBe(numberOfTasks);
     const selectedTasks = [tasks[1], tasks[2], tasks[4]];
     todoCards.forEach((todoCard) => {
@@ -798,7 +779,6 @@ describe("to check the multiple delete items is working properly", () => {
         expect(selectCheckbox.checked).toBe(false);
         fireEvent.click(selectCheckbox);
         selectCheckbox = todoCard.querySelector("#select-checkbox");
-
         expect(selectCheckbox.checked).toBe(true);
       }
     });
